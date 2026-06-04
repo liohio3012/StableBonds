@@ -6,6 +6,7 @@ import { WagmiProvider } from 'wagmi';
 import { arcTestnet } from 'viem/chains';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
+import { CircleAuthProvider } from '@/lib/CircleAuthContext';
 
 const projectId = '3fcc6bba6f1de962d911bb5b5c3dba68'; 
 
@@ -24,14 +25,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider 
           theme={lightTheme({
-            accentColor: '#2563eb',
+            accentColor: '#111111', // Dark themed primary to align with Cal.com style
             accentColorForeground: 'white',
             borderRadius: 'large',
             fontStack: 'system',
             overlayBlur: 'small',
           })}
         >
-          {children}
+          <CircleAuthProvider>
+            {children}
+          </CircleAuthProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
