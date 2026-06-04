@@ -1,0 +1,633 @@
+"use client";
+
+import React, { useState, useMemo } from 'react';
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
+import { parseAbi, parseUnits, encodeFunctionData, isAddress } from 'viem';
+import { toast } from 'sonner';
+import { Layers, Info, TrendingUp, Loader2, ArrowRight, Shield, Wallet, CheckCircle2, HelpCircle, AlertTriangle, AlertOctagon } from 'lucide-react';
+import { useCircleAuth } from '@/lib/CircleAuthContext';
+import { bundlerClient } from '@/lib/circle-auth';
+
+// Arc Testnet Constants
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
+const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
+const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+
+const ERC20_ABI = parseAbi(["function approve(address spender, uint256 amount) external returns (bool)"]);
+const VAULT_ABI = parseAbi([
+  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit, uint256 _minBuyAmount, bytes _tradeData) external"
+]);
+
+const VAULT_ABI_COMPLIANCE = parseAbi([
+  "function complianceRegistry() external view returns (address)"
+]);
+
+const REGISTRY_ABI = parseAbi([
+  "function isVerified(address _user) external view returns (bool)",
+  "function isBlacklisted(address _user) external view returns (bool)"
+]);
+
+const TERMS_MAP = [
+  { id: 1, durationDays: 30, apyBps: 400, label: "30 Days", apyLabel: "4.00% APY" },
+  { id: 3, durationDays: 90, apyBps: 500, label: "90 Days", apyLabel: "5.00% APY" },
+  { id: 4, durationDays: 180, apyBps: 550, label: "180 Days", apyLabel: "5.50% APY" },
+  { id: 5, durationDays: 365, apyBps: 600, label: "365 Days", apyLabel: "6.00% APY" },
+];
+
+const STRATEGIES = [
+  {
+    id: 'equal',
+    name: 'Equal Weight',
+    desc: 'Splits capital evenly (25% each) across 30, 90, 180, and 365 days. Best for consistent quarterly liquidity.',
+    allocations: [0.25, 0.25, 0.25, 0.25]
+  },
+  {
+    id: 'short',
+    name: 'Short-Term Heavy',
+    desc: 'Allocates 50% in 30d, 25% in 90d, 15% in 180d, and 10% in 365d. Maximize short-term invoice matching.',
+    allocations: [0.50, 0.25, 0.15, 0.10]
+  },
+  {
+    id: 'long',
+    name: 'Long-Term Heavy',
+    desc: 'Allocates 10% in 30d, 15% in 90d, 25% in 180d, and 50% in 365d. Maximize yield and long-term locked-in growth.',
+    allocations: [0.10, 0.15, 0.25, 0.50]
+  }
+];
+
+const NETWORK_OPTIONS = [
+  { value: "0", label: "Standard Transfer", icon: "🏦" },
+  { value: "3", label: "Express Transfer", icon: "⚡" },
+  { value: "6", label: "Economy Transfer", icon: "💰" },
+  { value: "22", label: "International Transfer", icon: "🌍" },
+];
+
+export default function BondLadderBuilder() {
+  const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
+  const { account: circleAccount, isSmartAccount } = useCircleAuth();
+  const isConnected = isEoaConnected || isSmartAccount;
+  const address = isSmartAccount ? circleAccount?.address : eoaAddress;
+
+  const publicClient = usePublicClient();
+
+  // Compliance verification states
+  const [isVerified, setIsVerified] = useState<boolean>(true); // Default to true while checking
+  const [isBlacklisted, setIsBlacklisted] = useState<boolean>(false);
+  const [checkingCompliance, setCheckingCompliance] = useState<boolean>(true);
+
+  React.useEffect(() => {
+    const checkUserCompliance = async () => {
+      if (!address) {
+        setCheckingCompliance(false);
+        return;
+      }
+      setCheckingCompliance(true);
+      try {
+        const localVerify = localStorage.getItem(`kyc_verified_${address}`) === 'true';
+        const localBlack = localStorage.getItem(`kyc_blacklisted_${address}`) === 'true';
+
+        if (publicClient) {
+          const regAddr = await publicClient.readContract({
+            address: VAULT_ADDRESS,
+            abi: VAULT_ABI_COMPLIANCE,
+            functionName: 'complianceRegistry'
+          }).catch(() => null);
+
+          if (regAddr && regAddr !== '0x0000000000000000000000000000000000000000') {
+            const [onChainVerify, onChainBlack] = await Promise.all([
+              publicClient.readContract({
+                address: regAddr as `0x${string}`,
+                abi: REGISTRY_ABI,
+                functionName: 'isVerified',
+                args: [address]
+              }).catch(() => false),
+              publicClient.readContract({
+                address: regAddr as `0x${string}`,
+                abi: REGISTRY_ABI,
+                functionName: 'isBlacklisted',
+                args: [address]
+              }).catch(() => false)
+            ]);
+
+            setIsVerified(localVerify || !!onChainVerify);
+            setIsBlacklisted(localBlack || !!onChainBlack);
+            setCheckingCompliance(false);
+            return;
+          }
+        }
+
+        setIsVerified(localVerify);
+        setIsBlacklisted(localBlack);
+      } catch (err) {
+        console.error("Compliance query error in BondLadderBuilder:", err);
+      } finally {
+        setCheckingCompliance(false);
+      }
+    };
+
+    checkUserCompliance();
+    
+    // Listen for custom events when compliance changes
+    const handleStatusChange = () => checkUserCompliance();
+    window.addEventListener('compliance-status-changed', handleStatusChange);
+    return () => {
+      window.removeEventListener('compliance-status-changed', handleStatusChange);
+    };
+  }, [address, publicClient]);
+
+  // Form State
+  const [totalBudget, setTotalBudget] = useState('10000');
+  const [depositToken, setDepositToken] = useState('USDC');
+  const [settlementToken, setSettlementToken] = useState('USDC');
+  const [selectedStrategy, setSelectedStrategy] = useState('equal');
+  const [supplierAddress, setSupplierAddress] = useState('');
+  const [destChain, setDestChain] = useState('3');
+  const [swapAtDeposit, setSwapAtDeposit] = useState(true);
+
+  // Smart Account Execution States
+  const [smartPending, setSmartPending] = useState(false);
+  const [smartConfirming, setSmartConfirming] = useState(false);
+  const [smartTxHash, setSmartTxHash] = useState<string | null>(null);
+
+  // EOA Execution States
+  const { data: approveHash, writeContract: writeApprove, isPending: isApproving } = useWriteContract();
+  const { isLoading: isApproveConfirming, isSuccess: isApproveSuccess } = useWaitForTransactionReceipt({ hash: approveHash });
+
+  const { data: depositHash, writeContract: writeDeposit, isPending: isDepositing } = useWriteContract();
+  const { isLoading: isDepositConfirming, isSuccess: isDepositSuccess } = useWaitForTransactionReceipt({ hash: depositHash });
+
+  // Address lookup
+  const depositTokenAddress = depositToken === 'USDC' ? USDC_ADDRESS : EURC_ADDRESS;
+
+  // Verify inputs
+  const budgetNum = parseFloat(totalBudget);
+  const isFormValid = useMemo(() => {
+    return (
+      !isNaN(budgetNum) &&
+      budgetNum > 0 &&
+      supplierAddress !== '' &&
+      isAddress(supplierAddress) &&
+      isConnected
+    );
+  }, [budgetNum, supplierAddress, isConnected]);
+
+  // Calculate allocations and interest
+  const strategy = useMemo(() => {
+    return STRATEGIES.find(s => s.id === selectedStrategy) || STRATEGIES[0];
+  }, [selectedStrategy]);
+
+  const legs = useMemo(() => {
+    if (isNaN(budgetNum) || budgetNum <= 0) return [];
+    
+    return TERMS_MAP.map((term, i) => {
+      const pct = strategy.allocations[i];
+      const amount = budgetNum * pct;
+      const interest = amount * (term.apyBps / 10000) * (term.durationDays / 365);
+      const maturityDate = new Date();
+      maturityDate.setDate(maturityDate.getDate() + term.durationDays);
+
+      return {
+        ...term,
+        percentage: pct * 100,
+        amount,
+        interest,
+        maturityDate
+      };
+    });
+  }, [budgetNum, strategy]);
+
+  const summary = useMemo(() => {
+    if (legs.length === 0) return { totalAllocated: 0, totalInterest: 0, weightedAPY: 0 };
+
+    const totalAllocated = legs.reduce((sum, leg) => sum + leg.amount, 0);
+    const totalInterest = legs.reduce((sum, leg) => sum + leg.interest, 0);
+    
+    // Weighted APY = Sum(Amount * APY) / TotalAmount
+    const sumProduct = legs.reduce((sum, leg) => sum + (leg.amount * leg.apyBps), 0);
+    const weightedAPY = sumProduct / totalAllocated / 100;
+
+    return {
+      totalAllocated,
+      totalInterest,
+      weightedAPY
+    };
+  }, [legs]);
+
+  // Handle Smart Account Deploy (Atomic multi-call batching!)
+  const handleSmartDeploy = async () => {
+    if (!isSmartAccount || !circleAccount || !isFormValid) return;
+    
+    setSmartPending(true);
+    try {
+      toast.info("Preparing gasless atomic ladder deployment...");
+      
+      const totalAmountRaw = parseUnits(totalBudget, 6);
+      
+      // Call 1: Total allowance approval for the Vault contract
+      const approveCall = {
+        to: depositTokenAddress as `0x${string}`,
+        value: BigInt(0),
+        data: encodeFunctionData({
+          abi: ERC20_ABI,
+          functionName: 'approve',
+          args: [VAULT_ADDRESS, totalAmountRaw],
+        }),
+      };
+
+      // Calls 2-5: Create bonds for each leg of the ladder
+      const depositCalls = legs.map((leg) => {
+        const legAmountRaw = parseUnits(leg.amount.toFixed(6), 6);
+        return {
+          to: VAULT_ADDRESS,
+          value: BigInt(0),
+          data: encodeFunctionData({
+            abi: VAULT_ABI,
+            functionName: 'createBondWithIntent',
+            args: [
+              legAmountRaw,
+              BigInt(leg.id),
+              supplierAddress as `0x${string}`,
+              Number(destChain),
+              depositTokenAddress as `0x${string}`,
+              (settlementToken === 'USDC' ? USDC_ADDRESS : EURC_ADDRESS) as `0x${string}`,
+              swapAtDeposit,
+              BigInt(0),
+              '0x' as `0x${string}`
+            ]
+          })
+        };
+      });
+
+      // Combine all calls (Approve + 4 deposits)
+      const allCalls = [approveCall, ...depositCalls];
+
+      const userOpHash = await bundlerClient.sendUserOperation({
+        account: circleAccount,
+        calls: allCalls,
+        paymaster: true,
+      });
+
+      toast.info("Deploying bond ladder to network. Waiting for confirmation...", {
+        description: `UserOp Hash: ${userOpHash.slice(0, 10)}...`
+      });
+
+      setSmartPending(false);
+      setSmartConfirming(true);
+
+      const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+      setSmartTxHash(receipt.transactionHash);
+      setSmartConfirming(false);
+      
+      toast.success("Bond ladder successfully deployed! 🪜", {
+        description: `All ${legs.length} payments have been staggered and scheduled.`,
+        action: {
+          label: 'View receipt',
+          onClick: () => window.open(`https://testnet.arcscan.app/tx/${receipt.transactionHash}`, '_blank')
+        }
+      });
+      
+      // Reset form
+      setSupplierAddress('');
+    } catch (error: any) {
+      console.error("Smart Account Deploy Error:", error);
+      setSmartPending(false);
+      setSmartConfirming(false);
+      if (error.message?.includes('User rejected') || error.code === 'NotAllowedError' || error.name === 'NotAllowedError') {
+        toast.info("Transaction cancelled");
+        return;
+      }
+      toast.error("Deployment failed", {
+        description: error.message || "Failed to schedule the ladder. Check your parameters."
+      });
+    }
+  };
+
+  // Handle EOA sequential approvals (educational warning or manual trigger)
+  const handleEOADeploy = () => {
+    alert("Atomic batch transactions require a Circle Smart Account. Standard browser wallets require signing 5 sequential transactions (1 Approval + 4 Deposit intents). Please switch to a Passkey or Email Smart Account in the header for a single-click experience!");
+  };
+
+  return (
+    <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left Form Settings Panel */}
+        <div className="lg:col-span-5 space-y-5">
+          <div className="card-surface p-5 space-y-4 shadow-sm" style={{ border: '1px solid var(--border)' }}>
+            <div className="flex items-center gap-2 pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
+              <Layers className="text-[var(--primary)]" size={18} />
+              <h3 className="font-bold text-base" style={{ color: 'var(--foreground)' }}>
+                Ladder Parameters
+              </h3>
+            </div>
+
+            {/* Total Budget Input */}
+            <div>
+              <label className="text-xs font-semibold block mb-1.5" style={{ color: 'var(--foreground)' }}>
+                Total Allocation Budget
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={totalBudget}
+                  onChange={(e) => setTotalBudget(e.target.value)}
+                  className="w-full pl-8 pr-16 py-2 rounded-xl text-sm font-semibold border bg-[var(--canvas)] transition-all focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  style={{ borderColor: 'var(--border)' }}
+                  placeholder="0.00"
+                />
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold" style={{ color: 'var(--muted-foreground)' }}>
+                  $
+                </span>
+                <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold" style={{ color: 'var(--muted-foreground)' }}>
+                  {depositToken}
+                </span>
+              </div>
+            </div>
+
+            {/* Strategy Picker */}
+            <div>
+              <label className="text-xs font-semibold block mb-1.5" style={{ color: 'var(--foreground)' }}>
+                Staggering Strategy
+              </label>
+              <div className="flex flex-col gap-2">
+                {STRATEGIES.map((strat) => (
+                  <button
+                    key={strat.id}
+                    onClick={() => setSelectedStrategy(strat.id)}
+                    className="text-left p-3 rounded-xl border text-xs transition-all relative"
+                    style={{ 
+                      borderColor: selectedStrategy === strat.id ? 'var(--primary)' : 'var(--border)',
+                      background: selectedStrategy === strat.id ? 'var(--primary-soft)' : 'var(--canvas)' 
+                    }}
+                  >
+                    <div className="font-bold flex items-center justify-between" style={{ color: selectedStrategy === strat.id ? 'var(--primary)' : 'var(--foreground)' }}>
+                      {strat.name}
+                      {selectedStrategy === strat.id && <CheckCircle2 size={13} />}
+                    </div>
+                    <p className="mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                      {strat.desc}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Assets */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
+                  Deposit Token
+                </label>
+                <select
+                  value={depositToken}
+                  onChange={(e) => {
+                    setDepositToken(e.target.value);
+                    if (swapAtDeposit) setSettlementToken(e.target.value);
+                  }}
+                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <option value="USDC">USDC (Stable)</option>
+                  <option value="EURC">EURC (Euro)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
+                  Vendor Receives
+                </label>
+                <select
+                  value={settlementToken}
+                  onChange={(e) => setSettlementToken(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <option value="USDC">USDC (Stable)</option>
+                  <option value="EURC">EURC (Euro)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Swap Timing Logic */}
+            {depositToken !== settlementToken && (
+              <div className="rounded-xl p-3 text-xs space-y-2 border border-dashed" style={{ background: 'var(--info-soft)', borderColor: 'var(--info-border)' }}>
+                <span className="font-semibold block" style={{ color: 'var(--info-foreground)' }}>
+                  💱 StableFX Swap Required
+                </span>
+                <p style={{ color: 'var(--info-foreground)' }}>
+                  Your deposit token differs from vendor settlement token. Swaps will be executed automatically.
+                </p>
+                <div className="flex gap-4 pt-1 font-semibold">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={swapAtDeposit}
+                      onChange={() => setSwapAtDeposit(true)}
+                      className="accent-[var(--primary)]"
+                    />
+                    Swap at Deposit
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={!swapAtDeposit}
+                      onChange={() => setSwapAtDeposit(false)}
+                      className="accent-[var(--primary)]"
+                    />
+                    Swap at Maturity
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Destination Vendor Form */}
+            <div className="pt-2 border-t space-y-3" style={{ borderColor: 'var(--border)' }}>
+              <div>
+                <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
+                  Vendor Address (Destination Receiver)
+                </label>
+                <input
+                  type="text"
+                  value={supplierAddress}
+                  onChange={(e) => setSupplierAddress(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl text-xs border font-mono bg-[var(--canvas)] transition-all focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+                  style={{ borderColor: 'var(--border)' }}
+                  placeholder="0x..."
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
+                  Delivery Network Method
+                </label>
+                <select
+                  value={destChain}
+                  onChange={(e) => setDestChain(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  {NETWORK_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.icon} {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Smart Account Banner */}
+            {!isSmartAccount && (
+              <div className="rounded-xl p-3 flex gap-2 border text-xs" style={{ background: 'var(--warning-soft)', borderColor: 'var(--warning-border)' }}>
+                <AlertTriangle size={15} className="shrink-0 mt-0.5" style={{ color: 'var(--warning)' }} />
+                <div style={{ color: 'var(--warning-foreground)' }}>
+                  <strong>Sequential Signing Required:</strong> You are currently using an EOA wallet. You will have to sign 5 separate transactions. Switch to biometrics/email login to deploy the entire ladder in **one click**.
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Preview Panel */}
+        <div className="lg:col-span-7 space-y-4">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
+              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+                Allocated Budget
+              </span>
+              <p className="text-lg font-bold mt-1" style={{ color: 'var(--foreground)' }}>
+                {summary.totalAllocated.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              </p>
+              <span className="text-[9px] font-semibold opacity-75" style={{ color: 'var(--muted-foreground)' }}>
+                {depositToken}
+              </span>
+            </div>
+            
+            <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
+              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+                Weighted APY
+              </span>
+              <p className="text-lg font-bold mt-1" style={{ color: 'var(--success)' }}>
+                {summary.weightedAPY.toFixed(2)}%
+              </p>
+              <span className="text-[9px] font-semibold opacity-75" style={{ color: 'var(--muted-foreground)' }}>
+                Staggered Average
+              </span>
+            </div>
+
+            <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
+              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+                Projected Return
+              </span>
+              <p className="text-lg font-bold mt-1" style={{ color: 'var(--success)' }}>
+                +{summary.totalInterest.toFixed(2)}
+              </p>
+              <span className="text-[9px] font-semibold opacity-75" style={{ color: 'var(--muted-foreground)' }}>
+                {selectedStrategy === 'long' ? 'Yield Maximized' : 'Liquid Match'}
+              </span>
+            </div>
+          </div>
+
+          {/* Staggered Legs Details */}
+          <div className="card-surface p-5 space-y-4 shadow-sm" style={{ border: '1px solid var(--border)' }}>
+            <h4 className="font-bold text-sm" style={{ color: 'var(--foreground)' }}>
+              Staggered Maturity Schedule (Legs)
+            </h4>
+
+            <div className="space-y-3">
+              {legs.map((leg, index) => {
+                return (
+                  <div key={leg.id} className="p-3.5 rounded-xl border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 transition-all hover:bg-[var(--muted)]/20"
+                    style={{ borderColor: 'var(--border)' }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+                        style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
+                        Leg {index + 1}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs" style={{ color: 'var(--foreground)' }}>
+                          {leg.label} Term
+                        </div>
+                        <div className="text-[10px] mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+                          Matures: {leg.maturityDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-5 justify-between w-full sm:w-auto">
+                      <div className="text-right sm:text-right">
+                        <div className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>
+                          {leg.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} {depositToken}
+                        </div>
+                        <div className="text-[10px]" style={{ color: 'var(--muted-foreground)' }}>
+                          ({leg.percentage.toFixed(0)}% allocation)
+                        </div>
+                      </div>
+                      
+                      <div className="text-right">
+                        <div className="text-xs font-bold text-[var(--success-foreground)]">
+                          +{leg.interest.toFixed(2)} {depositToken}
+                        </div>
+                        <div className="badge badge-success text-[9px] mt-0.5">
+                          {leg.apyLabel}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Compliance warnings */}
+            {!checkingCompliance && (!isVerified || isBlacklisted) && (
+              <div className={`p-4 rounded-xl flex items-start gap-3 mt-4 ${
+                isBlacklisted 
+                  ? 'bg-red-50 text-red-800 border border-red-200 animate-slide-up' 
+                  : 'bg-amber-50 text-amber-800 border border-amber-200 animate-slide-up'
+              }`}>
+                <div className={`mt-0.5 ${isBlacklisted ? 'text-red-600' : 'text-amber-600'}`}>
+                  <AlertOctagon size={16} />
+                </div>
+                <div className="text-xs text-left">
+                  <span className="font-bold block mb-0.5">
+                    {isBlacklisted 
+                      ? 'Compliance Block Active' 
+                      : 'KYC/KYB Verification Required'}
+                  </span>
+                  <span>
+                    {isBlacklisted 
+                      ? 'Your wallet is currently blacklisted/sanctioned. All transaction operations are blocked.' 
+                      : 'You must verify your corporate treasury profile in the Compliance Center before scheduling payments.'}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Action Execution Footer */}
+            <div className="pt-4 border-t flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                <Shield size={14} className="text-[var(--success-foreground)]" />
+                <span>All legs are secured under separate on-chain locks.</span>
+              </div>
+
+              <button
+                onClick={isSmartAccount ? handleSmartDeploy : handleEOADeploy}
+                disabled={!isFormValid || smartPending || smartConfirming || !isVerified || isBlacklisted}
+                className="btn-primary w-full sm:w-auto px-6 py-2.5 gap-2 text-sm justify-center items-center flex"
+                id="btn-deploy-ladder"
+              >
+                {smartPending ? (
+                  <><Loader2 size={14} className="animate-spin" /> Preparing...</>
+                ) : smartConfirming ? (
+                  <><Loader2 size={14} className="animate-spin" /> Staggering...</>
+                ) : (
+                  <>Deploy Staggered Ladder <ArrowRight size={14} /></>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

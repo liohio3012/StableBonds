@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useAccount, useReadContract, usePublicClient, useWatchContractEvent } from 'wagmi';
-import { parseAbi, formatUnits } from 'viem';
-import { RefreshCw, Download, Clock, CheckCircle2, Loader2, CreditCard, TrendingUp, ArrowUpRight, Wallet, Shield, Info } from 'lucide-react';
+import { useAccount, useReadContract, usePublicClient, useWatchContractEvent, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { parseAbi, formatUnits, encodeFunctionData } from 'viem';
+import { RefreshCw, Download, Clock, CheckCircle2, Loader2, CreditCard, TrendingUp, ArrowUpRight, Wallet, Shield, Info, Tag } from 'lucide-react';
+import { toast } from 'sonner';
+import { useCircleAuth } from '@/lib/CircleAuthContext';
+import { bundlerClient } from '@/lib/circle-auth';
 import {
   ColumnDef,
   flexRender,
@@ -19,12 +22,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import KeeperAutomationPanel from './KeeperAutomationPanel';
 
 const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
 
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
+const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
+
+const getTokenSymbol = (addr: string) => {
+  if (!addr) return "USDC";
+  if (addr.toLowerCase() === USDC_ADDRESS.toLowerCase()) return "USDC";
+  if (addr.toLowerCase() === EURC_ADDRESS.toLowerCase()) return "EURC";
+  return "USDC";
+};
+
 const VAULT_ABI = parseAbi([
   "function nextBondId() view returns (uint256)",
-  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, (address supplier, uint32 destDomain, bool isConfigured) intent)",
+  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, (address supplier, uint32 destDomain, bool isConfigured) intent, address agent, uint256 creationTimestamp, uint8 tranche)",
+  "function claimAccruedYield(uint256 _bondId) external",
   "event BondCreated(uint256 indexed bondId, address indexed owner, uint256 maturityDate)"
 ]);
 
@@ -35,8 +50,15 @@ type Bond = {
   yieldBps: number;
   maturityDate: number;
   isSettled: boolean;
+  termId: number;
+  depositToken: string;
+  settlementToken: string;
+  swapAtDeposit: boolean;
   supplier: string;
   destDomain: number;
+  agent: string;
+  creationTimestamp: number;
+  tranche: number;
 };
 
 // Human-readable transfer method names — no blockchain jargon
@@ -51,6 +73,7 @@ const TRANSFER_METHOD_MAP: Record<number, string> = {
 // Status explainer component
 function StatusBadge({ bond }: { bond: Bond }) {
   const isMatured = Date.now() >= bond.maturityDate * 1000;
+  const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
 
   if (bond.isSettled) {
     return (
@@ -59,10 +82,9 @@ function StatusBadge({ bond }: { bond: Bond }) {
           <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]"></span>
           Delivered
         </span>
-        {/* Hover explainer */}
         <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
           style={{ background: 'var(--foreground)', color: 'white' }}>
-          ✅ Payment has been successfully delivered to the vendor's account.
+          ✅ Payment has been successfully delivered in {bond.settlementToken} to the vendor's account.
         </div>
       </div>
     );
@@ -91,7 +113,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
       </span>
       <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
         style={{ background: 'var(--foreground)', color: 'white' }}>
-        💰 Your money is safely held and earning 5% interest until the due date.
+        💰 Locked in {lockedAsset} and earning {(bond.yieldBps / 100).toFixed(2)}% APY until maturity.
       </div>
     </div>
   );
@@ -99,18 +121,25 @@ function StatusBadge({ bond }: { bond: Bond }) {
 
 // Summary stats cards
 function SummaryCards({ bonds }: { bonds: Bond[] }) {
-  const totalHeld = bonds.reduce((sum, b) => sum + parseFloat(b.principal), 0);
+  // Aggregate by token type
+  const totalHeldUSDC = bonds.filter(b => !b.isSettled && (b.swapAtDeposit ? b.settlementToken : b.depositToken) === 'USDC')
+                             .reduce((sum, b) => sum + parseFloat(b.principal), 0);
+  const totalHeldEURC = bonds.filter(b => !b.isSettled && (b.swapAtDeposit ? b.settlementToken : b.depositToken) === 'EURC')
+                             .reduce((sum, b) => sum + parseFloat(b.principal), 0);
+
   const activePayments = bonds.filter(b => !b.isSettled).length;
   const deliveredPayments = bonds.filter(b => b.isSettled).length;
-  const totalInterest = bonds.reduce((sum, b) => {
-    return sum + (parseFloat(b.principal) * (b.yieldBps / 10000));
-  }, 0);
+  
+  const totalInterestUSDC = bonds.filter(b => (b.swapAtDeposit ? b.settlementToken : b.depositToken) === 'USDC')
+                                 .reduce((sum, b) => sum + (parseFloat(b.principal) * (b.yieldBps / 10000)), 0);
+  const totalInterestEURC = bonds.filter(b => (b.swapAtDeposit ? b.settlementToken : b.depositToken) === 'EURC')
+                                 .reduce((sum, b) => sum + (parseFloat(b.principal) * (b.yieldBps / 10000)), 0);
 
   const stats = [
     { 
       label: "Total held", 
-      value: `$${totalHeld.toLocaleString()}`, 
-      sublabel: "Earning interest",
+      value: `${totalHeldUSDC.toLocaleString()} USDC`, 
+      sublabel: `${totalHeldEURC.toLocaleString()} EURC`,
       icon: <Wallet size={18} />,
       color: 'var(--primary)',
       bg: 'var(--primary-soft)',
@@ -124,18 +153,18 @@ function SummaryCards({ bonds }: { bonds: Bond[] }) {
       bg: 'var(--info-soft)',
     },
     { 
-      label: "Interest earned", 
-      value: `+$${totalInterest.toFixed(2)}`, 
+      label: "Interest earned (USDC)", 
+      value: `+${totalInterestUSDC.toFixed(2)} USDC`, 
       sublabel: "Total projected",
       icon: <TrendingUp size={18} />,
       color: 'var(--success)',
       bg: 'var(--success-soft)',
     },
     { 
-      label: "Payments delivered", 
-      value: deliveredPayments.toString(), 
-      sublabel: "On-time delivery",
-      icon: <CheckCircle2 size={18} />,
+      label: "Interest earned (EURC)", 
+      value: `+${totalInterestEURC.toFixed(2)} EURC`, 
+      sublabel: "Total projected",
+      icon: <TrendingUp size={18} />,
       color: 'var(--success)',
       bg: 'var(--success-soft)',
     },
@@ -154,6 +183,7 @@ function SummaryCards({ bonds }: { bonds: Bond[] }) {
           </div>
           <p className="text-lg md:text-xl font-bold" style={{ color: 'var(--foreground)' }}>{stat.value}</p>
           <p className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>{stat.label}</p>
+          <p className="text-[10px] opacity-75 font-semibold" style={{ color: 'var(--muted-foreground)' }}>{stat.sublabel}</p>
         </div>
       ))}
     </div>
@@ -197,12 +227,27 @@ const columns: ColumnDef<Bond>[] = [
   },
   {
     accessorKey: "principal",
-    header: "Amount",
+    header: "Amount Locked",
     cell: ({ row }) => {
+      const bond = row.original;
+      const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
       return (
         <div>
-          <span className="font-semibold" style={{ color: 'var(--foreground)' }}>${row.original.principal}</span>
-          <span className="text-xs ml-1" style={{ color: 'var(--muted-foreground)' }}>USD</span>
+          <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
+            {parseFloat(bond.principal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+          <span className="text-xs ml-1 font-bold" style={{ color: 'var(--muted-foreground)' }}>
+            {lockedAsset}
+          </span>
+          {bond.depositToken !== bond.settlementToken && (
+            <div className="text-[10px] font-medium mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+              {bond.swapAtDeposit ? (
+                <span>Swapped from {bond.depositToken}</span>
+              ) : (
+                <span>Swaps to {bond.settlementToken} at maturity</span>
+              )}
+            </div>
+          )}
         </div>
       );
     },
@@ -212,11 +257,12 @@ const columns: ColumnDef<Bond>[] = [
     header: "Interest Rate",
     cell: ({ row }) => {
       const bond = row.original;
+      const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
       const interestEarned = (parseFloat(bond.principal) * (bond.yieldBps / 10000)).toFixed(2);
       return (
         <span className="badge badge-success text-[11px]">
           <TrendingUp size={10} />
-          {(bond.yieldBps / 100).toFixed(1)}% · +${interestEarned}
+          {(bond.yieldBps / 100).toFixed(2)}% · +{interestEarned} {lockedAsset}
         </span>
       );
     },
@@ -233,12 +279,12 @@ const columns: ColumnDef<Bond>[] = [
   },
   {
     accessorKey: "supplier",
-    header: "Vendor",
+    header: "Vendor / Network",
     cell: ({ row }) => {
       const bond = row.original;
       return (
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-medium" style={{ color: 'var(--foreground)' }}>
+          <span className="text-xs font-semibold" style={{ color: 'var(--foreground)' }}>
             {TRANSFER_METHOD_MAP[bond.destDomain] || `Transfer #${bond.destDomain}`}
           </span>
           <span className="font-mono text-[10px] px-1.5 py-0.5 rounded w-fit"
@@ -260,10 +306,60 @@ const columns: ColumnDef<Bond>[] = [
       );
     },
   },
+  {
+    id: "actions",
+    header: () => <div className="text-right">Actions</div>,
+    cell: ({ row, table }) => {
+      const bond = row.original;
+      const meta = table.options.meta as any;
+      
+      if (bond.isSettled) return null;
+      
+      const isMatured = Date.now() >= bond.maturityDate * 1000;
+      if (isMatured) return null;
+
+      const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
+      const isWithdrawing = meta?.isWithdrawing;
+      
+      return (
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => meta?.onClaimYield?.(bond.id)}
+            disabled={meta?.isClaiming}
+            className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ borderColor: 'var(--success-border)', background: 'var(--success-soft)', color: 'var(--success-foreground)' }}
+            id={`btn-claim-yield-${bond.id}`}
+          >
+            Claim Yield
+          </button>
+          <button
+            onClick={() => meta?.onListOTC?.(bond)}
+            className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all duration-200"
+            id={`btn-list-otc-${bond.id}`}
+          >
+            List on OTC
+          </button>
+          <button
+            onClick={() => meta?.onEarlyWithdraw(bond.id, bond.principal, lockedAsset)}
+            disabled={isWithdrawing}
+            className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--error-border)] bg-[var(--error-soft)] text-[var(--error-foreground)] hover:bg-[var(--error)] hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            id={`btn-early-withdraw-${bond.id}`}
+          >
+            {isWithdrawing ? "Exiting..." : "Early Exit"}
+          </button>
+        </div>
+      );
+    },
+  },
 ];
 
-export default function TreasuryDashboard() {
-  const { address, isConnected } = useAccount();
+export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bond) => void }) {
+  const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
+  const { account: circleAccount, isSmartAccount } = useCircleAuth();
+  const isConnected = isEoaConnected || isSmartAccount;
+  const address = isSmartAccount ? circleAccount?.address : eoaAddress;
+
+  const [smartWithdrawPending, setSmartWithdrawPending] = useState(false);
   const publicClient = usePublicClient();
   const [bondsList, setBondsList] = useState<Bond[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -273,6 +369,191 @@ export default function TreasuryDashboard() {
     abi: VAULT_ABI,
     functionName: 'nextBondId',
   });
+
+  // Web3 Hooks — Early Withdrawal
+  const { data: withdrawHash, writeContract: writeWithdraw, isPending: isWithdrawing } = useWriteContract();
+  const { isLoading: isWithdrawConfirming, isSuccess: isWithdrawSuccess } = useWaitForTransactionReceipt({ hash: withdrawHash });
+
+  const displayIsWithdrawing = isSmartAccount ? smartWithdrawPending : (isWithdrawing || isWithdrawConfirming);
+
+  // Web3 Hooks — Claim Yield
+  const { data: claimHash, writeContract: writeClaim, isPending: isClaiming } = useWriteContract();
+  const { isLoading: isClaimConfirming, isSuccess: isClaimSuccess } = useWaitForTransactionReceipt({ hash: claimHash });
+  const [smartClaimPending, setSmartClaimPending] = useState(false);
+  const displayIsClaiming = isSmartAccount ? smartClaimPending : (isClaiming || isClaimConfirming);
+
+  useEffect(() => {
+    if (isWithdrawSuccess) {
+      toast.success("Early withdrawal completed ✓", {
+        description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
+        action: withdrawHash ? {
+          label: 'View receipt',
+          onClick: () => window.open(`https://testnet.arcscan.app/tx/${withdrawHash}`, '_blank')
+        } : undefined
+      });
+      refetch();
+    }
+  }, [isWithdrawSuccess, withdrawHash, refetch]);
+
+  useEffect(() => {
+    if (isClaimSuccess) {
+      toast.success("Yield claimed successfully! 🎉", {
+        description: "Your accrued interest has been transferred to your account."
+      });
+      refetch();
+    }
+  }, [isClaimSuccess, refetch]);
+
+  const handleEarlyWithdraw = async (bondId: number, principal: string, lockedAsset: string) => {
+    const refund = (parseFloat(principal) * 0.98).toFixed(2);
+    if (!window.confirm(`Are you sure you want to withdraw Bond #${bondId} early? You will receive your refund of ${refund} ${lockedAsset} (minus a 2.0% early withdrawal penalty).`)) {
+      return;
+    }
+    
+    if (isSmartAccount && circleAccount) {
+      setSmartWithdrawPending(true);
+      try {
+        toast.info("Preparing gasless early withdrawal user operation...");
+        
+        const executeCall = {
+          to: VAULT_ADDRESS,
+          value: BigInt(0),
+          data: encodeFunctionData({
+            abi: parseAbi(["function earlyWithdraw(uint256 _bondId) external"]),
+            functionName: 'earlyWithdraw',
+            args: [BigInt(bondId)],
+          }),
+        };
+
+        const userOpHash = await bundlerClient.sendUserOperation({
+          account: circleAccount,
+          calls: [executeCall],
+          paymaster: true,
+        });
+
+        toast.info("Transaction sent to bundler. Awaiting on-chain execution...", {
+          description: `UserOp Hash: ${userOpHash.slice(0, 10)}...`,
+        });
+
+        const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+        
+        toast.success("Early withdrawal completed ✓", {
+          description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
+          action: {
+            label: 'View receipt',
+            onClick: () => window.open(`https://testnet.arcscan.app/tx/${receipt.transactionHash}`, '_blank')
+          }
+        });
+        
+        refetch();
+      } catch (error: any) {
+        console.error("Smart Account Withdraw Error:", error);
+        if (error.message?.includes('User rejected') || error.code === 'NotAllowedError' || error.name === 'NotAllowedError') {
+          toast.info("Withdrawal cancelled", {
+            description: "No funds were moved.",
+          });
+          return;
+        }
+        toast.error("Withdrawal failed", {
+          description: error.message || "Something went wrong. Please check your transaction and try again.",
+        });
+      } finally {
+        setSmartWithdrawPending(false);
+      }
+    } else {
+      try {
+        if (!publicClient || !address) return;
+        
+        const { request } = await publicClient.simulateContract({
+          account: address,
+          address: VAULT_ADDRESS,
+          abi: parseAbi(["function earlyWithdraw(uint256 _bondId) external"]),
+          functionName: 'earlyWithdraw',
+          args: [BigInt(bondId)],
+        });
+        
+        writeWithdraw(request);
+      } catch (error: any) {
+        console.error(error);
+        if (error.message?.includes('User rejected') || error.code === 4001 || error.shortMessage?.includes('User rejected')) {
+          toast.info("Withdrawal cancelled", {
+            description: "No funds were moved.",
+          });
+          return;
+        }
+        toast.error("Withdrawal failed", {
+          description: error.shortMessage || "Something went wrong. Please check your transaction and try again.",
+        });
+      }
+    }
+  };
+
+  const handleClaimYield = async (bondId: number) => {
+    if (isSmartAccount && circleAccount) {
+      setSmartClaimPending(true);
+      try {
+        toast.info("Preparing gasless yield claim user operation...");
+        
+        const executeCall = {
+          to: VAULT_ADDRESS,
+          value: BigInt(0),
+          data: encodeFunctionData({
+            abi: VAULT_ABI,
+            functionName: 'claimAccruedYield',
+            args: [BigInt(bondId)],
+          }),
+        };
+
+        const userOpHash = await bundlerClient.sendUserOperation({
+          account: circleAccount,
+          calls: [executeCall],
+          paymaster: true,
+        });
+
+        toast.info("Transaction sent to bundler. Awaiting execution...", {
+          description: `UserOp Hash: ${userOpHash.slice(0, 10)}...`,
+        });
+
+        const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+        
+        toast.success("Yield claimed successfully! 🎉", {
+          description: "Your streamed interest has been transferred to your smart account.",
+          action: {
+            label: 'View receipt',
+            onClick: () => window.open(`https://testnet.arcscan.app/tx/${receipt.transactionHash}`, '_blank')
+          }
+        });
+        
+        refetch();
+      } catch (error: any) {
+        console.error("Smart Account Claim Error:", error);
+        toast.error("Claim failed", {
+          description: error.message || "Failed to execute claimAccruedYield."
+        });
+      } finally {
+        setSmartClaimPending(false);
+      }
+    } else {
+      try {
+        if (!publicClient || !address) return;
+        
+        const { request } = await publicClient.simulateContract({
+          account: address,
+          address: VAULT_ADDRESS,
+          abi: VAULT_ABI,
+          functionName: 'claimAccruedYield',
+          args: [BigInt(bondId)],
+        });
+        
+        writeClaim(request);
+      } catch (error: any) {
+        console.error(error);
+        toast.error("Claim failed", {
+          description: error.shortMessage || error.message || "Failed to submit claim."
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     async function fetchBonds() {
@@ -313,8 +594,15 @@ export default function TreasuryDashboard() {
                 yieldBps: Number(bondData[2]),
                 maturityDate: Number(bondData[3]),
                 isSettled: bondData[4],
-                supplier: bondData[5].supplier,
-                destDomain: bondData[5].destDomain
+                termId: Number(bondData[5]),
+                depositToken: getTokenSymbol(bondData[6]),
+                settlementToken: getTokenSymbol(bondData[7]),
+                swapAtDeposit: bondData[8],
+                supplier: bondData[9].supplier,
+                destDomain: bondData[9].destDomain,
+                agent: bondData[10],
+                creationTimestamp: Number(bondData[11]),
+                tranche: Number(bondData[12])
               });
             }
           }
@@ -347,6 +635,19 @@ export default function TreasuryDashboard() {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    meta: {
+      onEarlyWithdraw: (bondId: number, principal: string, lockedAsset: string) => {
+        handleEarlyWithdraw(bondId, principal, lockedAsset);
+      },
+      onListOTC: (bond: Bond) => {
+        onListOTC?.(bond);
+      },
+      onClaimYield: (bondId: number) => {
+        handleClaimYield(bondId);
+      },
+      isWithdrawing: displayIsWithdrawing,
+      isClaiming: displayIsClaiming
+    },
     initialState: {
       pagination: {
         pageSize: 10,
@@ -358,7 +659,7 @@ export default function TreasuryDashboard() {
     if (bondsList.length === 0) return;
 
     // Define CSV headers
-    const headers = ["Payment ID", "Amount (USD)", "Interest Rate (%)", "Due Date", "Vendor Address", "Transfer Method", "Status"];
+    const headers = ["Payment ID", "Locked Amount", "Locked Currency", "Interest Rate (%)", "Due Date", "Vendor Address", "Transfer Method", "Status"];
     
     // Map data to CSV rows
     const rows = bondsList.map(bond => {
@@ -368,9 +669,12 @@ export default function TreasuryDashboard() {
       if (bond.isSettled) status = "Delivered";
       else if (isMatured) status = "Delivering...";
 
+      const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
+
       return [
         `#${bond.id}`,
         bond.principal,
+        lockedAsset,
         (bond.yieldBps / 100).toFixed(1),
         `"${dateStr}"`,
         bond.supplier,
@@ -398,6 +702,9 @@ export default function TreasuryDashboard() {
     <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
       {/* Summary Stats */}
       {bondsList.length > 0 && <SummaryCards bonds={bondsList} />}
+
+      {/* Keeper Automation Status */}
+      <KeeperAutomationPanel />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-4">
@@ -468,7 +775,7 @@ export default function TreasuryDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
                 {[
                   { icon: <Shield size={16} />, title: "Secure", desc: "Funds held safely until due date" },
-                  { icon: <TrendingUp size={16} />, title: "Earn 5%", desc: "Interest on held funds" },
+                  { icon: <TrendingUp size={16} />, title: "Earn APY", desc: "Fixed interest on held funds" },
                   { icon: <CheckCircle2 size={16} />, title: "Auto-pay", desc: "Vendors paid automatically" },
                 ].map((card, i) => (
                   <div key={i} className="p-3 rounded-xl" 
@@ -540,6 +847,7 @@ export default function TreasuryDashboard() {
               const dateStr = new Date(bond.maturityDate * 1000).toLocaleDateString(undefined, { 
                 year: 'numeric', month: 'short', day: 'numeric' 
               });
+              const lockedAsset = bond.swapAtDeposit ? bond.settlementToken : bond.depositToken;
               const interestEarned = (parseFloat(bond.principal) * (bond.yieldBps / 10000)).toFixed(2);
 
               return (
@@ -558,7 +866,7 @@ export default function TreasuryDashboard() {
                         </span>
                       </div>
                       <div className="font-bold text-lg" style={{ color: 'var(--foreground)' }}>
-                        ${bond.principal} <span className="text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>USD</span>
+                        {parseFloat(bond.principal).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>{lockedAsset}</span>
                       </div>
                     </div>
                     <StatusBadge bond={bond} />
@@ -572,8 +880,16 @@ export default function TreasuryDashboard() {
                     </div>
                     <div className="flex justify-between items-center text-xs">
                       <span style={{ color: 'var(--muted-foreground)' }}>Interest earned</span>
-                      <span className="font-semibold" style={{ color: 'var(--success)' }}>+${interestEarned} ({(bond.yieldBps / 100).toFixed(1)}%)</span>
+                      <span className="font-semibold" style={{ color: 'var(--success)' }}>+{interestEarned} {lockedAsset} ({(bond.yieldBps / 100).toFixed(2)}%)</span>
                     </div>
+                    {bond.depositToken !== bond.settlementToken && (
+                      <div className="flex justify-between items-center text-xs">
+                        <span style={{ color: 'var(--muted-foreground)' }}>Swap Timing</span>
+                        <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
+                          {bond.swapAtDeposit ? `Immediately swapped` : `Swap at maturity`}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center text-xs pt-2 mt-1" style={{ borderTop: '1px solid var(--border)' }}>
                       <span className="flex items-center gap-1" style={{ color: 'var(--muted-foreground)' }}>
                         <ArrowUpRight size={11} />
@@ -585,6 +901,36 @@ export default function TreasuryDashboard() {
                       </span>
                     </div>
                   </div>
+                  
+                  {/* Actions (Mobile) */}
+                  {!bond.isSettled && Date.now() < bond.maturityDate * 1000 && (
+                    <div className="mt-3 flex gap-2 flex-wrap sm:flex-nowrap">
+                      <button
+                        onClick={() => handleClaimYield(bond.id)}
+                        disabled={displayIsClaiming}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-all w-full text-center disabled:opacity-50 disabled:cursor-not-allowed font-sans"
+                        style={{ borderColor: 'var(--success-border)', background: 'var(--success-soft)', color: 'var(--success-foreground)' }}
+                        id={`btn-claim-yield-mobile-${bond.id}`}
+                      >
+                        {displayIsClaiming ? "Claiming..." : "Claim Yield"}
+                      </button>
+                      <button
+                        onClick={() => onListOTC?.(bond)}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all w-full text-center"
+                        id={`btn-list-otc-mobile-${bond.id}`}
+                      >
+                        List on OTC
+                      </button>
+                      <button
+                        onClick={() => handleEarlyWithdraw(bond.id, bond.principal, lockedAsset)}
+                        disabled={displayIsWithdrawing}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[var(--error-border)] bg-[var(--error-soft)] text-[var(--error-foreground)] hover:bg-[var(--error)] hover:text-white transition-all w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                        id={`btn-early-withdraw-mobile-${bond.id}`}
+                      >
+                        {displayIsWithdrawing ? "Exiting..." : "Withdraw Early"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

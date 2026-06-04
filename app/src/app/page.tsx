@@ -3,9 +3,20 @@
 import React, { useState } from 'react';
 import IntentBuilder from "@/components/enterprise/IntentBuilder";
 import TreasuryDashboard from "@/components/enterprise/TreasuryDashboard";
+import MaturityCalendar from "@/components/enterprise/MaturityCalendar";
+import BondLadderBuilder from "@/components/enterprise/BondLadderBuilder";
+import OTCDesk from "@/components/enterprise/OTCDesk";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
 import { Shield, CalendarClock, TrendingUp, ArrowRight, Sparkles, ChevronRight } from 'lucide-react';
+import { useCircleAuth } from '@/lib/CircleAuthContext';
+import CircleAuthButton from '@/components/enterprise/CircleAuthButton';
+import CompliancePortal from "@/components/enterprise/CompliancePortal";
+import UnifiedBalance from "@/components/enterprise/UnifiedBalance";
+import AgentManager from "@/components/enterprise/AgentManager";
+import YieldStreamer from "@/components/enterprise/YieldStreamer";
+import MultiSigDesk from "@/components/enterprise/MultiSigDesk";
+import Auditing from "@/components/enterprise/Auditing";
 
 function WelcomeOnboarding({ onGetStarted }: { onGetStarted: () => void }) {
   return (
@@ -119,12 +130,27 @@ function WelcomeOnboarding({ onGetStarted }: { onGetStarted: () => void }) {
 }
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'treasury' | 'strategy'>('strategy');
-  const { isConnected } = useAccount();
+  const [mounted, setMounted] = React.useState(false);
+  const [activeTab, setActiveTab] = useState<'treasury' | 'strategy' | 'calendar' | 'ladder' | 'compliance' | 'otc' | 'unified' | 'agent' | 'multisig' | 'auditing'>('strategy');
+  const { isConnected: isEoaConnected } = useAccount();
+  const { isSmartAccount } = useCircleAuth();
   const [showOnboarding, setShowOnboarding] = useState(true);
 
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Show onboarding only for disconnected users or first-time visitors
+  const isConnected = mounted && (isEoaConnected || isSmartAccount);
   const shouldShowOnboarding = !isConnected && showOnboarding;
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--background)' }}>
+        <div className="animate-pulse" style={{ color: 'var(--muted-foreground)' }}>Loading StablePay...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
@@ -147,7 +173,7 @@ export default function Home() {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center gap-1 md:gap-4 text-sm font-medium">
+          <div className="flex items-center gap-2 md:gap-4 text-sm font-medium">
             {isConnected && (
               <>
                 <button 
@@ -161,6 +187,36 @@ export default function Home() {
                   New Payment
                 </button>
                 <button 
+                  onClick={() => { setActiveTab('unified'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'unified' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Unified Balance
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('ladder'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'ladder' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Bond Ladder
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('calendar'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'calendar' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Maturity Calendar
+                </button>
+                <button 
                   onClick={() => { setActiveTab('treasury'); setShowOnboarding(false); }}
                   className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
                     activeTab === 'treasury' 
@@ -170,9 +226,62 @@ export default function Home() {
                 >
                   My Payments
                 </button>
+                <button 
+                  onClick={() => { setActiveTab('otc'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'otc' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Secondary Market
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('compliance'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'compliance' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Compliance Center
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('agent'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'agent' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Agent Copilot
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('multisig'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'multisig' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  Multi-Sig Desk
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('auditing'); setShowOnboarding(false); }}
+                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
+                    activeTab === 'auditing' 
+                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
+                      : 'border-transparent text-[var(--muted-foreground)] hover:text(--foreground)'
+                  }`}
+                >
+                  Audit Suite
+                </button>
                 <div className="h-6 w-px mx-1 md:mx-2" style={{ background: 'var(--border)' }}></div>
               </>
             )}
+            
+            <CircleAuthButton />
+            
             <ConnectButton 
               label="Connect Account"
               showBalance={false}
@@ -201,19 +310,60 @@ export default function Home() {
               </div>
               
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
-                {activeTab === 'treasury' ? 'Your Payment History' : 'Schedule a New Payment'}
+                {activeTab === 'treasury' && 'Your Payment History'}
+                {activeTab === 'strategy' && 'Schedule a New Payment'}
+                {activeTab === 'unified' && 'Unified Balance'}
+                {activeTab === 'calendar' && 'Maturity Calendar'}
+                {activeTab === 'ladder' && 'Bond Ladder Builder'}
+                {activeTab === 'compliance' && 'Compliance Center'}
+                {activeTab === 'otc' && 'Secondary OTC Trading Desk'}
+                {activeTab === 'agent' && 'Autonomous Agent Copilot'}
+                {activeTab === 'multisig' && 'Consensus Multi-Sig Desk'}
+                {activeTab === 'auditing' && 'Enterprise Accounting & Auditing'}
               </h1>
               <p className="mt-2 text-base leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                {activeTab === 'treasury' 
-                  ? 'Track all your scheduled payments in one place. Your money earns interest until each due date, then gets delivered automatically.' 
-                  : 'Set up a payment that earns 5% annual interest while it waits. Your vendor gets paid on time, automatically — you keep the earnings.'}
+                {activeTab === 'treasury' && 'Track all your scheduled payments in one place. Your money earns interest until each due date, then gets delivered automatically.'}
+                {activeTab === 'strategy' && 'Set up a payment that earns tiered annual interest while it waits. Your vendor gets paid on time, automatically — you keep the earnings.'}
+                {activeTab === 'unified' && 'Aggregate, monitor, and deploy USDC/EURC held across major EVM chains and Solana using Circle Gateway SDK.'}
+                {activeTab === 'calendar' && 'Visualize exactly when corporate cash flows mature and invoices get settled on a daily or monthly calendar grid.'}
+                {activeTab === 'ladder' && 'Build a staggered treasury bond portfolio to align with future accounts payable, ensuring continuous cash flow cycles and maximum yield.'}
+                {activeTab === 'compliance' && 'Verify your corporate identity to satisfy institutional regulatory guidelines and manage compliance whitelist/blacklist parameters.'}
+                {activeTab === 'otc' && 'Buy and sell seasoned bonds to secure liquidity without early exit penalties, or capture higher yield-to-maturity (YTM) on discounted corporate debt.'}
+                {activeTab === 'agent' && 'Deploy autonomous AI agent co-pilots with smart spending limits and whitelists to automate treasury allocations on Arc.'}
+                {activeTab === 'multisig' && 'Approve corporate allocations and administrative actions via decentralized consensus rules.'}
+                {activeTab === 'auditing' && 'Review live ledger entries, reconcile balances, and export financial audit reports.'}
               </p>
             </div>
 
             {/* Tab Content */}
-            {activeTab === 'treasury' ? (
-              <TreasuryDashboard />
-            ) : (
+            {activeTab === 'treasury' && (
+              <div className="space-y-6 animate-fade-in">
+                <YieldStreamer />
+                <TreasuryDashboard 
+                  onListOTC={(bond) => {
+                    setActiveTab('otc');
+                  }} 
+                />
+              </div>
+            )}
+
+            {activeTab === 'unified' && <UnifiedBalance />}
+            
+            {activeTab === 'calendar' && <MaturityCalendar />}
+            
+            {activeTab === 'ladder' && <BondLadderBuilder />}
+
+            {activeTab === 'compliance' && <CompliancePortal />}
+
+            {activeTab === 'otc' && <OTCDesk />}
+
+            {activeTab === 'agent' && <AgentManager />}
+
+            {activeTab === 'multisig' && <MultiSigDesk />}
+
+            {activeTab === 'auditing' && <Auditing />}
+
+            {activeTab === 'strategy' && (
               <div className="animate-fade-in">
                 <IntentBuilder />
                 
