@@ -8,7 +8,17 @@ if (pKey && !pKey.startsWith("0x")) {
 const accounts = pKey ? [pKey] : [];
 
 export default {
-  solidity: "0.8.20",
+  solidity: {
+    version: "0.8.24",
+    settings: {
+      evmVersion: "cancun",
+      optimizer: {
+        enabled: true,
+        runs: 200
+      },
+      viaIR: true
+    }
+  },
   paths: {
     sources: "./src"
   },
