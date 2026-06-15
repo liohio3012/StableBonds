@@ -403,18 +403,19 @@ export default function MaturityCalendar() {
         </div>
       </div>
 
-      {/* Main Grid View */}
-      <div className="card-surface overflow-hidden shadow-sm" style={{ border: '1px solid var(--border)' }}>
-        {/* Days of Week Header */}
-        <div className="grid grid-cols-7 text-center py-2.5 font-semibold text-xs tracking-wider border-b" 
-          style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
-          {DAYS_OF_WEEK.map(d => (
-            <div key={d}>{d}</div>
-          ))}
-        </div>
+      {/* Main Grid View - Scrollable Wrapper for Mobile Responsiveness */}
+      <div className="overflow-x-auto border rounded-xl" style={{ borderColor: 'var(--border)' }}>
+        <div className="min-w-[750px] md:min-w-0 bg-[var(--card)]">
+          {/* Days of Week Header */}
+          <div className="grid grid-cols-7 text-center py-2.5 font-semibold text-xs tracking-wider border-b" 
+            style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
+            {DAYS_OF_WEEK.map(d => (
+              <div key={d}>{d}</div>
+            ))}
+          </div>
 
-        {/* Calendar Day Cells */}
-        <div className="grid grid-cols-7 divide-x divide-y" style={{ borderColor: 'var(--border)' }}>
+          {/* Calendar Day Cells */}
+          <div className="grid grid-cols-7 divide-x divide-y" style={{ borderColor: 'var(--border)' }}>
           {calendarCells.map((cell, idx) => {
             const date = cell.date;
             const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -498,6 +499,7 @@ export default function MaturityCalendar() {
           })}
         </div>
       </div>
+    </div>
 
       {/* Detail Popover Modal */}
       {selectedBond && (

@@ -562,7 +562,7 @@ export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateTo
         {/* Right Preview Panel */}
         <div className="lg:col-span-7 space-y-4">
           {/* Summary Cards */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
               <span className="text-[10px] uppercase font-bold flex items-center justify-center" style={{ color: 'var(--muted-foreground)' }}>
                 Allocated Budget
