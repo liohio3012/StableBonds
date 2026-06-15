@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock, Calendar, Bot, BookOpen } from 'lucide-react';
+import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock, Calendar, Bot, BookOpen, Briefcase, Users } from 'lucide-react';
 import Logo from "@/components/enterprise/Logo";
 import Footer from "@/components/enterprise/Footer";
 import Link from 'next/link';
@@ -170,6 +170,47 @@ function WelcomeHero() {
 }
 
 function WelcomeFeatures() {
+  const [activeUseCase, setActiveUseCase] = React.useState(0);
+
+  const useCases = [
+    {
+      title: "Corporate Treasury",
+      badge: "Treasury Management",
+      icon: TrendingUp,
+      scenario: "A mid-sized corporate enterprise holds $500,000 in idle USDC awaiting invoice settlement. Instead of leaving it unproductive, they allocate it into StableBonds 90-day senior vaults at 5.0% APY. The capital accrues yield safely, earning ~$6,250 over the quarter before automatically settling the target invoice.",
+      stats: [
+        { label: "Principal Allocation", value: "$500,000 USDC" },
+        { label: "Maturity Duration", value: "90-Day Term" },
+        { label: "Accrued Yield (Est.)", value: "~$6,250 USDC", highlight: true },
+        { label: "Settlement Protocol", value: "100% Automated" }
+      ]
+    },
+    {
+      title: "Automated Supply Chain",
+      badge: "Escrow & Yield",
+      icon: Briefcase,
+      scenario: "A manufacturer locks $250,000 USDC in a StableBonds escrow vault to secure a bulk raw material purchase. During the 45-day transit and customs inspection period, the locked funds earn 4.2% APY, generating ~$1,290. Upon verified delivery, the supplier receives the payment, and the accrued yield is split per agreement.",
+      stats: [
+        { label: "Escrow Allocation", value: "$250,000 USDC" },
+        { label: "Inspection Window", value: "45-Day Transit" },
+        { label: "Accrued Yield (Est.)", value: "~$1,294 USDC", highlight: true },
+        { label: "Settlement Trigger", value: "Proof of Delivery" }
+      ]
+    },
+    {
+      title: "Cross-Border Payroll",
+      badge: "Pre-funded Operations",
+      icon: Users,
+      scenario: "A remote tech startup pre-funds their quarterly contractor payroll pool of $300,000 USDC 60 days early via Circle WaaS. The capital earns 5.2% APY in StableBonds vaults, accruing ~$2,560. On the automated due date, the platform payouts are executed to 80 international contractors, and the accrued yield offsets transaction costs.",
+      stats: [
+        { label: "Payroll Allocation", value: "$300,000 USDC" },
+        { label: "Pre-fund Period", value: "60-Day Lock" },
+        { label: "Accrued Yield (Est.)", value: "~$2,564 USDC", highlight: true },
+        { label: "Payout Distribution", value: "80 Contractors" }
+      ]
+    }
+  ];
+
   return (
     <div className="animate-fade-in">
 
@@ -291,39 +332,67 @@ function WelcomeFeatures() {
       {/* Example Use Case Section */}
       <div className="max-w-4xl mx-auto mb-20 animate-fade-in">
         <h3 className="font-bold text-center text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-6">
-          Example Use Case
+          Example Use Cases
         </h3>
-        
-        <div className="card-surface p-8 relative overflow-hidden border flex flex-col md:flex-row items-start gap-8 shadow-sm" 
+
+        {/* Tab Buttons */}
+        <div className="flex flex-wrap justify-center gap-2 mb-6 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
+          {useCases.map((item, idx) => {
+            const IconComponent = item.icon;
+            const isActive = activeUseCase === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => setActiveUseCase(idx)}
+                className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 cursor-pointer"
+                style={{
+                  background: isActive ? 'var(--foreground)' : 'transparent',
+                  borderColor: isActive ? 'var(--foreground)' : 'var(--border)',
+                  color: isActive ? 'var(--background)' : 'var(--muted-foreground)',
+                }}
+              >
+                <IconComponent size={14} />
+                {item.title}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active Use Case Details */}
+        <div className="card-surface p-8 relative overflow-hidden border flex flex-col gap-6 shadow-sm min-h-[220px] transition-all duration-300"
           style={{ borderColor: 'var(--border)', background: 'var(--canvas)' }}>
-          {/* Decorative icon */}
-          <div className="absolute -top-4 -right-4 text-neutral-100/40 dark:text-neutral-900/40 pointer-events-none text-[120px] font-serif select-none leading-none">
-            "
-          </div>
           
-          {/* Scenario icon */}
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border"
-            style={{ background: 'var(--success-soft)', borderColor: 'var(--success-border)' }}>
-            <TrendingUp size={28} className="text-[var(--success)]" />
+          <div className="flex items-center justify-between z-10">
+            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border"
+              style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
+              {useCases[activeUseCase].badge}
+            </span>
+            <span className="text-[10px] font-bold tracking-wider text-[var(--muted-foreground)] uppercase">
+              Scenario #{activeUseCase + 1}
+            </span>
           </div>
 
-          <div className="space-y-3 flex-grow">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border"
-                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
-                Illustrative Scenario
-              </span>
-            </div>
-            <p className="text-sm md:text-base italic leading-relaxed text-[var(--foreground)] font-medium">
-              "A B2B logistics company holds $500,000 in idle USDC awaiting invoice settlement. 
-              Instead of leaving it idle, they allocate it into StableBonds 90-day senior vaults at 5% APY — 
-              earning ~$6,250 in yield while funds await disbursement. Payouts are automated on maturity with no manual intervention."
-            </p>
-            <div className="flex flex-wrap gap-4 pt-1 text-[11px] font-semibold text-[var(--muted-foreground)]">
-              <span>$500K principal · 90-day term</span>
-              <span className="text-[var(--success)]">~$6,250 yield earned</span>
-              <span>100% automated settlement</span>
-            </div>
+          <p className="text-sm md:text-base italic leading-relaxed text-[var(--foreground)] font-medium z-10">
+            "{useCases[activeUseCase].scenario}"
+          </p>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t z-10" style={{ borderColor: 'var(--border)' }}>
+            {useCases[activeUseCase].stats.map((stat, sIdx) => (
+              <div key={sIdx} className="space-y-1">
+                <span className="text-[10px] uppercase font-bold tracking-wide text-[var(--muted-foreground)] block">
+                  {stat.label}
+                </span>
+                <span className={`text-xs font-semibold ${stat.highlight ? 'text-[var(--success-foreground)] bg-[var(--success-soft)] px-2 py-0.5 rounded border border-[var(--success-border)] inline-block' : 'text-[var(--foreground)]'}`}>
+                  {stat.value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Decorative background quote mark */}
+          <div className="absolute -top-4 -right-4 text-neutral-100/40 dark:text-neutral-900/40 pointer-events-none text-[120px] font-serif select-none leading-none">
+            "
           </div>
         </div>
       </div>
