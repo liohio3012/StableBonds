@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # 1. Local Arc Testnet Simulator (Hardhat Node)
+  arc-node:
+    build:
+      context: ./contracts
+      dockerfile: Dockerfile
+    container_name: stablebonds-arc-node
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./contracts:/contracts
+      - /contracts/node_modules
+    networks:
+      - stablebonds-net
+
+  # 2. Next.js Web App & API Relayer
+  stablebonds-app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: stablebonds-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_CIRCLE_CLIENT_KEY=${NEXT_PUBLIC_CIRCLE_CLIENT_KEY:-TEST_CLIENT_KEY_0123456789abcdef}
+      - NEXT_PUBLIC_CIRCLE_CLIENT_URL=${NEXT_PUBLIC_CIRCLE_CLIENT_URL:-https://modular-sdk.circle.com/v1/rpc/w3s/buidl}
+      - ARC_TESTNET_RPC_URL=${ARC_TESTNET_RPC_URL:-https://rpc.testnet.arc.network}
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - CIRCLE_API_KEY=${CIRCLE_API_KEY}
+      - ENTITY_SECRET_CIPHERTEXT=${ENTITY_SECRET_CIPHERTEXT}
+      - CIRCLE_WALLET_ID=${CIRCLE_WALLET_ID}
+    depends_on:
+      - arc-node
+    networks:
+      - stablebonds-net
+
+networks:
+  stablebonds-net:
+    driver: bridge
