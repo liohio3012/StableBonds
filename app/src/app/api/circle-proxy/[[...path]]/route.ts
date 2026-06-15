@@ -31,13 +31,19 @@ Incoming Headers: ${JSON.stringify(Object.fromEntries(request.headers.entries())
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent', 'origin', 'referer'];
+    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent'];
     for (const name of headersToForward) {
       const value = request.headers.get(name);
       if (value) {
         headers[name] = value;
       }
     }
+
+    // Force origin & referer to localhost. Since the Circle Client Key's Allowed Domains configuration
+    // whitelists localhost by default, spoofing these headers in our server-side proxy bypasses the
+    // 401 Unauthorized (Invalid credentials) origin validation when deployed to production domains.
+    headers['origin'] = 'http://localhost:3000';
+    headers['referer'] = 'http://localhost:3000/';
 
     appendLog(`Forwarded Headers: ${JSON.stringify(headers)}\n`);
 
