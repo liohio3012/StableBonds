@@ -263,11 +263,17 @@ export default function CircleAuthButton() {
                     <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">Username</label>
                     <input 
                       type="text" required
+                      minLength={5}
+                      maxLength={50}
+                      pattern="[a-zA-Z0-9_@.:+\-]{5,50}"
                       placeholder="e.g., alice_treasury"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       className="input-field"
                     />
+                    <p className="text-[10px] text-[var(--muted-foreground)] mt-1">
+                      5–50 characters. Letters, numbers, and _@.:+- only.
+                    </p>
                   </div>
                   <div className="flex items-center gap-2.5 pt-1">
                     <button type="button" onClick={() => setStep('select')} className="btn-secondary flex-1 py-2 text-xs">Back</button>
