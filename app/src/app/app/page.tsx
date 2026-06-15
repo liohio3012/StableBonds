@@ -338,7 +338,7 @@ export default function AppPortal() {
       </nav>
 
       {/* Main Container */}
-      <div className="flex-1 flex max-w-7xl w-full mx-auto relative">
+      <div className="flex-1 flex max-w-7xl w-full mx-auto relative pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
         {/* Sidebar - Desktop (Collapsible) */}
         <aside className={`relative hidden md:flex flex-col shrink-0 border-r py-6 transition-all duration-300 ease-in-out sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto ${isSidebarCollapsed ? 'w-16 pr-0 items-center' : 'w-60 pr-6'}`}
           style={{ borderColor: 'var(--border)' }}>
@@ -452,6 +452,34 @@ export default function AppPortal() {
             </div>
           )}
         </main>
+      </div>
+
+      {/* Mobile Sticky Bottom Navigation Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--background)]/95 backdrop-blur-md border-t flex justify-around items-center py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_16px_rgba(0,0,0,0.06)]"
+        style={{ borderColor: 'var(--border)' }}>
+        {[
+          { id: 'strategy', label: 'Payments', icon: PlusCircle },
+          { id: 'treasury', label: 'History', icon: CalendarClock },
+          { id: 'agent', label: 'Copilot', icon: Bot },
+          { id: 'compliance', label: 'Onboard', icon: Shield },
+        ].map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id as any)}
+              className={`flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                isActive ? 'text-[var(--primary)] font-semibold scale-105' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+              }`}
+            >
+              <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-[var(--muted)]' : ''}`}>
+                <Icon size={18} className={isActive ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'} />
+              </div>
+              <span className="text-[10px] tracking-tight">{item.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       <Footer />
