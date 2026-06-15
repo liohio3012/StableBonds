@@ -21,16 +21,17 @@ export async function POST(
     const body = await request.text();
     console.log(`[circle-proxy] POST request to: ${targetUrl}`);
 
-    // Forward headers from incoming request, excluding host/origin/referer to avoid CDN/CORS issues
+    // Forward only the specific headers required by the Circle SDK to avoid breaking the Node fetch call (e.g. via accept-encoding or cookie headers)
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    request.headers.forEach((value, key) => {
-      const lowerKey = key.toLowerCase();
-      if (!['host', 'origin', 'referer', 'content-length'].includes(lowerKey)) {
-        headers[key] = value;
+    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent'];
+    for (const name of headersToForward) {
+      const value = request.headers.get(name);
+      if (value) {
+        headers[name] = value;
       }
-    });
+    }
 
     console.log(`[circle-proxy] Forwarding headers: ${JSON.stringify(headers)}`);
 
