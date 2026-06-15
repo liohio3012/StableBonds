@@ -48,7 +48,7 @@ export const CircleAuthProvider = ({ children }: { children: React.ReactNode }) 
           try {
             await bundlerClient.request({
               method: 'eth_getCode' as any,
-              params: [restored.account.address, 'latest'],
+              params: [restored.account.address, 'latest' as any],
             });
             setAccount(restored.account);
             setSession(restored.session);

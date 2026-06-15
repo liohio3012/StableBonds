@@ -87,7 +87,7 @@ async function registerWalletWithCircle(owner: any, name: string): Promise<strin
           scaCore: 'circle_6900_v1',
         },
         metadata: { name },
-      }],
+      }] as any,
     });
     console.log('[CircleAuth] Wallet registered with Circle backend:', result?.address || result);
     return result?.address || '';
