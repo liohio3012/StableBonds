@@ -534,7 +534,7 @@ export default function Home() {
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
                     <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">
-                      https://app.stablebonds.com/{activeScreenshotTab}
+                      https://www.stablebonds.space/app/{activeScreenshotTab}
                     </span>
                   </div>
                   <div className="text-[9px] font-bold text-neutral-400 bg-neutral-200/50 dark:bg-neutral-800/50 px-2 py-0.5 rounded uppercase">
