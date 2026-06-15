@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { 
   ArrowRight, 
@@ -175,19 +176,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'Features', href: '#' },
-                { name: 'Solutions', href: '#' },
-                { name: 'Integrations', href: '#' },
-                { name: 'Pricing Plans', href: '#' },
-                { name: 'Roadmap', href: '#' },
-                { name: 'Changelog', href: '#' },
-                { name: 'Customer Stories', href: '#' },
-                { name: 'Case Studies', href: '#' },
+                { name: 'Home Dashboard', href: '/' },
+                { name: 'Pricing Plans', href: '/pricing' }
               ].map((link, idx) => (
                 <li key={idx}>
-                  <a href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
+                  <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -201,19 +196,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'API Reference', href: '#' },
-                { name: 'SDK Documentation', href: '#' },
-                { name: 'Developer Guide', href: '#' },
-                { name: 'Knowledge Base', href: '#' },
-                { name: 'Status Page', href: '#' },
-                { name: 'Security Center', href: '#' },
-                { name: 'Bug Bounty', href: '#' },
-                { name: 'Open Source Repo', href: 'https://github.com/circlefin/skills' },
+                { name: 'API Reference', href: '/docs' },
+                { name: 'SDK Documentation', href: '/docs' }
               ].map((link, idx) => (
                 <li key={idx}>
-                  <a href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
+                  <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -223,23 +212,17 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: 'var(--foreground)' }}>
               <Users size={12} style={{ color: 'var(--muted-foreground)' }} />
-              Ecosystem
+              Company
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'About StablePay', href: '#' },
-                { name: 'Careers', href: '#' },
-                { name: 'Vision & Mission', href: '#' },
-                { name: 'Global Partners', href: '#' },
-                { name: 'Press & Media Kit', href: '#' },
-                { name: 'Ambassador Program', href: '#' },
-                { name: 'Contributors', href: '#' },
-                { name: 'Community Forum', href: '#' },
+                { name: 'About StablePay', href: '/about' },
+                { name: 'Security Center', href: '/security' }
               ].map((link, idx) => (
                 <li key={idx}>
-                  <a href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
+                  <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -253,19 +236,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'Terms of Service', href: '#' },
-                { name: 'Privacy Policy', href: '#' },
-                { name: 'Cookie Protocol', href: '#' },
-                { name: 'System Disclaimer', href: '#' },
-                { name: 'DPA Compliance', href: '#' },
-                { name: 'SOC 2 Security', href: '#' },
-                { name: 'Smart Contract Audits', href: '#' },
-                { name: 'Transparency Report', href: '#' },
+                { name: 'Terms of Service', href: '/terms' },
+                { name: 'Privacy Policy', href: '/privacy' }
               ].map((link, idx) => (
                 <li key={idx}>
-                  <a href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
+                  <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
