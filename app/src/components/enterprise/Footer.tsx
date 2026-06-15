@@ -11,7 +11,8 @@ import {
   Compass,
   Terminal,
   Users,
-  Scale
+  Scale,
+  BookOpen
 } from 'lucide-react';
 import Logo from './Logo';
 
@@ -141,15 +142,14 @@ export default function Footer() {
             {/* Social Icons */}
             <div className="flex gap-3 pt-1">
               {[
-                { icon: <GithubIcon size={15} />, href: 'https://github.com/circlefin/skills', label: 'GitHub' },
-                { icon: <TwitterIcon size={15} />, href: '#', label: 'Twitter' },
-                { icon: <LinkedinIcon size={15} />, href: '#', label: 'LinkedIn' },
+                { icon: <GithubIcon size={15} />, href: 'https://github.com/liohio3012/StableBonds', label: 'GitHub' },
+                { icon: <BookOpen size={15} />, href: '/docs', label: 'Documentation' },
               ].map((social, i) => (
                 <a
                   key={i}
                   href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={social.href.startsWith('http') ? "_blank" : undefined}
+                  rel={social.href.startsWith('http') ? "noopener noreferrer" : undefined}
                   aria-label={social.label}
                   className="w-7 h-7 rounded-md border flex items-center justify-center transition-all duration-200"
                   style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)', background: 'var(--card)' }}
