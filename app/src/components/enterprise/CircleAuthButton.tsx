@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Fingerprint, Mail, LogOut, Copy, ChevronDown, User, Loader2, Wallet, X, Check } from 'lucide-react';
@@ -8,6 +9,10 @@ import { toast } from 'sonner';
 import Logo from './Logo';
 
 export default function CircleAuthButton() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const { 
     account, 
     session, 
@@ -186,9 +191,9 @@ export default function CircleAuthButton() {
       </button>
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-white w-full max-w-sm rounded-xl border p-6 shadow-lg animate-scale-in relative"
+      {mounted && typeof window !== 'undefined' && showModal && createPortal(
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fade-in">
+          <div className="bg-white w-full max-w-sm rounded-xl border p-6 shadow-xl animate-scale-in relative"
             style={{ borderColor: 'var(--border)' }}>
             
             <button 
@@ -339,7 +344,8 @@ export default function CircleAuthButton() {
             )}
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
