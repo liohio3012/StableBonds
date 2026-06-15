@@ -74,8 +74,11 @@ export default function Logo({ className = '', size = 28, variant = 'primary' }:
     );
   }
 
+  const fontClass = size >= 36 ? 'text-[17px] font-bold' : (size >= 30 ? 'text-base font-semibold' : 'text-sm font-semibold');
+  const gapClass = size >= 36 ? 'gap-3' : 'gap-2.5';
+
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
+    <div className={`flex items-center ${gapClass} ${className}`}>
       <svg
         width={size}
         height={size}
@@ -96,7 +99,7 @@ export default function Logo({ className = '', size = 28, variant = 'primary' }:
         <circle cx="19" cy="23" r="2.2" className={colors.accent} />
         <circle cx="13" cy="10" r="2.2" className="fill-neutral-400" />
       </svg>
-      <span className="font-semibold text-sm tracking-tight text-neutral-950 dark:text-white">
+      <span className={`tracking-tight text-neutral-950 dark:text-white ${fontClass}`}>
         StablePay
       </span>
     </div>
