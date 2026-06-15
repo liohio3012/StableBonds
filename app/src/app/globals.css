@@ -452,13 +452,13 @@ h1, h2, h3, h4, h5, h6 {
   height: 12px;
   width: 100%;
   border-radius: 4px;
-  @apply animate-skeleton;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 .skeleton-circle {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  @apply animate-skeleton;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 
 /* Magnetic link/button active states */
