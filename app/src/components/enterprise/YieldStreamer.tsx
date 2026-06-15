@@ -263,7 +263,7 @@ export default function YieldStreamer() {
     <div className="card-surface overflow-hidden relative border border-[var(--border-subtle)] shadow-lg hover:shadow-xl transition-all duration-300">
       
       {/* Decorative Gradient Background overlay */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent rounded-md blur-3xl pointer-events-none" />
 
       <div className="p-6 md:p-8">
         
@@ -276,7 +276,7 @@ export default function YieldStreamer() {
             <div>
               <h3 className="font-bold text-base md:text-lg flex items-center gap-1.5" style={{ color: 'var(--foreground)' }}>
                 Real-Time Yield Streamer
-                <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 tracking-wider">
+                <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 tracking-wider">
                   Live
                 </span>
               </h3>
@@ -299,7 +299,7 @@ export default function YieldStreamer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           
           {/* USDC Counter */}
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-left relative overflow-hidden group shadow-inner">
+          <div className="p-5 rounded-lg bg-slate-900 border border-slate-800 text-left relative overflow-hidden group shadow-inner">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/80 mb-2 flex items-center gap-1">
               <Zap size={10} className="fill-emerald-400" /> USDC Accrued Balance
@@ -313,7 +313,7 @@ export default function YieldStreamer() {
           </div>
 
           {/* EURC Counter */}
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-left relative overflow-hidden group shadow-inner">
+          <div className="p-5 rounded-lg bg-slate-900 border border-slate-800 text-left relative overflow-hidden group shadow-inner">
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/80 mb-2 flex items-center gap-1">
               <Zap size={10} className="fill-emerald-400" /> EURC Accrued Balance
@@ -345,7 +345,7 @@ export default function YieldStreamer() {
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-[var(--muted)] flex flex-col items-center justify-center shrink-0">
                     <span className="text-[10px] font-bold text-[var(--muted-foreground)]">#{stream.id}</span>
-                    <span className="text-[8px] font-extrabold uppercase bg-emerald-500/10 text-emerald-600 px-1 rounded">
+                    <span className="text-[8px] font-semibold uppercase bg-emerald-500/10 text-emerald-600 px-1 rounded">
                       {stream.tranche === 0 ? "SR" : "JR"}
                     </span>
                   </div>

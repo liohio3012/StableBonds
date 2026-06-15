@@ -79,7 +79,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
     return (
       <div className="group relative inline-block">
         <span className="badge badge-success">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)]"></span>
+          <span className="w-1.5 h-1.5 rounded-md bg-[var(--success)]"></span>
           Delivered
         </span>
         <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
@@ -94,7 +94,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
     return (
       <div className="group relative inline-block">
         <span className="badge badge-warning">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--warning)] animate-pulse"></span>
+          <span className="w-1.5 h-1.5 rounded-md bg-[var(--warning)] animate-pulse"></span>
           Delivering...
         </span>
         <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
@@ -108,7 +108,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
   return (
     <div className="group relative inline-block">
       <span className="badge badge-info">
-        <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]"></span>
+        <span className="w-1.5 h-1.5 rounded-md bg-[var(--primary)]"></span>
         Earning Interest
       </span>
       <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
@@ -759,7 +759,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
         {!isLoading && bondsList.length === 0 && (
           <div className="px-6 py-16 text-center">
             <div className="max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
+              <div className="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-5"
                 style={{ background: 'var(--muted)' }}>
                 <CreditCard size={28} style={{ color: 'var(--muted-foreground)' }} />
               </div>

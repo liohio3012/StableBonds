@@ -123,7 +123,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
         { num: 2, label: "Schedule payment" },
       ].map((step, i) => (
         <div key={i} className="flex items-center gap-2">
-          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+          <div className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all duration-300 ${
             currentStep > step.num 
               ? 'bg-[var(--success)] text-white' 
               : currentStep === step.num 
@@ -971,7 +971,7 @@ export default function IntentBuilder() {
   if (!isConnected) {
     return (
       <div className="w-full max-w-2xl mx-auto card-surface p-8 md:p-12 text-center">
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+        <div className="w-14 h-14 rounded-lg flex items-center justify-center mx-auto mb-5"
           style={{ background: 'var(--primary-soft)' }}>
           <Wallet size={24} style={{ color: 'var(--primary)' }} />
         </div>
@@ -1075,7 +1075,7 @@ export default function IntentBuilder() {
                 <div className="space-y-4">
                   {/* Step 1 */}
                   <div className="flex items-start gap-3">
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 ${
                       bridgeStep > 1 
                         ? 'bg-[var(--success)] text-white' 
                         : bridgeStep === 1 
@@ -1104,7 +1104,7 @@ export default function IntentBuilder() {
 
                   {/* Step 2 */}
                   <div className="flex items-start gap-3">
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 ${
                       bridgeStep > 2 
                         ? 'bg-[var(--success)] text-white' 
                         : bridgeStep === 2 
@@ -1131,7 +1131,7 @@ export default function IntentBuilder() {
 
                   {/* Step 3 */}
                   <div className="flex items-start gap-3">
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                    <div className={`w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 ${
                       isCctpMinting || isCctpMintConfirming || mintTxHash
                         ? 'bg-[var(--success)] text-white' 
                         : bridgeStep === 3 

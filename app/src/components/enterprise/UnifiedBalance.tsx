@@ -138,7 +138,7 @@ export default function UnifiedBalance() {
     <div className="space-y-6">
       {/* Overview and Info Panel */}
       <div className="card-surface p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[var(--primary-soft)] to-transparent opacity-40 pointer-events-none rounded-full translate-x-12 -translate-y-12"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[var(--primary-soft)] to-transparent opacity-40 pointer-events-none rounded-md translate-x-12 -translate-y-12"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <span className="badge badge-primary text-xs font-semibold px-2 py-1">
@@ -173,7 +173,7 @@ export default function UnifiedBalance() {
                 <p className="text-xs text-[var(--muted-foreground)]">Aggregating balances from 5 active testnets</p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-extrabold text-[var(--foreground)]">
+                <div className="text-2xl font-semibold text-[var(--foreground)]">
                   ${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
                 <div className="text-xs text-[var(--success)] font-semibold flex items-center justify-end gap-1 mt-0.5">
@@ -200,7 +200,7 @@ export default function UnifiedBalance() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-extrabold text-[var(--foreground)]">
+                        <div className="text-sm font-semibold text-[var(--foreground)]">
                           {chain.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-[10px] text-[var(--muted-foreground)]">{chain.symbol}</span>
                         </div>
                         <div className="text-[10px] text-[var(--muted-foreground)]">
@@ -209,9 +209,9 @@ export default function UnifiedBalance() {
                       </div>
                     </div>
                     {/* Progress bar */}
-                    <div className="w-full h-1.5 bg-[var(--muted)] rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-[var(--muted)] rounded-md overflow-hidden">
                       <div 
-                        className={`h-full bg-gradient-to-r ${chain.iconColor} rounded-full transition-all duration-500`}
+                        className={`h-full bg-gradient-to-r ${chain.iconColor} rounded-md transition-all duration-500`}
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
@@ -244,9 +244,9 @@ export default function UnifiedBalance() {
                     <tr key={log.id} className="hover:bg-[var(--muted-soft)]/20">
                       <td className="py-2.5 font-mono text-[var(--foreground)] font-semibold">{log.id}</td>
                       <td className="py-2.5 text-[var(--foreground)]">{log.chain}</td>
-                      <td className="py-2.5 font-extrabold text-[var(--foreground)]">${log.amount.toLocaleString()}</td>
+                      <td className="py-2.5 font-semibold text-[var(--foreground)]">${log.amount.toLocaleString()}</td>
                       <td className="py-2.5">
-                        <span className="badge badge-success text-[10px] px-1.5 py-0.5 rounded-full font-semibold">
+                        <span className="badge badge-success text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
                           {log.status}
                         </span>
                       </td>

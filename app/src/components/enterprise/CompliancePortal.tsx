@@ -320,9 +320,9 @@ export default function CompliancePortal() {
   if (!isConnected) {
     return (
       <div className="card-surface p-8 text-center max-w-lg mx-auto">
-        <Shield size={48} className="mx-auto mb-4 text-neutral-400" />
-        <h3 className="text-lg font-bold text-neutral-900">Sign In Required</h3>
-        <p className="text-sm text-neutral-500 mt-2">
+        <Shield size={48} className="mx-auto mb-4 text-[var(--muted-foreground)]" />
+        <h3 className="text-lg font-bold text-[var(--foreground)]">Sign In Required</h3>
+        <p className="text-sm text-[var(--muted-foreground)] mt-2">
           Please connect your corporate wallet or sign in using a biometric Passkey to view compliance settings.
         </p>
       </div>
@@ -344,36 +344,36 @@ export default function CompliancePortal() {
             {isBlacklisted ? <AlertOctagon size={24} /> : isVerified ? <ShieldCheck size={24} /> : <Shield size={24} />}
           </div>
           <div>
-            <h3 className="font-bold text-base text-neutral-900">
+            <h3 className="font-bold text-base text-[var(--foreground)]">
               {isBlacklisted 
                 ? 'Address Blocked (Sanctioned)' 
                 : isVerified 
                   ? 'KYC/KYB Verification Approved' 
                   : 'Verification Required'}
             </h3>
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
               Wallet: <span className="font-mono">{userAddress}</span>
             </p>
-            <p className="text-xs text-neutral-500 mt-0.5">
-              Registry: {registryAddress ? <span className="font-mono text-neutral-800">{registryAddress} (On-chain)</span> : 'Simulated (Dev Mode)'}
+            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
+              Registry: {registryAddress ? <span className="font-mono text-[var(--foreground)]">{registryAddress} (On-chain)</span> : 'Simulated (Dev Mode)'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           {isVerified && !isBlacklisted && (
-            <span className="px-3 py-1 text-xs font-bold bg-green-50 text-green-700 border border-green-200 rounded-full flex items-center gap-1.5 uppercase tracking-wide">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+            <span className="px-3 py-1 text-xs font-bold bg-green-50 text-green-700 border border-green-200 rounded-md flex items-center gap-1.5 uppercase tracking-wide">
+              <span className="w-1.5 h-1.5 rounded-md bg-green-500"></span>
               Compliant
             </span>
           )}
           {isBlacklisted && (
-            <span className="px-3 py-1 text-xs font-bold bg-red-50 text-red-700 border border-red-200 rounded-full flex items-center gap-1.5 uppercase tracking-wide">
+            <span className="px-3 py-1 text-xs font-bold bg-red-50 text-red-700 border border-red-200 rounded-md flex items-center gap-1.5 uppercase tracking-wide">
               Blocked
             </span>
           )}
           {!isVerified && !isBlacklisted && (
-            <span className="px-3 py-1 text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded-full flex items-center gap-1.5 uppercase tracking-wide animate-pulse">
+            <span className="px-3 py-1 text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 rounded-md flex items-center gap-1.5 uppercase tracking-wide animate-pulse">
               Pending Verification
             </span>
           )}
@@ -384,8 +384,8 @@ export default function CompliancePortal() {
         {/* Compliance Wizard / Status Panel */}
         <div className="md:col-span-2 space-y-6">
           <div className="card-surface p-6">
-            <h3 className="font-bold text-base text-neutral-900 mb-6 flex items-center gap-2">
-              <Building size={18} className="text-neutral-500" />
+            <h3 className="font-bold text-base text-[var(--foreground)] mb-6 flex items-center gap-2">
+              <Building size={18} className="text-[var(--muted-foreground)]" />
               Corporate KYC/KYB Onboarding
             </h3>
 
@@ -397,16 +397,16 @@ export default function CompliancePortal() {
                   {[1, 2, 3].map((step) => (
                     <React.Fragment key={step}>
                       <div className="flex items-center">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border transition-all duration-300 ${
+                        <div className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-bold border transition-all duration-300 ${
                           kycStep === step 
-                            ? 'bg-neutral-900 text-white border-neutral-900' 
+                            ? 'bg-[var(--primary)] text-white border-neutral-900' 
                             : kycStep > step 
-                              ? 'bg-neutral-100 text-neutral-700 border-neutral-300' 
-                              : 'bg-white text-neutral-400 border-neutral-200'
+                              ? 'bg-[var(--muted)] text-[var(--foreground)] border-neutral-300' 
+                              : 'bg-white text-[var(--muted-foreground)] border-[var(--border)]'
                         }`}>
                           {kycStep > step ? <CheckCircle2 size={16} className="text-green-600" /> : step}
                         </div>
-                        <span className="ml-2 text-xs font-medium text-neutral-600 hidden sm:inline">
+                        <span className="ml-2 text-xs font-medium text-[var(--muted-foreground)] hidden sm:inline">
                           {step === 1 && 'Company Info'}
                           {step === 2 && 'Representative'}
                           {step === 3 && 'Verification Documents'}
@@ -422,35 +422,35 @@ export default function CompliancePortal() {
                   <div className="space-y-4 animate-slide-up">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-neutral-700 mb-1.5">Registered Company Name</label>
+                        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">Registered Company Name</label>
                         <input 
                           type="text" 
                           placeholder="e.g. Acme Treasury Corp"
                           value={companyName}
                           onChange={(e) => setCompanyName(e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
+                          className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
                           style={{ borderColor: 'var(--border)' }}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-neutral-700 mb-1.5">Company Registration No (EIN / VAT)</label>
+                        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">Company Registration No (EIN / VAT)</label>
                         <input 
                           type="text" 
                           placeholder="e.g. 12-3456789"
                           value={ein}
                           onChange={(e) => setEin(e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
+                          className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
                           style={{ borderColor: 'var(--border)' }}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-neutral-700 mb-1.5">Country of Incorporation</label>
+                      <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">Country of Incorporation</label>
                       <select 
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
+                        className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
                         style={{ borderColor: 'var(--border)' }}
                       >
                         <option>United States</option>
@@ -484,24 +484,24 @@ export default function CompliancePortal() {
                   <div className="space-y-4 animate-slide-up">
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold text-neutral-700 mb-1.5">Authorized Representative Name</label>
+                        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">Authorized Representative Name</label>
                         <input 
                           type="text" 
                           placeholder="e.g. Alice Smith"
                           value={repName}
                           onChange={(e) => setRepName(e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
+                          className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
                           style={{ borderColor: 'var(--border)' }}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-neutral-700 mb-1.5">Business Email Address</label>
+                        <label className="block text-xs font-semibold text-[var(--foreground)] mb-1.5">Business Email Address</label>
                         <input 
                           type="email" 
                           placeholder="e.g. alice@acmetreasury.com"
                           value={repEmail}
                           onChange={(e) => setRepEmail(e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
+                          className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden"
                           style={{ borderColor: 'var(--border)' }}
                         />
                       </div>
@@ -510,7 +510,7 @@ export default function CompliancePortal() {
                     <div className="flex justify-between pt-4">
                       <button 
                         onClick={() => setKycStep(1)}
-                        className="border hover:bg-neutral-50 px-4 py-2 rounded-lg text-xs font-semibold text-neutral-700 bg-white"
+                        className="border hover:bg-[var(--muted)] px-4 py-2 rounded-lg text-xs font-semibold text-[var(--foreground)] bg-white"
                         style={{ borderColor: 'var(--border)' }}
                       >
                         Back
@@ -535,7 +535,7 @@ export default function CompliancePortal() {
                 {/* Step 3: File upload */}
                 {kycStep === 3 && (
                   <form onSubmit={submitKYC} className="space-y-4 animate-slide-up">
-                    <div className="border-2 border-dashed rounded-xl p-6 text-center hover:bg-neutral-50 transition-colors relative cursor-pointer"
+                    <div className="border-2 border-dashed rounded-xl p-6 text-center hover:bg-[var(--muted)] transition-colors relative cursor-pointer"
                       style={{ borderColor: 'var(--border)' }}>
                       <input 
                         type="file" 
@@ -543,18 +543,18 @@ export default function CompliancePortal() {
                         onChange={handleFileUpload}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
-                      <Upload className="mx-auto mb-2 text-neutral-400" size={24} />
-                      <p className="text-xs font-semibold text-neutral-700">Click to upload company verification documents</p>
-                      <p className="text-[10px] text-neutral-400 mt-1">Provide Certificate of Incorporation or Government Business Registry documents (PDF, PNG, JPG)</p>
+                      <Upload className="mx-auto mb-2 text-[var(--muted-foreground)]" size={24} />
+                      <p className="text-xs font-semibold text-[var(--foreground)]">Click to upload company verification documents</p>
+                      <p className="text-[10px] text-[var(--muted-foreground)] mt-1">Provide Certificate of Incorporation or Government Business Registry documents (PDF, PNG, JPG)</p>
                     </div>
 
                     {files.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-xs font-bold text-neutral-700">Uploaded Documents:</h4>
+                        <h4 className="text-xs font-bold text-[var(--foreground)]">Uploaded Documents:</h4>
                         {files.map((file, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2 rounded-lg border bg-neutral-50 text-xs"
+                          <div key={idx} className="flex items-center justify-between p-2 rounded-lg border bg-[var(--muted)] text-xs"
                             style={{ borderColor: 'var(--border-subtle)' }}>
-                            <span className="font-medium text-neutral-700 flex items-center gap-1.5 font-mono">
+                            <span className="font-medium text-[var(--foreground)] flex items-center gap-1.5 font-mono">
                               <FileText size={14} />
                               {file}
                             </span>
@@ -574,7 +574,7 @@ export default function CompliancePortal() {
                       <button 
                         type="button"
                         onClick={() => setKycStep(2)}
-                        className="border hover:bg-neutral-50 px-4 py-2 rounded-lg text-xs font-semibold text-neutral-700 bg-white"
+                        className="border hover:bg-[var(--muted)] px-4 py-2 rounded-lg text-xs font-semibold text-[var(--foreground)] bg-white"
                         style={{ borderColor: 'var(--border)' }}
                       >
                         Back
@@ -596,10 +596,10 @@ export default function CompliancePortal() {
             {/* Approved View */}
             {isVerified && !isBlacklisted && (
               <div className="text-center py-6 animate-scale-in">
-                <div className="w-16 h-16 rounded-full bg-green-50 border border-green-200 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-md bg-green-50 border border-green-200 text-green-600 flex items-center justify-center mx-auto mb-4">
                   <ShieldCheck size={36} />
                 </div>
-                <h4 className="font-bold text-lg text-neutral-900">Your Corporate Wallet is Verified</h4>
+                <h4 className="font-bold text-lg text-[var(--foreground)]">Your Corporate Wallet is Verified</h4>
                 <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-2 leading-relaxed">
                   Compliance validation successful. You have access to lock fixed yields, buy bonds, and deploy yield strategies on Arc.
                 </p>
@@ -607,7 +607,7 @@ export default function CompliancePortal() {
                 <div className="mt-8 flex justify-center gap-3">
                   <button 
                     onClick={devResetKYC}
-                    className="border border-neutral-200 text-neutral-600 hover:bg-neutral-50 px-4 py-2 rounded-lg text-xs font-semibold bg-white cursor-pointer"
+                    className="border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] px-4 py-2 rounded-lg text-xs font-semibold bg-white cursor-pointer"
                   >
                     Reset Status (Dev Mode)
                   </button>
@@ -618,10 +618,10 @@ export default function CompliancePortal() {
             {/* Blacklisted View */}
             {isBlacklisted && (
               <div className="text-center py-6 animate-scale-in">
-                <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-md bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mx-auto mb-4">
                   <Ban size={36} />
                 </div>
-                <h4 className="font-bold text-lg text-neutral-900">Address Sanctioned / Blacklisted</h4>
+                <h4 className="font-bold text-lg text-[var(--foreground)]">Address Sanctioned / Blacklisted</h4>
                 <p className="text-sm text-red-600 max-w-sm mx-auto mt-2 leading-relaxed">
                   Your address has been blocked due to regulatory compliance check failure. All bond deposit and settlement interactions are locked.
                 </p>
@@ -629,7 +629,7 @@ export default function CompliancePortal() {
                 <div className="mt-8 flex justify-center">
                   <button 
                     onClick={devResetKYC}
-                    className="border border-neutral-200 text-neutral-600 hover:bg-neutral-50 px-4 py-2 rounded-lg text-xs font-semibold bg-white cursor-pointer"
+                    className="border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] px-4 py-2 rounded-lg text-xs font-semibold bg-white cursor-pointer"
                   >
                     Reset Status (Dev Mode)
                   </button>
@@ -643,14 +643,14 @@ export default function CompliancePortal() {
         <div className="space-y-6">
           {/* Quick Info */}
           <div className="card-surface p-6">
-            <h3 className="font-bold text-xs uppercase tracking-wider text-neutral-500 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-4 flex items-center gap-2">
               <Shield size={14} />
               Why compliance?
             </h3>
-            <p className="text-xs leading-relaxed text-neutral-600">
+            <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
               StablePay B2B yields are secured by compliant debt securities pools. Enforcing KYC/KYB is legally required under institutional asset guidelines.
             </p>
-            <div className="mt-4 pt-4 border-t space-y-2.5 text-xs text-neutral-500" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="mt-4 pt-4 border-t space-y-2.5 text-xs text-[var(--muted-foreground)]" style={{ borderColor: 'var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={13} className="text-green-600" />
                 <span>Circle Compliance APIs</span>
@@ -713,26 +713,26 @@ export default function CompliancePortal() {
       {/* Admin Panel (Visible only if owner of contract) */}
       {isAdmin && (
         <div className="card-surface p-6 mt-8 animate-slide-up">
-          <h3 className="font-bold text-base text-neutral-900 mb-2 flex items-center gap-2">
-            <Key size={18} className="text-neutral-500" />
+          <h3 className="font-bold text-base text-[var(--foreground)] mb-2 flex items-center gap-2">
+            <Key size={18} className="text-[var(--muted-foreground)]" />
             Compliance Registry Admin Control Panel
           </h3>
-          <p className="text-xs text-neutral-500 mb-6">
-            You are connected as the contract owner (<span className="font-mono text-neutral-800">{contractOwner}</span>). You can manage registry whitelists on-chain.
+          <p className="text-xs text-[var(--muted-foreground)] mb-6">
+            You are connected as the contract owner (<span className="font-mono text-[var(--foreground)]">{contractOwner}</span>). You can manage registry whitelists on-chain.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Address whitelist actions */}
             <div className="space-y-4">
-              <h4 className="text-xs font-bold text-neutral-700 uppercase tracking-wide">Manage Registry Entries</h4>
+              <h4 className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wide">Manage Registry Entries</h4>
               <div>
-                <label className="block text-xs font-semibold text-neutral-600 mb-1.5">Target Wallet Address</label>
+                <label className="block text-xs font-semibold text-[var(--muted-foreground)] mb-1.5">Target Wallet Address</label>
                 <input 
                   type="text" 
                   placeholder="0x..."
                   value={targetAddress}
                   onChange={(e) => setTargetAddress(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden font-mono"
+                  className="w-full px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden font-mono"
                   style={{ borderColor: 'var(--border)' }}
                 />
               </div>
@@ -741,7 +741,7 @@ export default function CompliancePortal() {
                 <button 
                   onClick={() => handleVerifyAddress(targetAddress)}
                   disabled={!!adminActionLoading}
-                  className="py-2 px-4 rounded-lg bg-neutral-900 text-white hover:bg-neutral-800 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
+                  className="py-2 px-4 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {adminActionLoading === 'verify' && <Loader2 size={13} className="animate-spin" />}
                   Verify / Whitelist
@@ -757,7 +757,7 @@ export default function CompliancePortal() {
                 <button 
                   onClick={() => handleRemoveAddress(targetAddress)}
                   disabled={!!adminActionLoading}
-                  className="py-2 px-4 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5 bg-white"
+                  className="py-2 px-4 rounded-lg border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--muted)] text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1.5 bg-white"
                 >
                   {adminActionLoading === 'remove' && <Loader2 size={13} className="animate-spin" />}
                   Reset Address
@@ -767,19 +767,19 @@ export default function CompliancePortal() {
 
             {/* Address query */}
             <div className="space-y-4">
-              <h4 className="text-xs font-bold text-neutral-700 uppercase tracking-wide">Query Address Status</h4>
+              <h4 className="text-xs font-bold text-[var(--foreground)] uppercase tracking-wide">Query Address Status</h4>
               <div className="flex gap-2">
                 <input 
                   type="text" 
                   placeholder="Search 0x..."
                   value={searchAddress}
                   onChange={(e) => setSearchAddress(e.target.value)}
-                  className="flex-grow px-3 py-2 border rounded-lg text-sm bg-neutral-50 focus:bg-white focus:ring-1 focus:ring-black outline-hidden font-mono"
+                  className="flex-grow px-3 py-2 border rounded-lg text-sm bg-[var(--muted)] focus:bg-white focus:ring-1 focus:ring-black outline-hidden font-mono"
                   style={{ borderColor: 'var(--border)' }}
                 />
                 <button 
                   onClick={handleSearchAddress}
-                  className="p-2 border hover:bg-neutral-50 rounded-lg text-neutral-700 transition-all cursor-pointer bg-white"
+                  className="p-2 border hover:bg-[var(--muted)] rounded-lg text-[var(--foreground)] transition-all cursor-pointer bg-white"
                   style={{ borderColor: 'var(--border)' }}
                 >
                   <Search size={18} />
@@ -787,16 +787,16 @@ export default function CompliancePortal() {
               </div>
 
               {searchResult && (
-                <div className="p-4 border rounded-xl bg-neutral-50 space-y-2 text-xs" style={{ borderColor: 'var(--border-subtle)' }}>
+                <div className="p-4 border rounded-xl bg-[var(--muted)] space-y-2 text-xs" style={{ borderColor: 'var(--border-subtle)' }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-neutral-500 font-medium">Verified / Whitelisted:</span>
-                    <span className={`font-semibold ${searchResult.verified ? 'text-green-600' : 'text-neutral-500'}`}>
+                    <span className="text-[var(--muted-foreground)] font-medium">Verified / Whitelisted:</span>
+                    <span className={`font-semibold ${searchResult.verified ? 'text-green-600' : 'text-[var(--muted-foreground)]'}`}>
                       {searchResult.verified ? 'Yes' : 'No'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-neutral-500 font-medium">Blacklisted / Sanctioned:</span>
-                    <span className={`font-semibold ${searchResult.blacklisted ? 'text-red-600' : 'text-neutral-500'}`}>
+                    <span className="text-[var(--muted-foreground)] font-medium">Blacklisted / Sanctioned:</span>
+                    <span className={`font-semibold ${searchResult.blacklisted ? 'text-red-600' : 'text-[var(--muted-foreground)]'}`}>
                       {searchResult.blacklisted ? 'Yes' : 'No'}
                     </span>
                   </div>

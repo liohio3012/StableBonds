@@ -527,7 +527,7 @@ export default function MultiSigDesk() {
 
       {!multiSigAddress ? (
         <div className="card-surface p-8 text-center max-w-lg mx-auto space-y-4">
-          <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto"
+          <div className="w-12 h-12 rounded-md bg-amber-50 flex items-center justify-center mx-auto"
             style={{ color: 'var(--warning)', background: 'var(--warning-soft)' }}>
             <AlertTriangle size={24} />
           </div>
@@ -660,8 +660,8 @@ export default function MultiSigDesk() {
                         <span style={{ color: 'var(--muted-foreground)' }}>Approvals Consensus</span>
                         <span style={{ color: 'var(--foreground)' }}>{prop.approvalsCount} of {threshold} reached</span>
                       </div>
-                      <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border)' }}>
-                        <div className="h-full rounded-full transition-all duration-300"
+                      <div className="w-full h-1.5 rounded-md overflow-hidden" style={{ background: 'var(--border)' }}>
+                        <div className="h-full rounded-md transition-all duration-300"
                           style={{
                             width: `${Math.min(100, (prop.approvalsCount / threshold) * 100)}%`,
                             background: prop.executed ? 'var(--success)' : 'var(--primary)'

@@ -405,7 +405,7 @@ export default function MaturityCalendar() {
               >
                 {/* Date Number */}
                 <div className="flex justify-between items-center mb-1">
-                  <span className={`text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center ${
+                  <span className={`text-xs font-semibold rounded-md w-5 h-5 flex items-center justify-center ${
                     isToday 
                       ? 'bg-[var(--primary)] text-white font-bold' 
                       : cell.isCurrentMonth ? 'text-[var(--foreground)]' : 'text-[var(--muted-foreground)]'
@@ -445,7 +445,7 @@ export default function MaturityCalendar() {
                         className="text-[10px] font-semibold text-left px-1.5 py-0.5 rounded transition-all truncate hover:brightness-95 w-full flex items-center gap-1"
                         style={{ background: statusColor, color: textColor }}
                       >
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" 
+                        <span className="w-1.5 h-1.5 rounded-md shrink-0" 
                           style={{ 
                             background: status === 'delivered' 
                               ? 'var(--success)' 

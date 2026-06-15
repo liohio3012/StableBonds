@@ -274,7 +274,7 @@ export default function KeeperAutomationPanel() {
           <div>
             <h3 className="font-bold text-base flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
               Decentralized Keeper Settlement
-              <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full ${
+              <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md ${
                 pendingBondsCount > 0 
                   ? 'bg-amber-100 text-amber-800' 
                   : 'bg-emerald-100 text-emerald-800'
@@ -354,7 +354,7 @@ export default function KeeperAutomationPanel() {
                 <Info size={12} />
                 Maturity Queue
               </div>
-              <p className="font-extrabold text-2xl" style={{ color: 'var(--foreground)' }}>
+              <p className="font-semibold text-2xl" style={{ color: 'var(--foreground)' }}>
                 {pendingBondsCount}
               </p>
               <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>

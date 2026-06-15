@@ -542,7 +542,7 @@ export default function OTCDesk() {
     <div className="space-y-6">
       {/* Overview and Info Panel */}
       <div className="card-surface p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[var(--primary-soft)] to-transparent opacity-40 pointer-events-none rounded-full translate-x-12 -translate-y-12"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[var(--primary-soft)] to-transparent opacity-40 pointer-events-none rounded-md translate-x-12 -translate-y-12"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <span className="badge badge-primary text-xs font-semibold px-2 py-1">
@@ -607,7 +607,7 @@ export default function OTCDesk() {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg text-[var(--foreground)] flex items-center gap-2">
               <span>Market Listings</span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
                 {orders.length} active
               </span>
             </h3>
@@ -651,7 +651,7 @@ export default function OTCDesk() {
                             Bond #{order.bondId}
                           </span>
                         </div>
-                        <div className="text-xl font-extrabold text-[var(--foreground)]">
+                        <div className="text-xl font-semibold text-[var(--foreground)]">
                           {order.bond.principal.toLocaleString()} <span className="text-xs font-semibold text-[var(--muted-foreground)]">{order.bond.depositToken}</span>
                           <span className="text-xs font-normal text-[var(--muted-foreground)] ml-2">Face Value</span>
                         </div>
@@ -679,7 +679,7 @@ export default function OTCDesk() {
 
                         <div className="text-right ml-auto sm:ml-0">
                           <div className="text-xs text-[var(--muted-foreground)]">Asking Price</div>
-                          <div className="text-lg font-extrabold text-[var(--foreground)] mt-0.5">
+                          <div className="text-lg font-semibold text-[var(--foreground)] mt-0.5">
                             {order.price.toLocaleString()} USDC
                           </div>
                           <div className="text-[10px] text-[var(--muted-foreground)]">

@@ -381,7 +381,7 @@ export default function AgentManager() {
                     <CheckCircle2 size={12} />
                     Active Registry Connection
                   </span>
-                  <span className="text-[9px] uppercase font-semibold px-2 py-0.5 rounded-full bg-[var(--success-soft)] text-[var(--success)]">
+                  <span className="text-[9px] uppercase font-semibold px-2 py-0.5 rounded-md bg-[var(--success-soft)] text-[var(--success)]">
                     ERC-8004
                   </span>
                 </div>
@@ -547,7 +547,7 @@ export default function AgentManager() {
                     {agentPolicy.currentAllocation} / {agentPolicy.spendingLimit} USDC
                   </span>
                 </div>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--primary-soft)] text-[var(--primary)] font-semibold">
+                <div className="w-10 h-10 rounded-md flex items-center justify-center bg-[var(--primary-soft)] text-[var(--primary)] font-semibold">
                   {Math.min(100, Math.round((agentPolicy.currentAllocation / agentPolicy.spendingLimit) * 100))}%
                 </div>
               </div>
