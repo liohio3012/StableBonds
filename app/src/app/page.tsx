@@ -42,6 +42,7 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 export default function Home() {
   // --- States for advanced interactive components ---
   const [activeUseCase, setActiveUseCase] = useState(0);
+  const [activeScreenshotTab, setActiveScreenshotTab] = useState('dashboard');
   const [calcPrincipal, setCalcPrincipal] = useState(150000);
   const [calcDuration, setCalcDuration] = useState(90);
   const [calcTranche, setCalcTranche] = useState<'senior' | 'junior'>('senior');
@@ -490,6 +491,101 @@ export default function Home() {
                   <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">{item.desc}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Enterprise Platform Interface Walkthrough Section */}
+            <div className="max-w-4xl mx-auto mb-20 text-center">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">Platform Tour</span>
+              <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1 mb-3">Enterprise Treasury Interface</h3>
+              <p className="text-xs text-[var(--muted-foreground)] max-w-xl mx-auto mb-8">
+                Explore the professional tools engineered for automated balance tracking, regulatory compliance, OTC secondary trade desks, and AI-driven bond scheduling.
+              </p>
+
+              {/* Tabs for Interface Selection */}
+              <div className="flex flex-wrap justify-center gap-1.5 mb-6 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
+                {[
+                  { id: 'dashboard', label: 'Treasury Cockpit', desc: 'Overview of assets, payouts, and flows.' },
+                  { id: 'ladder', label: 'Bond Ladder Builder', desc: 'Staggered asset maturity duration tools.' },
+                  { id: 'agent', label: 'AI Coprocessor Desk', desc: 'Autonomous negotiation & auto scheduling.' },
+                  { id: 'otc', label: 'Secondary OTC Market', desc: 'Seasoned discounted bonds trade desk.' },
+                  { id: 'compliance', label: 'Compliance & Limits', desc: 'Role approvals and KYC verification.' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveScreenshotTab(tab.id)}
+                    className={`px-4 py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
+                      activeScreenshotTab === tab.id
+                        ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)] shadow-xs'
+                        : 'bg-white dark:bg-zinc-950 text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-neutral-400'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Dynamic Screenshot Previewer with Browser frame */}
+              <div className="border rounded-2xl overflow-hidden shadow-2xl bg-white/50 dark:bg-zinc-950/50 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
+                {/* Browser bar */}
+                <div className="flex items-center justify-between px-5 py-3 border-b bg-neutral-100/40 dark:bg-zinc-900/40" style={{ borderColor: 'var(--border)' }}>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
+                    <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">
+                      https://app.stablebonds.com/{activeScreenshotTab}
+                    </span>
+                  </div>
+                  <div className="text-[9px] font-bold text-neutral-400 bg-neutral-200/50 dark:bg-neutral-800/50 px-2 py-0.5 rounded uppercase">
+                    Secured Layer
+                  </div>
+                </div>
+
+                {/* Screenshot Display Box */}
+                <div className="relative bg-neutral-100 dark:bg-zinc-900/50 p-2 min-h-[350px] flex items-center justify-center">
+                  {activeScreenshotTab === 'dashboard' && (
+                    <img
+                      src="/screenshots/dashboard_overview.png"
+                      alt="StableBonds Treasury Cockpit Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                  {activeScreenshotTab === 'ladder' && (
+                    <img
+                      src="/screenshots/bond_ladder.png"
+                      alt="StableBonds Yield Ladder Builder Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                  {activeScreenshotTab === 'agent' && (
+                    <img
+                      src="/screenshots/agent_copilot.png"
+                      alt="StableBonds AI Coprocessor Desk Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                  {activeScreenshotTab === 'otc' && (
+                    <img
+                      src="/screenshots/otc_secondary.png"
+                      alt="StableBonds Secondary OTC Market Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                  {activeScreenshotTab === 'compliance' && (
+                    <img
+                      src="/screenshots/compliance.png"
+                      alt="StableBonds Compliance Controls Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* AI Copilot Feature Banner */}
