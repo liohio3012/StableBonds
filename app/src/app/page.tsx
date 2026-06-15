@@ -17,6 +17,7 @@ import AgentManager from "@/components/enterprise/AgentManager";
 import YieldStreamer from "@/components/enterprise/YieldStreamer";
 import MultiSigDesk from "@/components/enterprise/MultiSigDesk";
 import Auditing from "@/components/enterprise/Auditing";
+import Logo from "@/components/enterprise/Logo";
 
 const TABS = [
   { id: 'strategy', label: 'New Payment' },
@@ -79,6 +80,7 @@ function WelcomeOnboarding({ onGetStarted }: { onGetStarted: () => void }) {
     <div className="animate-fade-in">
       {/* Hero */}
       <div className="max-w-2xl mx-auto text-center pt-8 pb-16">
+        <Logo size={48} variant="icon" className="mx-auto mb-6" />
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-semibold mb-6"
           style={{ background: 'var(--success-soft)', color: 'var(--success-foreground)', border: '1px solid var(--success-border)' }}>
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--success)' }}></span>
@@ -217,12 +219,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className="border-b sticky top-0 z-50 backdrop-blur-xl bg-[var(--background)]/90" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center bg-[var(--primary)]">
-              <span className="text-[var(--primary-foreground)] font-semibold text-xs">S</span>
-            </div>
-            <span className="font-semibold text-sm tracking-tight">StablePay</span>
-          </div>
+          <Logo size={28} />
 
           <div className="flex items-center gap-2">
             <CircleAuthButton />

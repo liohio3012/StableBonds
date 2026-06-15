@@ -125,7 +125,7 @@ export default function UnifiedBalance() {
       setLogs(prev => [newLog, ...prev]);
 
       setIsLoading(false);
-      toast.success(`Gateway Transfer Settled (<450ms) ✓`, {
+      toast.success(`Gateway Transfer Settled (<450ms)`, {
         description: `Successfully credited $${amountNum.toLocaleString()} USDC from ${targetChain?.name} into Unified Balance.`
       });
     }, 600);

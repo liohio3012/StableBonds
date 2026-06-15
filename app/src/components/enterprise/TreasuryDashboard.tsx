@@ -84,7 +84,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
         </span>
         <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
           style={{ background: 'var(--foreground)', color: 'white' }}>
-          ✅ Payment has been successfully delivered in {bond.settlementToken} to the vendor's account.
+          Payment has been successfully delivered in {bond.settlementToken} to the vendor's account.
         </div>
       </div>
     );
@@ -99,7 +99,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
         </span>
         <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
           style={{ background: 'var(--foreground)', color: 'white' }}>
-          ⏳ Due date reached! Payment is being delivered to the vendor right now.
+          Due date reached! Payment is being delivered to the vendor right now.
         </div>
       </div>
     );
@@ -113,7 +113,7 @@ function StatusBadge({ bond }: { bond: Bond }) {
       </span>
       <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium w-48 z-50 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
         style={{ background: 'var(--foreground)', color: 'white' }}>
-        💰 Locked in {lockedAsset} and earning {(bond.yieldBps / 100).toFixed(2)}% APY until maturity.
+        Locked in {lockedAsset} and earning {(bond.yieldBps / 100).toFixed(2)}% APY until maturity.
       </div>
     </div>
   );
@@ -384,7 +384,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
 
   useEffect(() => {
     if (isWithdrawSuccess) {
-      toast.success("Early withdrawal completed ✓", {
+      toast.success("Early withdrawal completed", {
         description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
         action: withdrawHash ? {
           label: 'View receipt',
@@ -397,7 +397,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
 
   useEffect(() => {
     if (isClaimSuccess) {
-      toast.success("Yield claimed successfully! 🎉", {
+      toast.success("Yield claimed successfully", {
         description: "Your accrued interest has been transferred to your account."
       });
       refetch();
@@ -437,7 +437,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
 
         const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
         
-        toast.success("Early withdrawal completed ✓", {
+        toast.success("Early withdrawal completed", {
           description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
           action: {
             label: 'View receipt',
@@ -516,7 +516,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
 
         const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
         
-        toast.success("Yield claimed successfully! 🎉", {
+        toast.success("Yield claimed successfully", {
           description: "Your streamed interest has been transferred to your smart account.",
           action: {
             label: 'View receipt',

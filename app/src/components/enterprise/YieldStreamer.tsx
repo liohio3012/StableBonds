@@ -142,7 +142,7 @@ export default function YieldStreamer() {
   // Handle claim confirmation
   useEffect(() => {
     if (isClaimSuccess) {
-      toast.success("Yield claimed successfully! 🎉", {
+      toast.success("Yield claimed successfully", {
         description: "Your streamed interest has been transferred to your wallet."
       });
       setClaimingId(null);
@@ -215,7 +215,7 @@ export default function YieldStreamer() {
 
         const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
         
-        toast.success("Yield claimed successfully! 🎉", {
+        toast.success("Yield claimed successfully", {
           description: "Your streamed interest has been transferred to your smart account.",
           action: {
             label: 'View receipt',
@@ -359,7 +359,19 @@ export default function YieldStreamer() {
                       </span>
                     </div>
                     <div className="text-[10px] mt-0.5 flex items-center gap-1 text-[var(--muted-foreground)]">
-                      <span>Tranche: {stream.tranche === 0 ? "🛡️ Senior (Low Risk)" : "🔥 Junior (Waterfall)"}</span>
+                      <span className="flex items-center gap-1.5">
+                        Tranche: {stream.tranche === 0 ? (
+                          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded text-[9px] font-semibold border border-emerald-200">
+                            <ShieldCheck size={10} className="shrink-0 text-emerald-600" />
+                            Senior (Low Risk)
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded text-[9px] font-semibold border border-amber-200">
+                            <Zap size={10} className="shrink-0 text-amber-600" />
+                            Junior (Waterfall)
+                          </span>
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>

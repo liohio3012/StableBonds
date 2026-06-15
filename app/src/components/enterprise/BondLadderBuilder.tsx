@@ -7,6 +7,60 @@ import { toast } from 'sonner';
 import { Layers, Info, TrendingUp, Loader2, ArrowRight, Shield, Wallet, CheckCircle2, HelpCircle, AlertTriangle, AlertOctagon } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
+import CustomDropdown from './CustomDropdown';
+
+// Sleek Custom SVG Icons
+const UsdcIcon = (
+  <svg className="w-4 h-4 text-blue-500 shrink-0 fill-blue-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v12M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5" />
+  </svg>
+);
+
+const EurcIcon = (
+  <svg className="w-4 h-4 text-indigo-500 shrink-0 fill-indigo-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M15 15.5A4 4 0 1 1 15 8.5M9 11h6M9 13h6" />
+  </svg>
+);
+
+const StandardIcon = (
+  <svg className="w-4 h-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 21h18M3 10h18M5 6h14M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
+  </svg>
+);
+
+const ExpressIcon = (
+  <svg className="w-4 h-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+  </svg>
+);
+
+const EconomyIcon = (
+  <svg className="w-4 h-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 6v12" />
+  </svg>
+);
+
+const InternationalIcon = (
+  <svg className="w-4 h-4 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" />
+  </svg>
+);
+
+const CURRENCY_OPTIONS = [
+  { value: 'USDC', label: 'USDC', sublabel: 'US Dollar stablecoin', icon: UsdcIcon },
+  { value: 'EURC', label: 'EURC', sublabel: 'Euro stablecoin', icon: EurcIcon }
+];
+
+const TRANSFER_OPTIONS = [
+  { value: "0", label: "Standard Transfer", sublabel: "Most common option", icon: StandardIcon },
+  { value: "3", label: "Express Transfer", sublabel: "Faster settlement", icon: ExpressIcon },
+  { value: "6", label: "Economy Transfer", sublabel: "Lower fees", icon: EconomyIcon },
+  { value: "22", label: "International Transfer", sublabel: "Cross-border payments", icon: InternationalIcon },
+];
 
 // Arc Testnet Constants
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
@@ -56,10 +110,10 @@ const STRATEGIES = [
 ];
 
 const NETWORK_OPTIONS = [
-  { value: "0", label: "Standard Transfer", icon: "🏦" },
-  { value: "3", label: "Express Transfer", icon: "⚡" },
-  { value: "6", label: "Economy Transfer", icon: "💰" },
-  { value: "22", label: "International Transfer", icon: "🌍" },
+  { value: "0", label: "Standard Transfer", icon: "" },
+  { value: "3", label: "Express Transfer", icon: "" },
+  { value: "6", label: "Economy Transfer", icon: "" },
+  { value: "22", label: "International Transfer", icon: "" },
 ];
 
 export default function BondLadderBuilder() {
@@ -278,7 +332,7 @@ export default function BondLadderBuilder() {
       setSmartTxHash(receipt.transactionHash);
       setSmartConfirming(false);
       
-      toast.success("Bond ladder successfully deployed! 🪜", {
+      toast.success("Bond ladder successfully deployed", {
         description: `All ${legs.length} payments have been staggered and scheduled.`,
         action: {
           label: 'View receipt',
@@ -378,32 +432,24 @@ export default function BondLadderBuilder() {
                 <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
                   Deposit Token
                 </label>
-                <select
+                <CustomDropdown
                   value={depositToken}
-                  onChange={(e) => {
-                    setDepositToken(e.target.value);
-                    if (swapAtDeposit) setSettlementToken(e.target.value);
+                  onChange={(val: string) => {
+                    setDepositToken(val);
+                    if (swapAtDeposit) setSettlementToken(val);
                   }}
-                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
-                  style={{ borderColor: 'var(--border)' }}
-                >
-                  <option value="USDC">USDC (Stable)</option>
-                  <option value="EURC">EURC (Euro)</option>
-                </select>
+                  options={CURRENCY_OPTIONS}
+                />
               </div>
               <div>
                 <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
                   Vendor Receives
                 </label>
-                <select
+                <CustomDropdown
                   value={settlementToken}
-                  onChange={(e) => setSettlementToken(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
-                  style={{ borderColor: 'var(--border)' }}
-                >
-                  <option value="USDC">USDC (Stable)</option>
-                  <option value="EURC">EURC (Euro)</option>
-                </select>
+                  onChange={(val: string) => setSettlementToken(val)}
+                  options={CURRENCY_OPTIONS}
+                />
               </div>
             </div>
 
@@ -411,7 +457,7 @@ export default function BondLadderBuilder() {
             {depositToken !== settlementToken && (
               <div className="rounded-xl p-3 text-xs space-y-2 border border-dashed" style={{ background: 'var(--info-soft)', borderColor: 'var(--info-border)' }}>
                 <span className="font-semibold block" style={{ color: 'var(--info-foreground)' }}>
-                  💱 StableFX Swap Required
+                  StableFX Swap Required
                 </span>
                 <p style={{ color: 'var(--info-foreground)' }}>
                   Your deposit token differs from vendor settlement token. Swaps will be executed automatically.
@@ -459,18 +505,11 @@ export default function BondLadderBuilder() {
                 <label className="text-xs font-semibold block mb-1" style={{ color: 'var(--foreground)' }}>
                   Delivery Network Method
                 </label>
-                <select
+                <CustomDropdown
                   value={destChain}
-                  onChange={(e) => setDestChain(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl text-xs font-semibold border bg-[var(--canvas)] focus:outline-none"
-                  style={{ borderColor: 'var(--border)' }}
-                >
-                  {NETWORK_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.icon} {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val: string) => setDestChain(val)}
+                  options={TRANSFER_OPTIONS}
+                />
               </div>
             </div>
 

@@ -7,6 +7,106 @@ import { toast } from 'sonner';
 import { ExternalLink, Shield, HelpCircle, CheckCircle2, Clock, ArrowRight, Info, Wallet, Building2, Calendar, DollarSign, Loader2, RefreshCw, AlertOctagon } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
+import CustomDropdown from './CustomDropdown';
+
+// Sleek Custom SVG Icons for Networks
+const ArcIcon = (
+  <svg className="w-4 h-4 text-zinc-950 dark:text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    <path d="M2 12h20" />
+  </svg>
+);
+
+const UnifiedBalanceIcon = (
+  <svg className="w-4 h-4 text-emerald-500 shrink-0 fill-emerald-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+  </svg>
+);
+
+const EthereumIcon = (
+  <svg className="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m12 2-7 10 7 4 7-4-7-10z" />
+    <path d="m12 22-7-8 7-2 7 2-7 8z" />
+  </svg>
+);
+
+const ArbitrumIcon = (
+  <svg className="w-4 h-4 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2z" />
+    <path d="M12 6a6 6 0 0 0-6 6c0 3.3 2.7 6 6 6s6-2.7 6-6a6 6 0 0 0-6-6z" />
+    <circle cx="12" cy="12" r="2" />
+  </svg>
+);
+
+const BaseIcon = (
+  <svg className="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="4" fill="currentColor" />
+  </svg>
+);
+
+const OptimismIcon = (
+  <svg className="w-4 h-4 text-red-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+  </svg>
+);
+
+// Sleek Custom SVG Icons for Transfer Methods
+const StandardIcon = (
+  <svg className="w-4 h-4 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 22V11M21 22V11M12 22V11M2 11h20M12 2L2 7h20L12 2zM3 22h18" />
+  </svg>
+);
+
+const ExpressIcon = (
+  <svg className="w-4 h-4 text-amber-500 shrink-0 fill-amber-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+const EconomyIcon = (
+  <svg className="w-4 h-4 text-emerald-600 shrink-0 fill-emerald-600/5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="12" y1="1" x2="12" y2="23" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+const InternationalIcon = (
+  <svg className="w-4 h-4 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20" />
+  </svg>
+);
+
+// Sleek Currency Icons
+const UsdcIcon = (
+  <svg className="w-4 h-4 text-blue-500 shrink-0 fill-blue-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v12M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5" />
+  </svg>
+);
+
+const EurcIcon = (
+  <svg className="w-4 h-4 text-indigo-500 shrink-0 fill-indigo-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M15 15.5A4 4 0 1 1 15 8.5M9 11h6M9 13h6" />
+  </svg>
+);
+
+// Conversion Timing Icons
+const SwapImmediateIcon = (
+  <svg className="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16" />
+  </svg>
+);
+
+const SwapMaturityIcon = (
+  <svg className="w-4 h-4 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M5 2h14M5 22h14M19 2v4a7 7 0 0 1-14 0V2M5 22v-4a7 7 0 0 1 14 0v4" />
+  </svg>
+);
 
 // Arc Testnet Constants
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
@@ -44,12 +144,26 @@ const TERMS_OPTIONS = [
 ];
 
 const SOURCE_NETWORKS = [
-  { id: 'arc', name: 'Arc Testnet', chainId: 5042002, icon: '🌟' },
-  { id: 'unified-balance', name: 'Unified Balance (Circle Gateway)', chainId: 0, icon: '⚡' },
-  { id: 'ethereum', name: 'Ethereum Sepolia', chainId: 11155111, icon: '🔷' },
-  { id: 'arbitrum', name: 'Arbitrum Sepolia', chainId: 421614, icon: '🌀' },
-  { id: 'base', name: 'Base Sepolia', chainId: 84532, icon: '🔵' },
-  { id: 'optimism', name: 'Optimism Sepolia', chainId: 11155420, icon: '🔴' }
+  { id: 'arc', name: 'Arc Testnet', chainId: 5042002, icon: '' },
+  { id: 'unified-balance', name: 'Unified Balance (Circle Gateway)', chainId: 0, icon: '' },
+  { id: 'ethereum', name: 'Ethereum Sepolia', chainId: 11155111, icon: '' },
+  { id: 'arbitrum', name: 'Arbitrum Sepolia', chainId: 421614, icon: '' },
+  { id: 'base', name: 'Base Sepolia', chainId: 84532, icon: '' },
+  { id: 'optimism', name: 'Optimism Sepolia', chainId: 11155420, icon: '' }
+];
+
+const SOURCE_NETWORKS_OPTIONS = [
+  { value: 'arc', label: 'Arc Testnet', sublabel: 'Fastest settlement, low fees (Native)', icon: ArcIcon },
+  { value: 'unified-balance', label: 'Unified Balance', sublabel: 'Gasless automatic routing (Circle Gateway)', icon: UnifiedBalanceIcon },
+  { value: 'ethereum', label: 'Ethereum Sepolia', sublabel: 'L1 Ethereum', icon: EthereumIcon },
+  { value: 'arbitrum', label: 'Arbitrum Sepolia', sublabel: 'L2 Rollup', icon: ArbitrumIcon },
+  { value: 'base', label: 'Base Sepolia', sublabel: 'L2 Rollup', icon: BaseIcon },
+  { value: 'optimism', label: 'Optimism Sepolia', sublabel: 'L2 Rollup', icon: OptimismIcon }
+];
+
+const CURRENCY_OPTIONS = [
+  { value: 'USDC', label: 'USDC (USD Coin)', sublabel: 'US Dollar Pegged Stablecoin', icon: UsdcIcon },
+  { value: 'EURC', label: 'EURC (Euro Coin)', sublabel: 'Euro Pegged Stablecoin', icon: EurcIcon }
 ];
 
 const SOURCE_CONFIGS: Record<string, {
@@ -78,10 +192,22 @@ const SOURCE_CONFIGS: Record<string, {
 
 // Human-readable network names — no blockchain jargon
 const NETWORK_OPTIONS = [
-  { value: "0", label: "Standard Transfer", sublabel: "Most common option", icon: "🏦" },
-  { value: "3", label: "Express Transfer", sublabel: "Faster settlement", icon: "⚡" },
-  { value: "6", label: "Economy Transfer", sublabel: "Lower fees", icon: "💰" },
-  { value: "22", label: "International Transfer", sublabel: "Cross-border payments", icon: "🌍" },
+  { value: "0", label: "Standard Transfer", sublabel: "Most common option", icon: "" },
+  { value: "3", label: "Express Transfer", sublabel: "Faster settlement", icon: "" },
+  { value: "6", label: "Economy Transfer", sublabel: "Lower fees", icon: "" },
+  { value: "22", label: "International Transfer", sublabel: "Cross-border payments", icon: "" },
+];
+
+const NETWORK_OPTIONS_DROPDOWN = [
+  { value: "0", label: "Standard Transfer", sublabel: "Most common option", icon: StandardIcon },
+  { value: "3", label: "Express Transfer", sublabel: "Faster settlement", icon: ExpressIcon },
+  { value: "6", label: "Economy Transfer", sublabel: "Lower fees", icon: EconomyIcon },
+  { value: "22", label: "International Transfer", sublabel: "Cross-border payments", icon: InternationalIcon },
+];
+
+const SWAP_TIMING_OPTIONS = [
+  { value: 'immediate', label: 'Swap immediately', sublabel: 'Lock in conversion rate today', icon: SwapImmediateIcon },
+  { value: 'maturity', label: 'Swap at maturity', sublabel: 'Market rate at delivery', icon: SwapMaturityIcon }
 ];
 
 // Tooltip Component — contextual helper
@@ -335,7 +461,7 @@ export default function IntentBuilder() {
   useEffect(() => {
     if (isApproveSuccess) {
       setLastApprovedKey(currentKey);
-      toast.success("Balance verified ✓", {
+      toast.success("Balance verified", {
         description: `Your ${depositToken} allowance has been approved. You can now schedule the payment.`,
         action: approveHash ? {
           label: 'View receipt',
@@ -347,7 +473,7 @@ export default function IntentBuilder() {
 
   useEffect(() => {
     if (isBondSuccess) {
-      toast.success("Payment scheduled! 🎉", {
+      toast.success("Payment scheduled successfully", {
         description: "Your funds are now earning interest. The vendor will be paid automatically on the due date.",
         duration: 8000,
         action: bondHash ? {
@@ -378,7 +504,7 @@ export default function IntentBuilder() {
   // Handle successful source token approval
   useEffect(() => {
     if (isCctpApproveSuccess && cctpApproveHash) {
-      toast.success("Source allowance approved! 🔓", {
+      toast.success("Source allowance approved", {
         description: "USDC/EURC approval transaction confirmed. Initiating the CCTP burn next."
       });
       handleCctpBurn();
@@ -450,7 +576,7 @@ export default function IntentBuilder() {
     if (isCctpMintSuccess && cctpMintHash) {
       setMintTxHash(cctpMintHash);
       setBridgeStep(0);
-      toast.success("Cross-chain bond successfully created on Arc Testnet! 🎉", {
+      toast.success("Cross-chain bond successfully created on Arc Testnet", {
         description: "Your funds have been minted and deposited into the bond vault.",
         action: {
           label: 'View receipt',
@@ -621,7 +747,7 @@ export default function IntentBuilder() {
         
         setMintTxHash(receipt.transactionHash);
         setBridgeStep(0);
-        toast.success("Cross-chain bond successfully created on Arc Testnet! 🎉");
+        toast.success("Cross-chain bond successfully created on Arc Testnet");
       } else {
         // EOA wallet flow
         if (chain && chain.id !== 5042002) {
@@ -764,7 +890,7 @@ export default function IntentBuilder() {
           setSmartConfirming(false);
           setSmartSuccess(true);
 
-          toast.success("Circle Gateway payment settled & bond created! 🎉", {
+          toast.success("Circle Gateway payment settled & bond created", {
             description: `Paid $${parseFloat(amount).toLocaleString()} USDC from Unified Balance.`,
             duration: 8000,
             action: {
@@ -908,7 +1034,7 @@ export default function IntentBuilder() {
         setSmartConfirming(false);
         setSmartSuccess(true);
 
-        toast.success("Payment scheduled successfully! 🎉", {
+        toast.success("Payment scheduled successfully", {
           description: "Your funds are now earning interest. The vendor will be paid automatically on the due date.",
           duration: 8000,
           action: {
@@ -1004,7 +1130,7 @@ export default function IntentBuilder() {
               <Info size={18} />
             </div>
             <div style={{ color: 'var(--info-foreground)' }}>
-              <strong className="font-semibold block mb-1">💡 Here's what happens:</strong>
+              <strong className="font-semibold block mb-1">Here's what happens:</strong>
               <span className="leading-relaxed">
                 Your money will be held securely and earn up to <strong>{selectedTerm.apyLabel}</strong>. On the date you choose, 
                 the full amount is automatically sent to your vendor. No reminders, no manual transfers — it just works.
@@ -1020,20 +1146,14 @@ export default function IntentBuilder() {
                 Funding network
                 <Tooltip text="Select the blockchain network where your treasury funds currently reside." />
               </label>
-              <select 
+              <CustomDropdown
                 value={sourceNetwork}
-                onChange={(e) => {
-                  setSourceNetwork(e.target.value as any);
+                onChange={(val) => {
+                  setSourceNetwork(val as any);
                   setBridgeStep(0); // Reset stepper on network change
                 }}
-                className="input-field font-medium appearance-none cursor-pointer font-sans"
-              >
-                {SOURCE_NETWORKS.map(net => (
-                  <option key={net.id} value={net.id}>
-                    {net.icon} {net.name} {net.id === 'arc' ? '(Native)' : ''}
-                  </option>
-                ))}
-              </select>
+                options={SOURCE_NETWORKS_OPTIONS}
+              />
             </div>
 
             {/* Bridge Fee Preview (Only if non-Arc is selected) */}
@@ -1056,7 +1176,7 @@ export default function IntentBuilder() {
               <div className="p-4 rounded-xl text-xs space-y-2 border animate-fade-in"
                 style={{ background: 'var(--success-soft)', borderColor: 'var(--success-border)', color: 'var(--success-foreground)' }}>
                 <div className="flex justify-between font-semibold">
-                  <span className="flex items-center gap-1">⚡ Circle Gateway Active</span>
+                  <span className="flex items-center gap-1">Circle Gateway Active</span>
                   <span>Fee: $0.00 (Gasless)</span>
                 </div>
                 <p className="leading-normal opacity-90">
@@ -1070,7 +1190,7 @@ export default function IntentBuilder() {
               <div className="p-5 rounded-xl border animate-fade-in"
                 style={{ background: 'var(--card-muted)', borderColor: 'var(--border)' }}>
                 <h4 className="text-xs font-bold uppercase tracking-wider mb-4" style={{ color: 'var(--muted-foreground)' }}>
-                  🛰️ Cross-Chain Routing Progress
+                  Cross-Chain Routing Progress
                 </h4>
                 <div className="space-y-4">
                   {/* Step 1 */}
@@ -1168,14 +1288,11 @@ export default function IntentBuilder() {
                   Deposit currency
                   <Tooltip text="Select the currency you want to deposit from your treasury." />
                 </label>
-                <select 
+                <CustomDropdown
                   value={depositToken}
-                  onChange={(e) => setDepositToken(e.target.value)}
-                  className="input-field font-medium appearance-none cursor-pointer"
-                >
-                  <option value="USDC">🇺🇸 USDC (USD Coin)</option>
-                  <option value="EURC">🇪🇺 EURC (Euro Coin)</option>
-                </select>
+                  onChange={(val) => setDepositToken(val)}
+                  options={CURRENCY_OPTIONS}
+                />
               </div>
 
               <div>
@@ -1183,14 +1300,11 @@ export default function IntentBuilder() {
                   Vendor receives
                   <Tooltip text="Select the currency your vendor wants to receive." />
                 </label>
-                <select 
+                <CustomDropdown
                   value={settlementToken}
-                  onChange={(e) => setSettlementToken(e.target.value)}
-                  className="input-field font-medium appearance-none cursor-pointer"
-                >
-                  <option value="USDC">🇺🇸 USDC (USD Coin)</option>
-                  <option value="EURC">🇪🇺 EURC (Euro Coin)</option>
-                </select>
+                  onChange={(val) => setSettlementToken(val)}
+                  options={CURRENCY_OPTIONS}
+                />
               </div>
             </div>
 
@@ -1201,14 +1315,11 @@ export default function IntentBuilder() {
                   Currency Conversion Timing (StableFX)
                   <Tooltip text="Choose when to perform the exchange swap. 'Swap immediately' locks in the conversion rate today. 'Swap at maturity' performs the swap when the payment is delivered." />
                 </label>
-                <select 
+                <CustomDropdown
                   value={swapAtDeposit ? "immediate" : "maturity"}
-                  onChange={(e) => setSwapAtDeposit(e.target.value === "immediate")}
-                  className="input-field font-medium appearance-none cursor-pointer"
-                >
-                  <option value="immediate">💱 Swap immediately (Lock rate today)</option>
-                  <option value="maturity">⏳ Swap at maturity (Market rate at delivery)</option>
-                </select>
+                  onChange={(val) => setSwapAtDeposit(val === "immediate")}
+                  options={SWAP_TIMING_OPTIONS}
+                />
               </div>
             )}
 
@@ -1268,7 +1379,7 @@ export default function IntentBuilder() {
             {/* Tranche / Risk Profile Selector */}
             <div>
               <label className="flex items-center gap-1 text-sm font-semibold mb-2" style={{ color: 'var(--foreground)' }}>
-                🛡️ Tranche / Risk Profile
+                Tranche / Risk Profile
                 <Tooltip text="Senior offers protected yield backed by Junior waterfall capital. Junior offers high yield but absorbs first defaults." />
               </label>
               <div className="grid grid-cols-2 gap-4">
@@ -1286,7 +1397,7 @@ export default function IntentBuilder() {
                   }`}
                   style={selectedTerm.tranche === 0 ? { borderColor: 'var(--primary)', background: 'var(--primary-soft)' } : {}}
                 >
-                  <div className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>🛡️ Senior Tranche</div>
+                  <div className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>Senior Tranche</div>
                   <div className="text-[11px] mt-1" style={{ color: 'var(--muted-foreground)' }}>
                     Protected by Junior waterfall buffer. Low risk.
                   </div>
@@ -1306,7 +1417,7 @@ export default function IntentBuilder() {
                   }`}
                   style={selectedTerm.tranche === 1 ? { borderColor: 'var(--primary)', background: 'var(--primary-soft)' } : {}}
                 >
-                  <div className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>🔥 Junior Tranche</div>
+                  <div className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>Junior Tranche</div>
                   <div className="text-[11px] mt-1" style={{ color: 'var(--muted-foreground)' }}>
                     First-loss absorbing capital. High yield.
                   </div>
@@ -1322,20 +1433,16 @@ export default function IntentBuilder() {
                   Lockup Duration
                   <Tooltip text="Select the lockup duration. Longer durations offer higher APYs. Funds will be held securely and paid to your vendor at maturity." />
                 </label>
-                <div className="relative">
-                  <select 
-                    value={selectedTermId}
-                    onChange={(e) => setSelectedTermId(parseInt(e.target.value))}
-                    className="input-field font-medium appearance-none cursor-pointer"
-                    id="payment-term"
-                  >
-                    {TERMS_OPTIONS.filter((opt) => opt.tranche === selectedTerm.tranche).map((opt) => (
-                      <option key={opt.id} value={opt.id}>
-                        🗓️ {opt.label} — {opt.apyLabel}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <CustomDropdown
+                  value={selectedTermId.toString()}
+                  onChange={(val) => setSelectedTermId(parseInt(val))}
+                  options={TERMS_OPTIONS.filter((opt) => opt.tranche === selectedTerm.tranche).map((opt) => ({
+                    value: opt.id.toString(),
+                    label: opt.label,
+                    sublabel: opt.apyLabel,
+                    icon: <Calendar size={14} className="text-[var(--primary)] shrink-0" />
+                  }))}
+                />
                 {duration && parseInt(duration) > 0 && (
                   <p className="text-[11px] mt-1.5 font-medium flex items-center gap-1" style={{ color: 'var(--muted-foreground)' }}>
                     <Clock size={10} />
@@ -1351,18 +1458,11 @@ export default function IntentBuilder() {
                   Transfer method
                   <Tooltip text="Choose how the payment reaches your vendor. Each option has different speed and cost tradeoffs. Most users choose 'Express Transfer'." />
                 </label>
-                <select 
+                <CustomDropdown
                   value={destChain}
-                  onChange={(e) => setDestChain(e.target.value)}
-                  className="input-field font-medium appearance-none cursor-pointer"
-                  id="transfer-method"
-                >
-                  {NETWORK_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.icon} {opt.label} — {opt.sublabel}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setDestChain(val)}
+                  options={NETWORK_OPTIONS_DROPDOWN}
+                />
               </div>
             </div>
 

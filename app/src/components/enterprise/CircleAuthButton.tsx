@@ -5,6 +5,7 @@ import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Fingerprint, Mail, LogOut, Copy, ChevronDown, User, Loader2, Wallet, X, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import Logo from './Logo';
 
 export default function CircleAuthButton() {
   const { 
@@ -200,9 +201,7 @@ export default function CircleAuthButton() {
             {/* Step: Selection */}
             {step === 'select' && (
               <div className="text-center pt-2">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center mx-auto mb-4 bg-[var(--primary)] text-[var(--primary-foreground)]">
-                  <Fingerprint size={20} />
-                </div>
+                <Logo size={40} variant="icon" className="mx-auto mb-4" />
                 <h3 className="font-semibold text-base text-[var(--foreground)]">Sign in to StablePay</h3>
                 <p className="text-xs text-[var(--muted-foreground)] mt-1 mb-6">
                   Gasless smart account. No seed phrases required.

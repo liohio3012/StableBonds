@@ -72,7 +72,7 @@ export default function KeeperAutomationPanel() {
 
   useEffect(() => {
     if (isConfigSuccess) {
-      toast.success("Keeper configuration updated on-chain ✓");
+      toast.success("Keeper configuration updated on-chain");
       refetchKeeper();
       refetchBatchSize();
       setIsPendingKeeper(false);
@@ -232,7 +232,7 @@ export default function KeeperAutomationPanel() {
         });
         toast.info("Keeper execution pending in bundler...");
         await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
-        toast.success("Manual upkeep execution completed successfully ✓");
+        toast.success("Manual upkeep execution completed successfully");
         refetchMatured();
       } catch (err: any) {
         toast.error("Keeper execution failed", { description: err.message });

@@ -319,3 +319,153 @@ h1, h2, h3, h4, h5, h6 {
 [data-rk] button {
   font-family: 'Inter', system-ui, sans-serif !important;
 }
+
+/* ============================================
+   StablePay Premium Visual System
+   ============================================ */
+
+/* Advanced Keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes drawBorder {
+  0% { border-color: var(--border); }
+  50% { border-color: var(--primary); }
+  100% { border-color: var(--border); }
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { background-color: var(--muted); }
+  50% { background-color: var(--border-subtle); }
+}
+
+@keyframes subtleRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animation Utilities */
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+.animate-border-pulse {
+  animation: drawBorder 3s ease-in-out infinite;
+}
+
+.animate-skeleton {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.animate-slow-spin {
+  animation: subtleRotate 20s linear infinite;
+}
+
+/* Premium Visual Components */
+.premium-glow-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.premium-glow-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04), 0 0 0 1px var(--primary);
+  transform: translateY(-2px);
+}
+
+.premium-glow-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(24, 24, 27, 0.015), transparent 40%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--foreground) 30%, #4b5563 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-pill {
+  position: relative;
+}
+.glow-pill::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(90deg, var(--success), var(--info));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.glow-pill:hover::after {
+  opacity: 0.15;
+}
+
+/* Background blob generator */
+.bg-blob {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -10;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.blob-primary {
+  background: rgba(24, 24, 27, 0.05);
+}
+.blob-success {
+  background: rgba(5, 150, 105, 0.03);
+}
+.blob-info {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+/* Custom interactive skeleton loaders */
+.skeleton-line {
+  height: 12px;
+  width: 100%;
+  border-radius: 4px;
+  @apply animate-skeleton;
+}
+.skeleton-circle {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  @apply animate-skeleton;
+}
+
+/* Magnetic link/button active states */
+.magnetic-link {
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.magnetic-link:hover {
+  transform: translateX(2px);
+}
+

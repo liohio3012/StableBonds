@@ -87,7 +87,7 @@ export default function MaturityCalendar() {
 
   useEffect(() => {
     if (isWithdrawSuccess) {
-      toast.success("Early withdrawal completed ✓", {
+      toast.success("Early withdrawal completed", {
         description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
         action: withdrawHash ? {
           label: 'View receipt',
@@ -133,7 +133,7 @@ export default function MaturityCalendar() {
 
         const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
         
-        toast.success("Early withdrawal completed ✓", {
+        toast.success("Early withdrawal completed", {
           description: "Your funds (minus the 2.0% penalty) have been returned to your account.",
           action: {
             label: 'View receipt',

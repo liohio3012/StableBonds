@@ -679,7 +679,7 @@ export default function MultiSigDesk() {
                           className="btn-secondary text-xs px-3 py-1.5 gap-1 disabled:opacity-50"
                         >
                           <UserCheck size={12} />
-                          {prop.userHasApproved ? "Approved ✓" : "Approve Proposal"}
+                          {prop.userHasApproved ? "Approved" : "Approve Proposal"}
                         </button>
                         {prop.approvalsCount >= threshold && (
                           <button
