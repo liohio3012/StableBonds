@@ -1,35 +1,35 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 /* ============================================
-   StablePay — Premium Consumer Design System
-   Inspired by: Stripe, Linear, Arc Browser
+   StablePay — Swiss-Institutional Finance
+   Brand System v1.0
    ============================================ */
 
 :root {
-  /* Surface Colors */
-  --background: #fafbfc;
-  --foreground: #0f172a;
+  /* Surface — Clean neutral whites */
+  --background: #fafafa;
+  --foreground: #111111;
 
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #111111;
   --card-elevated: #ffffff;
 
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
 
-  --border: #e2e8f0;
-  --border-subtle: #f1f5f9;
-  --input: #e2e8f0;
+  --border: #e4e4e7;
+  --border-subtle: #f4f4f5;
+  --input: #ffffff;
 
-  /* Brand Colors */
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-foreground: #ffffff;
-  --primary-soft: #eff6ff;
-  --primary-border: #bfdbfe;
+  /* Brand — Black authority */
+  --primary: #18181b;
+  --primary-hover: #27272a;
+  --primary-foreground: #fafafa;
+  --primary-soft: #f4f4f5;
+  --primary-border: #e4e4e7;
 
-  /* Semantic Colors */
+  /* Semantic */
   --success: #059669;
   --success-soft: #ecfdf5;
   --success-border: #a7f3d0;
@@ -45,23 +45,23 @@
   --danger-border: #fecaca;
   --danger-foreground: #991b1b;
 
-  --info: #0284c7;
-  --info-soft: #f0f9ff;
-  --info-border: #bae6fd;
-  --info-foreground: #075985;
+  --info: #2563eb;
+  --info-soft: #eff6ff;
+  --info-border: #bfdbfe;
+  --info-foreground: #1e40af;
 
   /* Layout */
-  --radius: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.5rem;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  /* Shadows — structural only */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 0 3px rgba(24, 24, 27, 0.08);
 }
 
 @theme inline {
@@ -77,17 +77,17 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: var(--radius-xl);
+  --radius-lg: var(--radius-lg);
+  --radius-md: var(--radius);
+  --radius-sm: 6px;
   
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 }
 
 /* ============================================
-   Base Styles
+   Base
    ============================================ */
 
 * {
@@ -97,36 +97,46 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply antialiased selection:bg-primary selection:text-primary-foreground;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--foreground);
+}
+
 /* ============================================
-   Component Classes
+   Components
    ============================================ */
 
 @layer components {
-  /* Primary Button */
+  /* Primary Button — Black, measured, authoritative */
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200 ease-out;
+    @apply inline-flex items-center justify-center font-semibold transition-all duration-150 ease-out cursor-pointer;
     background: var(--primary);
     color: var(--primary-foreground);
-    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius);
+    padding: 0.625rem 1.125rem;
     font-size: 0.875rem;
-    box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.1);
+    box-shadow: var(--shadow-xs);
   }
   .btn-primary:hover:not(:disabled) {
     background: var(--primary-hover);
-    box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.1);
-    transform: translateY(-0.5px);
+    box-shadow: var(--shadow-sm);
   }
   .btn-primary:active:not(:disabled) {
-    transform: translateY(0);
+    transform: scale(0.98);
   }
   .btn-primary:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
   .btn-primary:focus-visible {
@@ -134,27 +144,30 @@ body {
     box-shadow: var(--shadow-glow);
   }
 
-  /* Secondary Button */
+  /* Secondary Button — Bordered, clean */
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200 ease-out;
+    @apply inline-flex items-center justify-center font-medium transition-all duration-150 ease-out cursor-pointer;
     background: var(--card);
     color: var(--foreground);
-    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius);
+    padding: 0.625rem 1.125rem;
     font-size: 0.875rem;
     border: 1px solid var(--border);
-    box-shadow: var(--shadow-xs);
   }
   .btn-secondary:hover:not(:disabled) {
     background: var(--muted);
     border-color: var(--border);
-    box-shadow: var(--shadow-sm);
+  }
+  .btn-secondary:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
-  /* Form Input */
+  /* Input — Clean, precise */
   .input-field {
-    @apply flex w-full rounded-xl border bg-white text-sm placeholder:text-muted-foreground/50 transition-all duration-200;
+    @apply flex w-full border bg-white text-sm placeholder:text-muted-foreground/50 transition-all duration-150;
     border-color: var(--border);
-    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    padding: 0.625rem 0.875rem;
   }
   .input-field:focus {
     outline: none;
@@ -166,15 +179,19 @@ body {
     opacity: 0.5;
   }
 
-  /* Premium Card */
+  /* Card — Structured surface */
   .card-surface {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    transition: box-shadow 0.15s ease-out;
+  }
+  .card-surface:hover {
     box-shadow: var(--shadow-sm);
   }
 
-  /* Info Banner */
+  /* Banners */
   .banner-info {
     background: var(--info-soft);
     border: 1px solid var(--info-border);
@@ -182,7 +199,6 @@ body {
     padding: 1rem 1.25rem;
   }
 
-  /* Success Banner */
   .banner-success {
     background: var(--success-soft);
     border: 1px solid var(--success-border);
@@ -190,9 +206,11 @@ body {
     padding: 1rem 1.25rem;
   }
 
-  /* Status Badges */
+  /* Badges — Compact, precise */
   .badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 text-xs font-semibold;
+    padding: 3px 10px;
+    border-radius: 6px;
   }
   .badge-success {
     background: var(--success-soft);
@@ -205,9 +223,9 @@ body {
     border: 1px solid var(--warning-border);
   }
   .badge-info {
-    background: var(--primary-soft);
-    color: var(--primary);
-    border: 1px solid var(--primary-border);
+    background: var(--info-soft);
+    color: var(--info-foreground);
+    border: 1px solid var(--info-border);
   }
   .badge-live {
     background: var(--success-soft);
@@ -217,16 +235,16 @@ body {
 }
 
 /* ============================================
-   Animations
+   Animations — Measured, professional
    ============================================ */
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -236,30 +254,39 @@ body {
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
-  50% { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
+  animation: slideUp 0.35s ease-out forwards;
 }
 
 .animate-pulse-glow {
   animation: pulseGlow 2s ease-in-out infinite;
 }
 
-/* Stagger animations for lists */
+.animate-scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger */
 .stagger-1 { animation-delay: 0.05s; }
 .stagger-2 { animation-delay: 0.1s; }
 .stagger-3 { animation-delay: 0.15s; }
 .stagger-4 { animation-delay: 0.2s; }
 
 /* ============================================
-   Scrollbar
+   Scrollbar — Minimal
    ============================================ */
 
 ::-webkit-scrollbar {
@@ -277,8 +304,17 @@ body {
   background: var(--muted-foreground);
 }
 
+/* Scrollbar-none for horizontal tabs */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ============================================
-   RainbowKit Overrides
+   RainbowKit
    ============================================ */
 [data-rk] button {
   font-family: 'Inter', system-ui, sans-serif !important;

@@ -8,7 +8,10 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { CircleAuthProvider } from '@/lib/CircleAuthContext';
 
-const projectId = '3fcc6bba6f1de962d911bb5b5c3dba68'; 
+const projectId = 
+  process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || 
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 
+  '3a8170812b534d0ff9d794f19a901d64'; // Fallback to Scaffold-ETH test ID (unlocked for localhost:3000)
 
 const config = getDefaultConfig({
   appName: 'StablePay — Smart Business Payments',
@@ -25,9 +28,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider 
           theme={lightTheme({
-            accentColor: '#111111', // Dark themed primary to align with Cal.com style
+            accentColor: '#18181b',
             accentColorForeground: 'white',
-            borderRadius: 'large',
+            borderRadius: 'medium',
             fontStack: 'system',
             overlayBlur: 'small',
           })}
