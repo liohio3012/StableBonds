@@ -8,7 +8,7 @@ import BondLadderBuilder from "@/components/enterprise/BondLadderBuilder";
 import OTCDesk from "@/components/enterprise/OTCDesk";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock } from 'lucide-react';
+import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock, PlusCircle, Wallet, Layers, Calendar, Bot, Users, ClipboardList, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import CircleAuthButton from '@/components/enterprise/CircleAuthButton';
 import CompliancePortal from "@/components/enterprise/CompliancePortal";
@@ -20,18 +20,96 @@ import Auditing from "@/components/enterprise/Auditing";
 import Logo from "@/components/enterprise/Logo";
 import Footer from "@/components/enterprise/Footer";
 
-const TABS = [
-  { id: 'strategy', label: 'New Payment' },
-  { id: 'unified', label: 'Unified Balance' },
-  { id: 'ladder', label: 'Bond Ladder' },
-  { id: 'calendar', label: 'Maturity Calendar' },
-  { id: 'treasury', label: 'My Payments' },
-  { id: 'otc', label: 'Secondary Market' },
-  { id: 'compliance', label: 'Compliance' },
-  { id: 'agent', label: 'Agent Copilot' },
-  { id: 'multisig', label: 'Multi-Sig' },
-  { id: 'auditing', label: 'Audit Suite' },
+const SIDEBAR_GROUPS = [
+  {
+    title: 'Payments & Assets',
+    items: [
+      { id: 'strategy', label: 'New Payment', icon: PlusCircle },
+      { id: 'treasury', label: 'My Payments', icon: CalendarClock },
+      { id: 'unified', label: 'Unified Balance', icon: Wallet },
+    ]
+  },
+  {
+    title: 'Treasury & Yield',
+    items: [
+      { id: 'ladder', label: 'Bond Ladder', icon: Layers },
+      { id: 'calendar', label: 'Maturity Calendar', icon: Calendar },
+      { id: 'otc', label: 'Secondary Market', icon: TrendingUp },
+    ]
+  },
+  {
+    title: 'Operations',
+    items: [
+      { id: 'compliance', label: 'Compliance Center', icon: Shield },
+      { id: 'agent', label: 'Agent Copilot', icon: Bot },
+      { id: 'multisig', label: 'Multi-Sig Desk', icon: Users },
+      { id: 'auditing', label: 'Audit Suite', icon: ClipboardList },
+    ]
+  }
 ] as const;
+
+function SidebarContent({ 
+  activeTab, 
+  setActiveTab,
+  isSidebarCollapsed = false,
+  collapsedGroups = {},
+  toggleGroup = () => {}
+}: { 
+  activeTab: string; 
+  setActiveTab: (tab: any) => void; 
+  isSidebarCollapsed?: boolean;
+  collapsedGroups?: Record<string, boolean>;
+  toggleGroup?: (title: string) => void;
+}) {
+  return (
+    <div className="space-y-6">
+      {SIDEBAR_GROUPS.map((group) => {
+        const isCollapsed = collapsedGroups[group.title];
+        return (
+          <div key={group.title} className="space-y-1.5">
+            {!isSidebarCollapsed ? (
+              <button
+                onClick={() => toggleGroup(group.title)}
+                className="w-full flex items-center justify-between text-[10px] font-bold text-[var(--muted-foreground)] uppercase tracking-wider px-3 mb-2 cursor-pointer hover:text-[var(--foreground)] transition-colors text-left"
+              >
+                <span>{group.title}</span>
+                {isCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
+              </button>
+            ) : (
+              <div className="border-t border-[var(--border)] my-3 mx-1 opacity-50" />
+            )}
+            
+            {(!isCollapsed || isSidebarCollapsed) && (
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      title={item.label}
+                      className={`w-full flex items-center rounded-md transition-all cursor-pointer ${
+                        isSidebarCollapsed ? 'justify-center p-2' : 'gap-2.5 px-3 py-2 text-xs font-semibold'
+                      } ${
+                        isActive 
+                          ? 'bg-[var(--primary)] text-white shadow-sm' 
+                          : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]'
+                      }`}
+                    >
+                      <Icon size={14} className={isActive ? 'text-white' : 'text-[var(--muted-foreground)]'} />
+                      {!isSidebarCollapsed && <span>{item.label}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 const TAB_META: Record<string, { title: string; description: string }> = {
   treasury: {
@@ -195,12 +273,61 @@ function WelcomeOnboarding({ onGetStarted }: { onGetStarted: () => void }) {
 export default function Home() {
   const [mounted, setMounted] = React.useState(false);
   const [activeTab, setActiveTab] = useState<'treasury' | 'strategy' | 'calendar' | 'ladder' | 'compliance' | 'otc' | 'unified' | 'agent' | 'multisig' | 'auditing'>('strategy');
-  const { isConnected: isEoaConnected } = useAccount();
-  const { isSmartAccount } = useCircleAuth();
+  const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
+  const { account: circleAccount, session, isSmartAccount } = useCircleAuth();
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Sidebar collapsible states
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  // Compliance (KYC) state
+  const userAddress = isSmartAccount ? circleAccount?.address : eoaAddress;
+  const [isKycVerified, setIsKycVerified] = useState(true);
+
+  // Tenant diagnostic state
+  const [diagnosticResult, setDiagnosticResult] = useState<{
+    clientKeyConfigured: boolean;
+    apiKeyConfigured: boolean;
+    tenantMismatch: boolean;
+    clientTenant: string;
+    apiTenant: string;
+  } | null>(null);
+
+  const toggleGroup = (title: string) => {
+    setCollapsedGroups(prev => ({ ...prev, [title]: !prev[title] }));
+  };
 
   React.useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Poll local storage for compliance status
+  React.useEffect(() => {
+    if (!userAddress) {
+      setIsKycVerified(true);
+      return;
+    }
+    const checkKyc = () => {
+      const verified = localStorage.getItem(`kyc_verified_${userAddress}`) === 'true';
+      setIsKycVerified(verified);
+    };
+    checkKyc();
+    window.addEventListener('storage', checkKyc);
+    const interval = setInterval(checkKyc, 1000);
+    return () => {
+      window.removeEventListener('storage', checkKyc);
+      clearInterval(interval);
+    };
+  }, [userAddress]);
+
+  // Fetch tenant key mismatch diagnostics
+  React.useEffect(() => {
+    fetch('/api/diagnostics')
+      .then(res => res.json())
+      .then(data => setDiagnosticResult(data))
+      .catch(err => console.error('Failed to fetch diagnostics:', err));
   }, []);
 
   const isConnected = mounted && (isEoaConnected || isSmartAccount);
@@ -216,11 +343,22 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       {/* Navbar */}
       <nav className="border-b sticky top-0 z-50 backdrop-blur-xl bg-[var(--background)]/90" style={{ borderColor: 'var(--border)' }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
-          <Logo size={28} />
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {!shouldShowOnboarding && (
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-1.5 rounded-md hover:bg-[var(--muted)] text-[var(--muted-foreground)] cursor-pointer"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            )}
+            <Logo size={28} />
+          </div>
 
           <div className="flex items-center gap-2">
             <CircleAuthButton />
@@ -258,83 +396,133 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8">
+      {/* Main Container */}
+      <div className="flex-1 flex max-w-7xl w-full mx-auto relative">
         {shouldShowOnboarding ? (
-          <WelcomeOnboarding onGetStarted={() => setShowOnboarding(false)} />
+          <main className="flex-1 px-4 md:px-6 py-8">
+            <WelcomeOnboarding onGetStarted={() => setShowOnboarding(false)} />
+          </main>
         ) : (
           <>
-            {/* Tab Navigation — underline style */}
-            <div className="mb-6 overflow-x-auto scrollbar-none border-b" style={{ borderColor: 'var(--border)' }}>
-              <div className="flex items-center gap-0 flex-nowrap min-w-max">
-                {TABS.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => { setActiveTab(tab.id as any); setShowOnboarding(false); }}
-                    className={`px-3.5 py-2.5 text-[13px] font-medium transition-colors duration-150 whitespace-nowrap cursor-pointer border-b-2 -mb-px ${
-                      activeTab === tab.id
-                        ? 'border-[var(--foreground)] text-[var(--foreground)]'
-                        : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* Sidebar - Desktop (Collapsible) */}
+            <aside className={`relative hidden md:flex flex-col shrink-0 border-r py-6 transition-all duration-300 ease-in-out sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto ${isSidebarCollapsed ? 'w-16 pr-0 items-center' : 'w-60 pr-6'}`}
+              style={{ borderColor: 'var(--border)' }}>
+              
+              {/* Collapse Trigger Chevron */}
+              <button 
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                className="absolute right-2 top-2 z-10 w-6 h-6 rounded-md border bg-[var(--muted)] flex items-center justify-center text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--border)] transition-all cursor-pointer shadow-sm"
+                style={{ borderColor: 'var(--border)' }}
+                title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              >
+                {isSidebarCollapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+              </button>
 
-            {/* Page Header */}
-            <div className="mb-6 animate-fade-in">
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">
-                  {meta.title}
-                </h1>
-                <div className="badge badge-success">
-                  <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[var(--success)]"></span>
-                  Live
-                </div>
+              <div className="w-full mt-4">
+                <SidebarContent 
+                  activeTab={activeTab} 
+                  setActiveTab={setActiveTab} 
+                  isSidebarCollapsed={isSidebarCollapsed}
+                  collapsedGroups={collapsedGroups}
+                  toggleGroup={toggleGroup}
+                />
               </div>
-              <p className="text-sm text-[var(--muted-foreground)] max-w-xl">{meta.description}</p>
-            </div>
+            </aside>
 
-            {/* Content */}
-            {activeTab === 'treasury' && (
-              <div className="space-y-6 animate-fade-in">
-                <YieldStreamer />
-                <TreasuryDashboard onListOTC={() => setActiveTab('otc')} />
+            {/* Sidebar - Mobile Drawer */}
+            {mobileMenuOpen && (
+              <div className="fixed inset-0 z-40 md:hidden bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setMobileMenuOpen(false)}>
+                <aside 
+                  className="fixed bottom-0 top-14 left-0 w-64 bg-[var(--background)] border-r p-5 shadow-2xl animate-slide-right flex flex-col"
+                  style={{ borderColor: 'var(--border)' }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <SidebarContent activeTab={activeTab} setActiveTab={(tab) => { setActiveTab(tab); setMobileMenuOpen(false); }} />
+                </aside>
               </div>
             )}
-            {activeTab === 'unified' && <UnifiedBalance />}
-            {activeTab === 'calendar' && <MaturityCalendar />}
-            {activeTab === 'ladder' && <BondLadderBuilder />}
-            {activeTab === 'compliance' && <CompliancePortal />}
-            {activeTab === 'otc' && <OTCDesk />}
-            {activeTab === 'agent' && <AgentManager />}
-            {activeTab === 'multisig' && <MultiSigDesk />}
-            {activeTab === 'auditing' && <Auditing />}
-            {activeTab === 'strategy' && (
-              <div className="animate-fade-in">
-                <IntentBuilder />
-                <div className="mt-8 text-center max-w-md mx-auto">
-                  <div className="flex items-center justify-center gap-5 text-[11px] font-medium text-[var(--muted-foreground)]">
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 size={12} className="text-[var(--success)]" />
-                      Instant confirmation
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 size={12} className="text-[var(--success)]" />
-                      No hidden fees
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <CheckCircle2 size={12} className="text-[var(--success)]" />
-                      Cancel anytime
-                    </span>
+
+            {/* Main Content Area */}
+            <main className="flex-1 min-w-0 px-4 md:px-8 py-8 overflow-y-auto">
+              
+              {/* Diagnostic warning banner for Tenant ID Mismatch hidden as requested */}
+
+              {/* Global KYC compliance warning banner */}
+              {!isKycVerified && (
+                <div className="mb-6 p-4 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-200 animate-slide-up flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex gap-3 text-left">
+                    <Shield className="text-amber-500 shrink-0 mt-0.5" size={18} />
+                    <div>
+                      <h4 className="font-semibold text-sm text-amber-400">Compliance Verification Required</h4>
+                      <p className="text-xs text-amber-300/90 mt-1 leading-relaxed">
+                        You must complete corporate onboarding before scheduling payments or investing in bond ladders.
+                      </p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setActiveTab('compliance')} 
+                    className="btn-primary text-xs whitespace-nowrap bg-amber-600 hover:bg-amber-500 border-amber-500 text-white gap-1.5 px-4 py-2 self-start sm:self-center flex items-center font-semibold"
+                  >
+                    Start KYC Onboarding
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
+              )}
+
+              {/* Page Header */}
+              <div className="mb-6 animate-fade-in text-left">
+                <div className="flex items-center gap-3 mb-1">
+                  <h1 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">
+                    {meta.title}
+                  </h1>
+                  <div className="badge badge-success">
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[var(--success)]"></span>
+                    Live
                   </div>
                 </div>
+                <p className="text-sm text-[var(--muted-foreground)] max-w-xl">{meta.description}</p>
               </div>
-            )}
+
+              {/* Content */}
+              {activeTab === 'treasury' && (
+                <div className="space-y-6 animate-fade-in">
+                  <YieldStreamer />
+                  <TreasuryDashboard onListOTC={() => setActiveTab('otc')} />
+                </div>
+              )}
+              {activeTab === 'unified' && <UnifiedBalance />}
+              {activeTab === 'calendar' && <MaturityCalendar />}
+              {activeTab === 'ladder' && <BondLadderBuilder onNavigateToCompliance={() => setActiveTab('compliance')} />}
+              {activeTab === 'compliance' && <CompliancePortal />}
+              {activeTab === 'otc' && <OTCDesk />}
+              {activeTab === 'agent' && <AgentManager />}
+              {activeTab === 'multisig' && <MultiSigDesk />}
+              {activeTab === 'auditing' && <Auditing />}
+              {activeTab === 'strategy' && (
+                <div className="animate-fade-in">
+                  <IntentBuilder onNavigateToCompliance={() => setActiveTab('compliance')} />
+                  <div className="mt-8 text-center max-w-md mx-auto">
+                    <div className="flex items-center justify-center gap-5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 size={12} className="text-[var(--success)]" />
+                        Instant confirmation
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 size={12} className="text-[var(--success)]" />
+                        No hidden fees
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 size={12} className="text-[var(--success)]" />
+                        Cancel anytime
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </main>
           </>
         )}
-      </main>
+      </div>
 
       <Footer />
     </div>

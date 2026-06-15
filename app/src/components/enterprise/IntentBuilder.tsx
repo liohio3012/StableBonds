@@ -11,10 +11,25 @@ import CustomDropdown from './CustomDropdown';
 
 // Sleek Custom SVG Icons for Networks
 const ArcIcon = (
-  <svg className="w-4 h-4 text-zinc-950 dark:text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    <path d="M2 12h20" />
+  <svg fill="none" viewBox="0 0 48 48" className="w-4 h-4 shrink-0 cb-icon cb-icon-blockchain/arc pointer-events-none" aria-hidden="true" data-testid="icon-blockchain/arc" focusable="false" role="img">
+    <g clipPath="url(#clip0_1_2)">
+      <path fill="url(#paint0_linear_1_2)" d="M48 24C48 10.745 37.255 0 24 0S0 10.745 0 24s10.745 24 24 24 24-10.745 24-24"></path>
+      <path fill="url(#paint1_linear_1_2)" d="M23.993 8.4c3.957 0 7.473 3.428 9.903 9.651 1.264 3.237 2.194 7.083 2.745 11.267.05.374.091.753.134 1.132q.023.037.02.063c.001.009.324 2.03.392 5.537h-.036c-.48-.394-6.144-4.845-15.533-3.556.141-1.589.336-3.135.588-4.617l.04-.224c3.683-.111 6.906.317 9.378.877l-.026-.177c-.508-3.164-1.258-6.06-2.224-8.536-1.58-4.048-3.642-6.562-5.38-6.562-1.739 0-3.801 2.514-5.381 6.562-.383.979-.731 2.023-1.043 3.124a47 47 0 0 0-1.102 4.936 62 62 0 0 0-.81 8.173H10.8c.224-6.77 1.372-13.087 3.29-17.999 2.43-6.224 5.947-9.651 9.903-9.651"></path>
+    </g>
+    <defs>
+      <linearGradient id="paint0_linear_1_2" x1="24" x2="24" y1="0" y2="48" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#000B24"></stop>
+        <stop offset="0.743" stopColor="#052950"></stop>
+        <stop offset="1" stopColor="#416D91"></stop>
+      </linearGradient>
+      <linearGradient id="paint1_linear_1_2" x1="23.994" x2="46.193" y1="8.4" y2="54.921" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#fff"></stop>
+        <stop offset="1" stopColor="#fff" stopOpacity="0"></stop>
+      </linearGradient>
+      <clipPath id="clip0_1_2">
+        <path fill="#fff" d="M0 0h48v48H0z"></path>
+      </clipPath>
+    </defs>
   </svg>
 );
 
@@ -25,31 +40,38 @@ const UnifiedBalanceIcon = (
 );
 
 const EthereumIcon = (
-  <svg className="w-4 h-4 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="m12 2-7 10 7 4 7-4-7-10z" />
-    <path d="m12 22-7-8 7-2 7 2-7 8z" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-eth pointer-events-none" aria-hidden="true" data-testid="icon-eth" focusable="false" role="img">
+    <circle cx="60" cy="60" r="60" fill="#627EEA"></circle>
+    <path fill="#C0CCF7" d="m59.837 24-.478 1.621v47.042l.478.476 21.835-12.907z"></path>
+    <path fill="#fff" d="M59.836 24 38 60.232l21.836 12.907V24"></path>
+    <path fill="#C0CCF7" d="m59.836 77.273-.269.329v16.757l.27.785 21.849-30.771z"></path>
+    <path fill="#fff" d="M59.836 95.144v-17.87L38 64.372z"></path>
+    <path fill="#8198EE" d="m59.836 73.14 21.836-12.908-21.836-9.926z"></path>
+    <path fill="#C0CCF7" d="m38 60.232 21.836 12.907V50.306z"></path>
   </svg>
 );
 
 const ArbitrumIcon = (
-  <svg className="w-4 h-4 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2z" />
-    <path d="M12 6a6 6 0 0 0-6 6c0 3.3 2.7 6 6 6s6-2.7 6-6a6 6 0 0 0-6-6z" />
-    <circle cx="12" cy="12" r="2" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-arb pointer-events-none" aria-hidden="true" data-testid="icon-arb" focusable="false" role="img">
+    <circle cx="60" cy="60" r="60" fill="#2D374B"></circle>
+    <path fill="#2D374B" fillRule="evenodd" d="M76.963 47.521 70.629 58.27 87.11 84.925l5.96-3.453L61.9 99.535c-.6.217-1.302.205-1.898-.037l-1.407-.81-11.78-6.775 28.267-47.946-12.526.046-28.34 46.765-3.3-1.9 28.003-44.91-4.752-.126c-4.05-.057-8.412.995-10.414 4.264L27.85 72.754l-.047-28.617q.01-.158.038-.31a2.64 2.64 0 0 1 1.504-1.936l.115-.052 29.836-17.29.107-.067q.13-.086.275-.159a2.7 2.7 0 0 1 2.349-.011l30.738 17.68a2.65 2.65 0 0 1 1.223 2.108l.048 30.013zM61.148 74.403l11.897 18.673 10.99-6.37L68.411 62.08z" clipRule="evenodd"></path>
+    <path fill="#28A0F0" d="m61.148 74.403 11.898 18.673 10.99-6.37L68.41 62.08zM94.044 79.216l-.008-5.103L76.963 47.52l-6.334 10.748L87.11 84.924l5.96-3.453a2.64 2.64 0 0 0 .975-1.923z"></path>
+    <path fill="#fff" d="m22.5 84.029 8.415 4.849 28.004-44.91-4.752-.126c-4.05-.057-8.412.995-10.414 4.264L27.85 72.754l-5.35 8.22zM75.082 43.967l-12.526.046-28.34 46.765 9.906 5.704 2.694-4.569z"></path>
+    <path fill="#96BEDC" d="M99.323 43.903c-.105-2.62-1.523-5.018-3.745-6.414L64.437 19.58c-2.198-1.107-4.943-1.108-7.145-.001-.26.131-30.283 17.543-30.283 17.543q-.626.301-1.193.707a7.92 7.92 0 0 0-3.316 6.057v37.087l5.35-8.22-.047-28.617q.01-.156.038-.309a2.64 2.64 0 0 1 1.063-1.68c.141-.101 30.678-17.777 30.775-17.825a2.71 2.71 0 0 1 2.348-.011l30.738 17.68a2.65 2.65 0 0 1 1.224 2.107v35.45c-.038.75-.335 1.447-.92 1.922l-5.959 3.454-3.074 1.782-10.99 6.369L61.9 99.535c-.6.217-1.302.204-1.898-.038l-13.186-7.584-2.694 4.569 11.85 6.822c.392.223.741.421 1.028.582.444.248.746.415.853.467.842.409 2.054.647 3.146.647a7.9 7.9 0 0 0 2.901-.546l32.373-18.748c1.858-1.44 2.951-3.61 3.05-5.962z"></path>
   </svg>
 );
 
 const BaseIcon = (
-  <svg className="w-4 h-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="4" fill="currentColor" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-base pointer-events-none" aria-hidden="true" data-testid="icon-base" focusable="false" role="img">
+    <path fill="#2151F5" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" d="M59.917 108C86.473 108 108 86.51 108 60S86.473 12 59.917 12C34.722 12 14.053 31.344 12 55.965h63.556v8.07H12C14.053 88.656 34.722 108 59.917 108"></path>
   </svg>
 );
 
 const OptimismIcon = (
-  <svg className="w-4 h-4 text-red-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="6" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-op pointer-events-none" aria-hidden="true" data-testid="icon-op" focusable="false" role="img">
+    <path fill="#FF0420" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" d="M31.594 86q-8.637 0-14.145-4.041C13.816 79.226 12 75.299 12 70.258c0-1.078.116-2.348.348-3.888.618-3.464 1.507-7.62 2.666-12.51C18.3 40.62 26.803 34 40.485 34c3.71 0 7.072.616 10.009 1.886 2.937 1.193 5.256 3.04 6.956 5.504Q60 45.028 60 50.05q0 1.502-.348 3.81c-.734 4.273-1.584 8.469-2.628 12.51-1.7 6.582-4.599 11.547-8.773 14.819C44.116 84.422 38.551 86 31.594 86m1.044-10.392c2.705 0 4.985-.809 6.879-2.387 1.932-1.578 3.324-4.003 4.135-7.313 1.12-4.542 1.971-8.468 2.55-11.855.194-1 .31-2.04.31-3.117 0-4.388-2.28-6.582-6.88-6.582-2.704 0-5.023.808-6.956 2.386-1.893 1.578-3.246 4.003-4.058 7.313-.888 3.233-1.739 7.16-2.628 11.855-.193.963-.309 1.963-.309 3.04-.039 4.466 2.319 6.66 6.957 6.66M63.456 84c-.526 0-.902-.152-1.202-.495-.226-.38-.301-.799-.226-1.293l9.73-46.424c.075-.532.338-.95.789-1.293A2.05 2.05 0 0 1 73.899 34h18.745c5.222 0 9.392 1.103 12.548 3.273 3.193 2.206 4.808 5.365 4.808 9.512 0 1.18-.15 2.436-.413 3.73-1.165 5.479-3.531 9.512-7.138 12.138-3.531 2.625-8.377 3.92-14.538 3.92h-9.504l-3.23 15.639c-.113.532-.339.95-.79 1.293a2.05 2.05 0 0 1-1.352.495zM88.4 56.717c1.99 0 3.681-.533 5.146-1.636 1.503-1.104 2.48-2.664 2.968-4.719.15-.799.225-1.522.225-2.13 0-1.37-.413-2.436-1.202-3.159-.789-.761-2.179-1.142-4.095-1.142H82.99l-2.667 12.786z"></path>
   </svg>
 );
 
@@ -82,16 +104,18 @@ const InternationalIcon = (
 
 // Sleek Currency Icons
 const UsdcIcon = (
-  <svg className="w-4 h-4 text-blue-500 shrink-0 fill-blue-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 6v12M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-usdc pointer-events-none" aria-hidden="true" data-testid="icon-usdc" focusable="false" role="img">
+    <path fill="#0B53BF" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" d="M70.8 16.313v7.725C86.211 28.688 97.498 43.013 97.498 60s-11.287 31.313-26.7 35.963v7.725C90.45 98.888 105 81.15 105 60s-14.55-38.887-34.2-43.687M22.499 60c0-16.987 11.287-31.312 26.7-35.962v-7.725c-19.65 4.8-34.2 22.537-34.2 43.687s14.55 38.888 34.2 43.688v-7.725C33.786 91.35 22.499 76.988 22.499 60"></path>
+    <path fill="#fff" d="M76.124 68.363c0-15.338-24.037-9.038-24.037-17.513 0-3.037 2.437-4.987 7.087-4.987 5.55 0 7.463 2.7 8.063 6.337h7.65c-.683-6.826-4.6-11.137-11.138-12.42v-6.03h-7.5v5.814c-7.161.912-11.662 5.083-11.662 11.286 0 15.413 24.075 9.638 24.075 17.963 0 3.15-3.038 5.25-8.176 5.25-6.712 0-8.924-2.963-9.75-7.05h-7.462c.483 7.477 5.094 12.157 12.975 13.324v5.913h7.5v-5.834c7.692-.994 12.375-5.468 12.375-12.053"></path>
   </svg>
 );
 
 const EurcIcon = (
-  <svg className="w-4 h-4 text-indigo-500 shrink-0 fill-indigo-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M15 15.5A4 4 0 1 1 15 8.5M9 11h6M9 13h6" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-eurc pointer-events-none" aria-hidden="true" data-testid="icon-eurc" focusable="false" role="img">
+    <path fill="#0B53BF" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" stroke="#0B53BF" strokeMiterlimit="10" strokeWidth="0.035" d="M72.749 74.287c-2.625 1.05-5.475 1.65-8.212 1.65-5.422 0-10.533-2.308-12.976-7.875h11.926l2.324-5.624H50.174A26 26 0 0 1 50.062 60q0-1.275.112-2.438h17.625l2.325-5.625H51.562c2.442-5.566 7.553-7.875 12.975-7.875 2.737 0 5.587.6 8.212 1.65l2.4-5.7c-3.225-1.687-6.862-2.512-10.5-2.512-8.78 0-17.654 4.908-20.867 14.437h-5.758v5.625h4.605a28 28 0 0 0 0 4.876h-4.605v5.624h5.758C46.995 77.592 55.87 82.5 64.65 82.5c3.638 0 7.275-.825 10.5-2.513z"></path>
+    <path fill="#fff" stroke="#0B53BF" strokeMiterlimit="10" strokeWidth="0.035" d="M22.499 60c0-16.988 11.287-31.313 26.7-35.963v-7.725c-19.65 4.8-34.2 22.538-34.2 43.688s14.55 38.887 34.2 43.687v-7.725C33.786 91.35 22.499 76.987 22.499 60ZM70.799 16.312v7.725c15.412 4.65 26.7 18.975 26.7 35.963 0 16.987-11.287 31.312-26.7 35.962v7.725c19.65-4.8 34.2-22.537 34.2-43.687s-14.55-38.888-34.2-43.688Z"></path>
   </svg>
 );
 
@@ -115,7 +139,7 @@ const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${strin
 
 const ERC20_ABI = parseAbi(["function approve(address spender, uint256 amount) external returns (bool)"]);
 const VAULT_ABI = parseAbi([
-  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit, uint256 _minBuyAmount, bytes _tradeData) external",
+  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain) external",
   "function receiveGatewayPayment(address _owner, uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit) external"
 ]);
 
@@ -274,9 +298,9 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
   );
 }
 
-export default function IntentBuilder() {
+export default function IntentBuilder({ onNavigateToCompliance }: { onNavigateToCompliance?: () => void }) {
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
-  const { account: circleAccount, isSmartAccount } = useCircleAuth();
+  const { account: circleAccount, isSmartAccount, logout } = useCircleAuth();
   const publicClient = usePublicClient();
 
   const isConnected = isEoaConnected || isSmartAccount;
@@ -930,11 +954,6 @@ export default function IntentBuilder() {
               BigInt(selectedTermId), 
               supplierAddress as `0x${string}`, 
               parseInt(destChain),
-              depositTokenAddress as `0x${string}`,
-              settlementTokenAddress as `0x${string}`,
-              swapAtDeposit,
-              minBuyAmount,
-              "0x"
             ],
           }),
         };
@@ -969,12 +988,22 @@ export default function IntentBuilder() {
           }
         });
       } catch (error: any) {
-        console.error("Smart Account Tx Error:", error);
+        console.error("[browser] Smart Account Tx Error:", error);
         setSmartPending(false);
         setSmartConfirming(false);
         if (error.message?.includes('User rejected') || error.code === 'NotAllowedError' || error.name === 'NotAllowedError') {
           toast.info("Payment cancelled", {
             description: "You cancelled the passkey authentication signature.",
+          });
+          return;
+        }
+        // Detect stale wallet (created under a different Circle project/client key)
+        const errMsg = error.message || error.details || '';
+        if (errMsg.includes('Cannot find target wallet') || errMsg.includes('not accessible to the caller')) {
+          logout();
+          toast.error("Wallet session expired", {
+            description: "Your wallet was created under a different project key. Please register a new passkey to continue.",
+            duration: 10000,
           });
           return;
         }
@@ -996,11 +1025,6 @@ export default function IntentBuilder() {
             BigInt(selectedTermId), 
             supplierAddress as `0x${string}`, 
             parseInt(destChain),
-            depositTokenAddress as `0x${string}`,
-            settlementTokenAddress as `0x${string}`,
-            swapAtDeposit,
-            minBuyAmount,
-            "0x"
           ],
         });
         
@@ -1514,26 +1538,37 @@ export default function IntentBuilder() {
           )}
           {/* Compliance warnings */}
           {!checkingCompliance && (!isVerified || isBlacklisted) && (
-            <div className={`p-4 rounded-xl flex items-start gap-3 mt-6 ${
+            <div className={`p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 mt-6 ${
               isBlacklisted 
-                ? 'bg-red-50 text-red-800 border border-red-200 animate-slide-up' 
-                : 'bg-amber-50 text-amber-800 border border-amber-200 animate-slide-up'
+                ? 'bg-red-500/10 text-red-200 border border-red-500/30 animate-slide-up' 
+                : 'bg-amber-500/10 text-amber-200 border border-amber-500/30 animate-slide-up'
             }`}>
-              <div className={`mt-0.5 ${isBlacklisted ? 'text-red-600' : 'text-amber-600'}`}>
-                {isBlacklisted ? <AlertOctagon size={16} /> : <Shield size={16} />}
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 ${isBlacklisted ? 'text-red-500' : 'text-amber-500'}`}>
+                  {isBlacklisted ? <AlertOctagon size={16} /> : <Shield size={16} />}
+                </div>
+                <div className="text-xs text-left">
+                  <span className="font-bold block mb-0.5" style={{ color: isBlacklisted ? '#f87171' : '#fbbf24' }}>
+                    {isBlacklisted 
+                      ? 'Compliance Block Active' 
+                      : 'KYC/KYB Verification Required'}
+                  </span>
+                  <span className="opacity-90">
+                    {isBlacklisted 
+                      ? 'Your wallet is currently blacklisted/sanctioned. All transaction operations are blocked.' 
+                      : 'You must verify your corporate treasury profile in the Compliance Center before scheduling payments.'}
+                  </span>
+                </div>
               </div>
-              <div className="text-xs">
-                <span className="font-bold block mb-0.5">
-                  {isBlacklisted 
-                    ? 'Compliance Block Active' 
-                    : 'KYC/KYB Verification Required'}
-                </span>
-                <span>
-                  {isBlacklisted 
-                    ? 'Your wallet is currently blacklisted/sanctioned. All transaction operations are blocked.' 
-                    : 'You must verify your corporate treasury profile in the Compliance Center before scheduling payments.'}
-                </span>
-              </div>
+              {!isBlacklisted && onNavigateToCompliance && (
+                <button
+                  type="button"
+                  onClick={onNavigateToCompliance}
+                  className="btn-primary text-xs shrink-0 self-start md:self-center px-4 py-2 gap-1.5 shadow-md bg-amber-600 hover:bg-amber-500 border-amber-500 text-white transition-all cursor-pointer flex items-center font-semibold"
+                >
+                  Verify Now <ArrowRight size={13} />
+                </button>
+              )}
             </div>
           )}
         </div>

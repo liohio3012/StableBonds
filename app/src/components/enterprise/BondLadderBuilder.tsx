@@ -11,16 +11,18 @@ import CustomDropdown from './CustomDropdown';
 
 // Sleek Custom SVG Icons
 const UsdcIcon = (
-  <svg className="w-4 h-4 text-blue-500 shrink-0 fill-blue-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 6v12M14.5 9h-4a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 1 0 3h-4.5" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-usdc pointer-events-none" aria-hidden="true" data-testid="icon-usdc" focusable="false" role="img">
+    <path fill="#0B53BF" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" d="M70.8 16.313v7.725C86.211 28.688 97.498 43.013 97.498 60s-11.287 31.313-26.7 35.963v7.725C90.45 98.888 105 81.15 105 60s-14.55-38.887-34.2-43.687M22.499 60c0-16.987 11.287-31.312 26.7-35.962v-7.725c-19.65 4.8-34.2 22.537-34.2 43.687s14.55 38.888 34.2 43.688v-7.725C33.786 91.35 22.499 76.988 22.499 60"></path>
+    <path fill="#fff" d="M76.124 68.363c0-15.338-24.037-9.038-24.037-17.513 0-3.037 2.437-4.987 7.087-4.987 5.55 0 7.463 2.7 8.063 6.337h7.65c-.683-6.826-4.6-11.137-11.138-12.42v-6.03h-7.5v5.814c-7.161.912-11.662 5.083-11.662 11.286 0 15.413 24.075 9.638 24.075 17.963 0 3.15-3.038 5.25-8.176 5.25-6.712 0-8.924-2.963-9.75-7.05h-7.462c.483 7.477 5.094 12.157 12.975 13.324v5.913h7.5v-5.834c7.692-.994 12.375-5.468 12.375-12.053"></path>
   </svg>
 );
 
 const EurcIcon = (
-  <svg className="w-4 h-4 text-indigo-500 shrink-0 fill-indigo-500/10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M15 15.5A4 4 0 1 1 15 8.5M9 11h6M9 13h6" />
+  <svg fill="none" viewBox="0 0 120 120" className="w-4 h-4 shrink-0 cb-icon cb-icon-eurc pointer-events-none" aria-hidden="true" data-testid="icon-eurc" focusable="false" role="img">
+    <path fill="#0B53BF" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path>
+    <path fill="#fff" stroke="#0B53BF" strokeMiterlimit="10" strokeWidth="0.035" d="M72.749 74.287c-2.625 1.05-5.475 1.65-8.212 1.65-5.422 0-10.533-2.308-12.976-7.875h11.926l2.324-5.624H50.174A26 26 0 0 1 50.062 60q0-1.275.112-2.438h17.625l2.325-5.625H51.562c2.442-5.566 7.553-7.875 12.975-7.875 2.737 0 5.587.6 8.212 1.65l2.4-5.7c-3.225-1.687-6.862-2.512-10.5-2.512-8.78 0-17.654 4.908-20.867 14.437h-5.758v5.625h4.605a28 28 0 0 0 0 4.876h-4.605v5.624h5.758C46.995 77.592 55.87 82.5 64.65 82.5c3.638 0 7.275-.825 10.5-2.513z"></path>
+    <path fill="#fff" stroke="#0B53BF" strokeMiterlimit="10" strokeWidth="0.035" d="M22.499 60c0-16.988 11.287-31.313 26.7-35.963v-7.725c-19.65 4.8-34.2 22.538-34.2 43.688s14.55 38.887 34.2 43.687v-7.725C33.786 91.35 22.499 76.987 22.499 60ZM70.799 16.312v7.725c15.412 4.65 26.7 18.975 26.7 35.963 0 16.987-11.287 31.312-26.7 35.962v7.725c19.65-4.8 34.2-22.537 34.2-43.687s-14.55-38.888-34.2-43.688Z"></path>
   </svg>
 );
 
@@ -69,7 +71,7 @@ const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${strin
 
 const ERC20_ABI = parseAbi(["function approve(address spender, uint256 amount) external returns (bool)"]);
 const VAULT_ABI = parseAbi([
-  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit, uint256 _minBuyAmount, bytes _tradeData) external"
+  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain) external"
 ]);
 
 const VAULT_ABI_COMPLIANCE = parseAbi([
@@ -116,7 +118,7 @@ const NETWORK_OPTIONS = [
   { value: "22", label: "International Transfer", icon: "" },
 ];
 
-export default function BondLadderBuilder() {
+export default function BondLadderBuilder({ onNavigateToCompliance }: { onNavigateToCompliance?: () => void }) {
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
   const { account: circleAccount, isSmartAccount } = useCircleAuth();
   const isConnected = isEoaConnected || isSmartAccount;
@@ -302,11 +304,6 @@ export default function BondLadderBuilder() {
               BigInt(leg.id),
               supplierAddress as `0x${string}`,
               Number(destChain),
-              depositTokenAddress as `0x${string}`,
-              (settlementToken === 'USDC' ? USDC_ADDRESS : EURC_ADDRESS) as `0x${string}`,
-              swapAtDeposit,
-              BigInt(0),
-              '0x' as `0x${string}`
             ]
           })
         };
@@ -618,26 +615,37 @@ export default function BondLadderBuilder() {
 
             {/* Compliance warnings */}
             {!checkingCompliance && (!isVerified || isBlacklisted) && (
-              <div className={`p-4 rounded-xl flex items-start gap-3 mt-4 ${
+              <div className={`p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 mt-4 ${
                 isBlacklisted 
-                  ? 'bg-red-50 text-red-800 border border-red-200 animate-slide-up' 
-                  : 'bg-amber-50 text-amber-800 border border-amber-200 animate-slide-up'
+                  ? 'bg-red-500/10 text-red-200 border border-red-500/30 animate-slide-up' 
+                  : 'bg-amber-500/10 text-amber-200 border border-amber-500/30 animate-slide-up'
               }`}>
-                <div className={`mt-0.5 ${isBlacklisted ? 'text-red-600' : 'text-amber-600'}`}>
-                  <AlertOctagon size={16} />
+                <div className="flex items-start gap-3">
+                  <div className={`mt-0.5 ${isBlacklisted ? 'text-red-500' : 'text-amber-500'}`}>
+                    <AlertOctagon size={16} />
+                  </div>
+                  <div className="text-xs text-left">
+                    <span className="font-bold block mb-0.5" style={{ color: isBlacklisted ? '#f87171' : '#fbbf24' }}>
+                      {isBlacklisted 
+                        ? 'Compliance Block Active' 
+                        : 'KYC/KYB Verification Required'}
+                    </span>
+                    <span className="opacity-90">
+                      {isBlacklisted 
+                        ? 'Your wallet is currently blacklisted/sanctioned. All transaction operations are blocked.' 
+                        : 'You must verify your corporate treasury profile in the Compliance Center before scheduling payments.'}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-xs text-left">
-                  <span className="font-bold block mb-0.5">
-                    {isBlacklisted 
-                      ? 'Compliance Block Active' 
-                      : 'KYC/KYB Verification Required'}
-                  </span>
-                  <span>
-                    {isBlacklisted 
-                      ? 'Your wallet is currently blacklisted/sanctioned. All transaction operations are blocked.' 
-                      : 'You must verify your corporate treasury profile in the Compliance Center before scheduling payments.'}
-                  </span>
-                </div>
+                {!isBlacklisted && onNavigateToCompliance && (
+                  <button
+                    type="button"
+                    onClick={onNavigateToCompliance}
+                    className="btn-primary text-xs shrink-0 self-start md:self-center px-4 py-2 gap-1.5 shadow-md bg-amber-600 hover:bg-amber-500 border-amber-500 text-white transition-all cursor-pointer flex items-center font-semibold"
+                  >
+                    Verify Now <ArrowRight size={13} />
+                  </button>
+                )}
               </div>
             )}
 
@@ -651,7 +659,7 @@ export default function BondLadderBuilder() {
               <button
                 onClick={isSmartAccount ? handleSmartDeploy : handleEOADeploy}
                 disabled={!isFormValid || smartPending || smartConfirming || !isVerified || isBlacklisted}
-                className="btn-primary w-full sm:w-auto px-6 py-2.5 gap-2 text-sm justify-center items-center flex"
+                className="whitespace-nowrap shrink-0 px-6 py-3 gap-2.5 text-sm font-semibold justify-center items-center flex rounded-[var(--radius)] text-white bg-neutral-900 border border-amber-500/30 hover:border-amber-500/80 shadow-[0_2px_8px_-1px_rgba(0,0,0,0.1),0_0_12px_rgba(217,119,6,0.1)] hover:shadow-[0_4px_16px_rgba(217,119,6,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:scale-100 disabled:shadow-none disabled:border-transparent disabled:cursor-not-allowed"
                 id="btn-deploy-ladder"
               >
                 {smartPending ? (
@@ -659,7 +667,7 @@ export default function BondLadderBuilder() {
                 ) : smartConfirming ? (
                   <><Loader2 size={14} className="animate-spin" /> Staggering...</>
                 ) : (
-                  <>Deploy Staggered Ladder <ArrowRight size={14} /></>
+                  <>Deploy Staggered Ladder <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" /></>
                 )}
               </button>
             </div>
