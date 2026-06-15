@@ -74,6 +74,36 @@ const TERM_DURATIONS: Record<number, number> = {
   5: 365
 };
 
+// Tooltip Component — contextual helper
+function Tooltip({ text }: { text: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  return (
+    <span className="relative inline-flex ml-1">
+      <button
+        type="button"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+        className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors cursor-pointer"
+        aria-label="More info"
+      >
+        <HelpCircle size={13} />
+      </button>
+      {isVisible && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs font-medium leading-snug w-56 z-50 shadow-lg animate-fade-in text-left font-sans"
+          style={{ 
+            background: 'var(--foreground)', 
+            color: 'var(--primary-foreground)' 
+          }}>
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 -mt-1"
+            style={{ background: 'var(--foreground)' }}></div>
+        </div>
+      )}
+    </span>
+  );
+}
+
 export default function OTCDesk() {
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
   const { account: circleAccount, isSmartAccount } = useCircleAuth();
@@ -648,7 +678,10 @@ export default function OTCDesk() {
                       {/* Middle: YTM & Price calculations */}
                       <div className="flex gap-4 items-center self-stretch sm:self-auto sm:border-l pl-0 sm:pl-6 border-[var(--border)]">
                         <div className="text-right sm:text-left">
-                          <div className="text-xs text-[var(--muted-foreground)]">Buyer's YTM</div>
+                          <div className="text-xs text-[var(--muted-foreground)] flex items-center justify-end sm:justify-start">
+                            Buyer's YTM
+                            <Tooltip text="Yield-to-Maturity (YTM) measures the annualized yield a buyer captures by buying this bond at the current listing price." />
+                          </div>
                           <div className="text-lg font-bold text-[var(--success)] flex items-center gap-1 mt-0.5">
                             <TrendingUp size={16} />
                             {ytm.toFixed(2)}%
@@ -817,12 +850,18 @@ export default function OTCDesk() {
                     <span>Discount:</span>
                     <span className="font-bold">{discount > 0 ? `${discount.toFixed(2)}%` : "None (Premium)"}</span>
                   </div>
-                  <div className="flex justify-between text-xs text-[var(--info-foreground)]">
-                    <span>Buyer's Yield-to-Maturity (YTM):</span>
+                  <div className="flex justify-between items-center text-xs text-[var(--info-foreground)]">
+                    <span className="flex items-center">
+                      Buyer's YTM:
+                      <Tooltip text="Yield-to-Maturity (YTM) is the total annualized rate of return expected on a bond if it is held until maturity. When selling at a discount, this rate rises." />
+                    </span>
                     <span className="font-bold text-[var(--success)]">{ytm.toFixed(2)}% APY</span>
                   </div>
-                  <div className="flex justify-between text-xs text-[var(--info-foreground)]">
-                    <span>Trading Fee (0.20%):</span>
+                  <div className="flex justify-between items-center text-xs text-[var(--info-foreground)]">
+                    <span className="flex items-center">
+                      Trading Fee (0.20%):
+                      <Tooltip text="Used to support paymaster infrastructure for smart account gasless transactions." />
+                    </span>
                     <span className="font-semibold">{fee.toFixed(2)} USDC</span>
                   </div>
                   <div className="flex justify-between text-xs text-[var(--info-foreground)] pt-1 border-t border-[var(--info-border)]">

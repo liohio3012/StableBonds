@@ -49,6 +49,36 @@ const TRANSFER_METHOD_MAP: Record<number, string> = {
   22: "International Transfer"
 };
 
+// Tooltip Component — contextual helper
+function Tooltip({ text }: { text: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  return (
+    <span className="relative inline-flex ml-1">
+      <button
+        type="button"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+        className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors cursor-pointer"
+        aria-label="More info"
+      >
+        <Info size={13} />
+      </button>
+      {isVisible && (
+        <div className="absolute bottom-full right-0 mb-2 px-3 py-2 rounded-lg text-xs font-medium leading-snug w-64 z-50 shadow-lg animate-fade-in text-left"
+          style={{ 
+            background: 'var(--foreground)', 
+            color: 'var(--primary-foreground)' 
+          }}>
+          {text}
+          <div className="absolute top-full right-2 w-2 h-2 rotate-45 -mt-1"
+            style={{ background: 'var(--foreground)' }}></div>
+        </div>
+      )}
+    </span>
+  );
+}
+
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
@@ -604,14 +634,17 @@ export default function MaturityCalendar() {
               
               {/* Show Early Exit button if not settled and not matured */}
               {!selectedBond.isSettled && Date.now() < selectedBond.maturityDate * 1000 && (
-                <button
-                  onClick={() => handleEarlyWithdraw(selectedBond)}
-                  disabled={displayIsWithdrawing}
-                  className="text-xs font-semibold px-4 py-2 rounded-lg border border-[var(--error-border)] bg-[var(--error-soft)] text-[var(--error-foreground)] hover:bg-[var(--error)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  id={`btn-calendar-early-withdraw-${selectedBond.id}`}
-                >
-                  {displayIsWithdrawing ? "Exiting..." : "Early Exit (2.0% Penalty)"}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <Tooltip text="An early exit incurs a 2.0% penalty. This penalty is not burned; it is distributed proportionally to other active lenders in the pool as a premium bonus." />
+                  <button
+                    onClick={() => handleEarlyWithdraw(selectedBond)}
+                    disabled={displayIsWithdrawing}
+                    className="text-xs font-semibold px-4 py-2 rounded-lg border border-[var(--error-border)] bg-[var(--error-soft)] text-[var(--error-foreground)] hover:bg-[var(--error)] hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    id={`btn-calendar-early-withdraw-${selectedBond.id}`}
+                  >
+                    {displayIsWithdrawing ? "Exiting..." : "Early Exit (2.0% Penalty)"}
+                  </button>
+                </div>
               )}
             </div>
           </div>
