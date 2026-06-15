@@ -150,6 +150,63 @@ function WelcomeOnboarding() {
         </div>
       </div>
 
+      {/* High-Contrast Slanted Marquee Divider */}
+      <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 py-3 shadow-[0_10px_30px_rgba(16,185,129,0.12)] border-y border-emerald-300 dark:border-emerald-600 -rotate-[1.2deg] my-16 select-none z-20">
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee-slanted {
+            display: flex;
+            width: max-content;
+            animation: marquee 20s linear infinite;
+          }
+        `}</style>
+        <div className="animate-marquee-slanted gap-12 flex">
+          {[1, 2].map((loop) => (
+            <div key={loop} className="flex shrink-0 items-center justify-around gap-16 min-w-full text-zinc-950 text-xs font-black tracking-widest">
+              <span className="flex items-center gap-2">
+                ⚡ POWERED BY LEPTON AI
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+              <span className="flex items-center gap-2">
+                💳 SECURED BY CIRCLE WAAS & SMART ACCOUNTS
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+              <span className="flex items-center gap-2">
+                🟢 LIVE ON ARC BLOCKCHAIN
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+              <span className="flex items-center gap-2">
+                📈 APY VAULT SYSTEM: 12.0% MAX
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+              <span className="flex items-center gap-2">
+                💸 GASLESS TRANSACTIONS ENABLED
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+              <span className="flex items-center gap-2">
+                🔗 CROSS-CHAIN COLLATERAL ROUTING
+              </span>
+              <span className="flex items-center gap-2">
+                ◆
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* How it works — 3-column grid */}
       <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto mb-20">
         {[
