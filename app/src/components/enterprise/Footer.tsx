@@ -269,11 +269,7 @@ export default function Footer() {
             MiCA Compliant Asset Protocols
           </span>
         </div>
-        <div className="flex items-center gap-3 text-[10px]" style={{ color: 'var(--muted-foreground)' }}>
-          <span className="font-semibold uppercase tracking-wider">Audit Attestations:</span>
-          <span className="px-2 py-1 border rounded bg-white dark:bg-zinc-900 font-mono" style={{ borderColor: 'var(--border)' }}>Hacken: Verified</span>
-          <span className="px-2 py-1 border rounded bg-white dark:bg-zinc-900 font-mono" style={{ borderColor: 'var(--border)' }}>CertiK: Grade A</span>
-        </div>
+
       </div>
 
       {/* Bottom Bar: Copyright, Language, Network */}
