@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const CIRCLE_UPSTREAM = process.env.CIRCLE_MODULAR_SDK_URL || 'https://w3s-sdk.circle.com/v1/rpc/w3s';
+const CIRCLE_UPSTREAM = process.env.CIRCLE_MODULAR_SDK_URL || 'https://modular-sdk.circle.com/v1/rpc/w3s/buidl';
 
 /**
- * Proxy POST requests from the browser to Circle's w3s-sdk RPC endpoint.
- * This avoids CORS issues since w3s-sdk.circle.com does not send
+ * Proxy POST requests from the browser to Circle's modular-sdk RPC endpoint.
+ * This avoids CORS issues since modular-sdk.circle.com does not send
  * Access-Control-Allow-Origin headers for browser requests.
  * Uses optional catch-all [[...path]] to handle both base calls (/api/circle-proxy)
  * and subpath calls (/api/circle-proxy/arcTestnet).
@@ -19,24 +19,30 @@ export async function POST(
     const targetUrl = pathSegment ? `${CIRCLE_UPSTREAM}/${pathSegment}` : CIRCLE_UPSTREAM;
 
     const body = await request.text();
+    console.log(`[circle-proxy] POST request to: ${targetUrl}`);
+
+    // Forward headers from incoming request, excluding host/origin/referer to avoid CDN/CORS issues
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    request.headers.forEach((value, key) => {
+      const lowerKey = key.toLowerCase();
+      if (!['host', 'origin', 'referer', 'content-length'].includes(lowerKey)) {
+        headers[key] = value;
+      }
+    });
+
+    console.log(`[circle-proxy] Forwarding headers: ${JSON.stringify(headers)}`);
 
     const upstreamRes = await fetch(targetUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Forward the authorization header if the SDK sets one
-        ...(request.headers.get('authorization')
-          ? { Authorization: request.headers.get('authorization')! }
-          : {}),
-        // Forward the x-client-key header used by Circle SDK
-        ...(request.headers.get('x-client-key')
-          ? { 'x-client-key': request.headers.get('x-client-key')! }
-          : {}),
-      },
+      headers,
       body,
     });
 
     const data = await upstreamRes.text();
+    console.log(`[circle-proxy] Upstream response status: ${upstreamRes.status}`);
+    console.log(`[circle-proxy] Upstream response body: ${data}`);
 
     return new NextResponse(data, {
       status: upstreamRes.status,
