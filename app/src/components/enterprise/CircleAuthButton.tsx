@@ -273,7 +273,7 @@ export default function CircleAuthButton() {
             {step === 'select' && (
               <div className="text-center pt-2">
                 <Logo size={40} variant="icon" className="mx-auto mb-4" />
-                <h3 className="font-semibold text-base text-[var(--foreground)]">Sign in to StablePay</h3>
+                <h3 className="font-semibold text-base text-[var(--foreground)]">Sign in to StableBonds</h3>
                 <p className="text-xs text-[var(--muted-foreground)] mt-1 mb-6">
                   Gasless smart account. No seed phrases required.
                 </p>

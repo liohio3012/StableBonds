@@ -19,11 +19,11 @@ export default function DocsPage() {
 
   const codeSnippets = {
     setup: `// Install SDK
-npm install @stablepay/sdk-core viem
+npm install @StableBonds/sdk-core viem
 
 // Configure Client on Arc Testnet
 import { createPublicClient, http } from 'viem';
-import { arcTestnet } from '@stablepay/chains';
+import { arcTestnet } from '@StableBonds/chains';
 
 const client = createPublicClient({
   chain: arcTestnet,
@@ -31,7 +31,7 @@ const client = createPublicClient({
 });`,
 
     yield: `// Initialize Yield Stream
-import { YieldStreamerClient } from '@stablepay/sdk-core';
+import { YieldStreamerClient } from '@StableBonds/sdk-core';
 
 const streamer = new YieldStreamerClient({
   vaultAddress: '0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A',
@@ -107,9 +107,9 @@ await vault.approveProposal(proposal.id);`
             
             {/* Header info */}
             <div className="space-y-3">
-              <h1 className="text-3xl font-extrabold tracking-tight text-gradient">StablePay Developer Documentation</h1>
+              <h1 className="text-3xl font-extrabold tracking-tight text-gradient">StableBonds Developer Documentation</h1>
               <p className="text-sm text-[var(--muted-foreground)] max-w-2xl">
-                Learn how to programmatically interact with StablePay treasury vaults, deploy multi-signature approvals, and trigger automated yield streaming on the Arc blockchain.
+                Learn how to programmatically interact with StableBonds treasury vaults, deploy multi-signature approvals, and trigger automated yield streaming on the Arc blockchain.
               </p>
             </div>
 
@@ -120,7 +120,7 @@ await vault.approveProposal(proposal.id);`
                 <h2 className="text-lg font-bold">Quickstart Installation & Client Setup</h2>
               </div>
               <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
-                To start programmatically interacting with the StablePay system, install the core SDK and initialize a Viem client configured for Arc Testnet RPC endpoints.
+                To start programmatically interacting with the StableBonds system, install the core SDK and initialize a Viem client configured for Arc Testnet RPC endpoints.
               </p>
 
               {/* Code Panel */}

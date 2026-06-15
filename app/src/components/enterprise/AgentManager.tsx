@@ -540,7 +540,7 @@ export default function AgentManager() {
               <Fingerprint size={48} className="text-[var(--primary)] animate-pulse mb-3" />
               <h4 className="font-bold text-sm">Verify Passkey</h4>
               <p className="text-xs text-[var(--muted-foreground)] max-w-xs mt-1">
-                Touch ID or Face ID required to authorize StablePay Agent registry signing credentials.
+                Touch ID or Face ID required to authorize StableBonds Agent registry signing credentials.
               </p>
             </div>
           )}

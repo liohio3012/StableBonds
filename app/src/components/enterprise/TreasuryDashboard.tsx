@@ -689,7 +689,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
     
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `stablepay-payments-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `StableBonds-payments-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();

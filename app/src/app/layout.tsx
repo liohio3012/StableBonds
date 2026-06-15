@@ -4,11 +4,11 @@ import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "StablePay — Smart Business Payments",
+  title: "StableBonds — Smart Business Payments",
   description: "Schedule vendor payments, earn interest while you wait, and guarantee on-time delivery. Your business cash works harder, automatically.",
   keywords: ["business payments", "vendor payments", "earn interest", "scheduled payments", "automated payroll"],
   openGraph: {
-    title: "StablePay — Smart Business Payments",
+    title: "StableBonds — Smart Business Payments",
     description: "Hold your business cash securely, earn 5% interest, and automate vendor payouts. Zero manual work required.",
     type: "website",
   },

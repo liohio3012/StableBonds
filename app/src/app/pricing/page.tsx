@@ -190,7 +190,7 @@ export default function PricingPage() {
             <div className="space-y-1">
               <h4 className="font-bold text-sm">USDC Gas Architecture Details</h4>
               <p className="text-xs text-[var(--muted-foreground)] leading-relaxed max-w-xl">
-                Unlike Ethereum/Base, StablePay transactions on Arc consume USDC directly to pay network fees. You never need to hold volatile network tokens like ETH or SOL.
+                Unlike Ethereum/Base, StableBonds transactions on Arc consume USDC directly to pay network fees. You never need to hold volatile network tokens like ETH or SOL.
               </p>
             </div>
           </div>

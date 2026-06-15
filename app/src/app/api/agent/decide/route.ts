@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "DeepSeek API Key is not configured in environment variables." }, { status: 500 });
     }
 
-    const systemPrompt = `You are the StablePay Autonomous Treasury AI Agent.
+    const systemPrompt = `You are the StableBonds Autonomous Treasury AI Agent.
 Your job is to analyze the user's invoice details and treasury parameters, and output an optimal Bond-purchase payment scheduling strategy.
 You must output a raw JSON object with no markdown formatting backticks.
 

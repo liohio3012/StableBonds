@@ -15,8 +15,8 @@ interface FAQItem {
 const FAQ_ITEMS: FAQItem[] = [
   {
     category: "Security & Trust",
-    q: "Is StablePay secure and non-custodial?",
-    a: "Absolutely. StablePay operates entirely via non-custodial smart contracts. We utilize Circle's Web3-as-a-Service (WaaS) to instantiate smart wallets that reside in your device's hardware security enclave (via WebAuthn Passkeys). StablePay never holds, acts as custodian for, or has access to your private credentials."
+    q: "Is StableBonds secure and non-custodial?",
+    a: "Absolutely. StableBonds operates entirely via non-custodial smart contracts. We utilize Circle's Web3-as-a-Service (WaaS) to instantiate smart wallets that reside in your device's hardware security enclave (via WebAuthn Passkeys). StableBonds never holds, acts as custodian for, or has access to your private credentials."
   },
   {
     category: "Risk & Protocol",
@@ -36,7 +36,7 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     category: "Gas & Network",
     q: "Do I need native gas tokens (like ETH) to run transactions?",
-    a: "No. StablePay is built natively on the Arc Testnet where gas fees are settled directly in USDC. Additionally, our Circle smart accounts support gasless transaction sponsorship via developer Paymaster contracts, providing a smooth, web2-like corporate dashboard experience."
+    a: "No. StableBonds is built natively on the Arc Testnet where gas fees are settled directly in USDC. Additionally, our Circle smart accounts support gasless transaction sponsorship via developer Paymaster contracts, providing a smooth, web2-like corporate dashboard experience."
   },
   {
     category: "General",

@@ -31,7 +31,7 @@ export default function AboutPage() {
             <span>Swiss-Institutional Finance Model</span>
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight text-gradient">
-            About StablePay
+            About StableBonds
           </h1>
           <p className="text-base text-[var(--muted-foreground)] leading-relaxed">
             The next-generation corporate treasury and payment automation protocol built natively on the Arc blockchain. We enable enterprise cash to work smarter.
@@ -46,7 +46,7 @@ export default function AboutPage() {
               Traditional corporate treasuries hold massive fiat balances earning zero yields, subject to bank clearance times, processing delays, and expensive wire transfers. 
             </p>
             <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">
-              StablePay bridges enterprise finance with blockchain efficiency. By deploying funds on the **Arc blockchain** using native Circle **USDC** and **EURC**, companies can lock, stream, settle, and trade assets with sub-second finality and near-zero cost.
+              StableBonds bridges enterprise finance with blockchain efficiency. By deploying funds on the **Arc blockchain** using native Circle **USDC** and **EURC**, companies can lock, stream, settle, and trade assets with sub-second finality and near-zero cost.
             </p>
           </div>
           <div className="card-surface p-6 space-y-4 bg-white/50 backdrop-blur-sm">
@@ -55,7 +55,7 @@ export default function AboutPage() {
             </div>
             <h3 className="font-semibold text-base">Arc Network Infrastructure</h3>
             <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
-              Leveraging the Arc Testnet, StablePay utilizes USDC as a native gas token, eliminating the need for volatile third-party layer-1 utility coins. All operations confirm instantly with mathematical certainty.
+              Leveraging the Arc Testnet, StableBonds utilizes USDC as a native gas token, eliminating the need for volatile third-party layer-1 utility coins. All operations confirm instantly with mathematical certainty.
             </p>
           </div>
         </div>
@@ -100,7 +100,7 @@ export default function AboutPage() {
         <div className="card-surface p-8 bg-white/30 backdrop-blur-sm border-dashed">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h3 className="font-bold text-lg">Why Global Firms Choose StablePay</h3>
+              <h3 className="font-bold text-lg">Why Global Firms Choose StableBonds</h3>
               <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
                 We design financial tools that match the speed of modern internet commerce. No cut-off times, no arbitrary limits, and automated smart triggers.
               </p>

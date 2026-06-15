@@ -55,7 +55,7 @@ export default function Footer() {
     setTimeout(() => {
       setIsSubmitting(false);
       setEmail('');
-      toast.success("Successfully subscribed to StablePay updates", {
+      toast.success("Successfully subscribed to StableBonds updates", {
         description: "You've been added to our corporate release cycle newsletter."
       });
     }, 800);
@@ -216,7 +216,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'About StablePay', href: '/about' },
+                { name: 'About StableBonds', href: '/about' },
                 { name: 'Security Center', href: '/security' }
               ].map((link, idx) => (
                 <li key={idx}>
@@ -283,10 +283,10 @@ export default function Footer() {
           {/* Copyright and disclaimers */}
           <div className="space-y-1.5 text-center lg:text-left">
             <div className="text-xs font-semibold" style={{ color: 'var(--foreground)' }}>
-              © 2026 StablePay Inc. All rights reserved.
+              © 2026 StableBonds Inc. All rights reserved.
             </div>
             <p className="text-[10px] max-w-xl leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-              StablePay is an enterprise treasury management platform. USDC and EURC are regulated digital dollars issued by Circle Internet Financial. Payments settle in real-time on Arc blockchain infrastructure.
+              StableBonds is an enterprise treasury management platform. USDC and EURC are regulated digital dollars issued by Circle Internet Financial. Payments settle in real-time on Arc blockchain infrastructure.
             </p>
           </div>
 

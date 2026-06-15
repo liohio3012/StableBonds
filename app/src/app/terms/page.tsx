@@ -40,35 +40,35 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">1. General Undertaking</h2>
             <p>
-              These Terms of Service governs the use of the StablePay corporate treasury platforms, smart contracts, SDK packages, and auxiliary services. By accessing, connecting an EOA wallet, or interacting with the Smart Accounts, you acknowledge and agree to stay bound under these guidelines.
+              These Terms of Service governs the use of the StableBonds corporate treasury platforms, smart contracts, SDK packages, and auxiliary services. By accessing, connecting an EOA wallet, or interacting with the Smart Accounts, you acknowledge and agree to stay bound under these guidelines.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">2. Blockchain Native Risk Acknowledgement</h2>
             <p>
-              StablePay operates as a non-custodial decentralized application deployed on the Arc blockchain network. All transactions, yield collection rules, settlements, and timelocks are executed strictly on-chain and are irreversible. You assume absolute responsibility for securing private keys, managing wallet credentials, and verifying destination vendor accounts.
+              StableBonds operates as a non-custodial decentralized application deployed on the Arc blockchain network. All transactions, yield collection rules, settlements, and timelocks are executed strictly on-chain and are irreversible. You assume absolute responsibility for securing private keys, managing wallet credentials, and verifying destination vendor accounts.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">3. Yield Accumulation & Assets</h2>
             <p>
-              StablePay supports automated yield streaming and interest payouts in USDC and EURC stablecoins. All stablecoin assets are issued by Circle Internet Financial, LLC. StablePay does not guarantee third-party peg values, liquidity ratios, or operational uptime of external issuers or network RPC providers.
+              StableBonds supports automated yield streaming and interest payouts in USDC and EURC stablecoins. All stablecoin assets are issued by Circle Internet Financial, LLC. StableBonds does not guarantee third-party peg values, liquidity ratios, or operational uptime of external issuers or network RPC providers.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">4. Compliance & Licensing</h2>
             <p>
-              You certify that your corporate treasury operations comply with relevant localized anti-money laundering (AML) laws and digital asset management statutes (including the MiCA regulations within the European Economic Area). StablePay reserves the right to restrict application UI access in blacklisted jurisdictions.
+              You certify that your corporate treasury operations comply with relevant localized anti-money laundering (AML) laws and digital asset management statutes (including the MiCA regulations within the European Economic Area). StableBonds reserves the right to restrict application UI access in blacklisted jurisdictions.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">5. Limitation of Liability</h2>
             <p>
-              To the maximum extent permitted under applicable laws, StablePay and its developers shall not be liable for any direct, indirect, incidental, or consequential damages resulting from transaction delays, network outages, wallet compromises, or gas cost volatility on the Arc network.
+              To the maximum extent permitted under applicable laws, StableBonds and its developers shall not be liable for any direct, indirect, incidental, or consequential damages resulting from transaction delays, network outages, wallet compromises, or gas cost volatility on the Arc network.
             </p>
           </section>
 

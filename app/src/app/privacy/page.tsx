@@ -40,21 +40,21 @@ export default function PrivacyPage() {
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">1. Information We Collect</h2>
             <p>
-              StablePay enforces a strict data minimization protocol. We do not require usernames, passwords, or personal identity details to access the core treasury interface. The only data processed is public key wallet addresses, transaction payloads, and basic browser cookies used for analytical telemetry.
+              StableBonds enforces a strict data minimization protocol. We do not require usernames, passwords, or personal identity details to access the core treasury interface. The only data processed is public key wallet addresses, transaction payloads, and basic browser cookies used for analytical telemetry.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">2. Public Ledger Transparency</h2>
             <p>
-              By design, all interactions with StablePay treasury vaults (deposits, yield stream triggers, payouts, multi-sig approvals) are recorded permanently on the Arc public blockchain network. This data is entirely public, indexed by nodes, and visible to third parties. We cannot remove, delete, or modify any information written to the block database.
+              By design, all interactions with StableBonds treasury vaults (deposits, yield stream triggers, payouts, multi-sig approvals) are recorded permanently on the Arc public blockchain network. This data is entirely public, indexed by nodes, and visible to third parties. We cannot remove, delete, or modify any information written to the block database.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-sm font-bold text-[var(--foreground)]">3. Circle Auth Integration</h2>
             <p>
-              StablePay supports authenticated corporate sign-ons using Circle's developer tools. If you choose to configure a Circle profile, your credential processing is handled directly under Circle's independent Privacy Policy, utilizing secure JSON Web Tokens (JWT).
+              StableBonds supports authenticated corporate sign-ons using Circle's developer tools. If you choose to configure a Circle profile, your credential processing is handled directly under Circle's independent Privacy Policy, utilizing secure JSON Web Tokens (JWT).
             </p>
           </section>
 

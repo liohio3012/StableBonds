@@ -120,7 +120,7 @@ function WelcomeHero() {
                   Staggered Yield Optimization
                 </h3>
                 <p className="text-xs text-[var(--muted-foreground)] mt-2 leading-relaxed">
-                  StablePay auto-routes payment schedules across low-risk senior/junior bond vaults. Watch your balance grow dynamically while awaiting settlement maturity dates.
+                  StableBonds auto-routes payment schedules across low-risk senior/junior bond vaults. Watch your balance grow dynamically while awaiting settlement maturity dates.
                 </p>
               </div>
 
@@ -303,7 +303,7 @@ function WelcomeFeatures() {
 
           <div className="space-y-3 flex-grow text-center md:text-left">
             <p className="text-sm md:text-base italic leading-relaxed text-[var(--foreground)] font-medium">
-              "StablePay completely modernized our B2B vendor payouts. By placing our invoice settlement funds into Arc bond vaults, we earned over $45,000 in passive yield this quarter alone. The auto-maturity execution is flawless."
+              "StableBonds completely modernized our B2B vendor payouts. By placing our invoice settlement funds into Arc bond vaults, we earned over $45,000 in passive yield this quarter alone. The auto-maturity execution is flawless."
             </p>
             <div>
               <h4 className="font-bold text-sm text-[var(--foreground)]">Marc Werner</h4>

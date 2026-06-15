@@ -70,14 +70,14 @@ export default function ContactPage() {
                 {
                   icon: <Mail size={16} className="text-emerald-500" />,
                   title: "Direct Email Correspondence",
-                  desc: "support@stablepay.finance",
-                  action: "mailto:support@stablepay.finance"
+                  desc: "support@StableBonds.finance",
+                  action: "mailto:support@StableBonds.finance"
                 },
                 {
                   icon: <MessageSquare size={16} className="text-blue-500" />,
                   title: "Developer Community",
                   desc: "Join Discord Server",
-                  action: "https://discord.gg/stablepay"
+                  action: "https://discord.gg/StableBonds"
                 },
                 {
                   icon: <Bug size={16} className="text-red-500" />,

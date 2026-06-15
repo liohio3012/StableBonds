@@ -648,7 +648,7 @@ export default function CompliancePortal() {
               Why compliance?
             </h3>
             <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
-              StablePay B2B yields are secured by compliant debt securities pools. Enforcing KYC/KYB is legally required under institutional asset guidelines.
+              StableBonds B2B yields are secured by compliant debt securities pools. Enforcing KYC/KYB is legally required under institutional asset guidelines.
             </p>
             <div className="mt-4 pt-4 border-t space-y-2.5 text-xs text-[var(--muted-foreground)]" style={{ borderColor: 'var(--border-subtle)' }}>
               <div className="flex items-center gap-2">

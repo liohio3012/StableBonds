@@ -14,7 +14,7 @@ const projectId =
   '3a8170812b534d0ff9d794f19a901d64'; // Fallback to Scaffold-ETH test ID (unlocked for localhost:3000)
 
 const config = getDefaultConfig({
-  appName: 'StablePay — Smart Business Payments',
+  appName: 'StableBonds — Smart Business Payments',
   projectId: projectId,
   chains: [arcTestnet],
   ssr: true,

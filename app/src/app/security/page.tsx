@@ -34,7 +34,7 @@ export default function SecurityPage() {
             Security & Trust Center
           </h1>
           <p className="text-base text-[var(--muted-foreground)] leading-relaxed">
-            Corporate treasury infrastructure demands ironclad security guarantees. StablePay uses industry-leading audits and strict access controls.
+            Corporate treasury infrastructure demands ironclad security guarantees. StableBonds uses industry-leading audits and strict access controls.
           </p>
         </div>
 
@@ -44,7 +44,7 @@ export default function SecurityPage() {
             {
               icon: <Lock className="text-blue-600" size={20} />,
               title: "Cryptographic Custody",
-              desc: "StablePay runs on fully non-custodial smart contracts deployed on the Arc network. At no point does StablePay hold custody of your private keys or principal funds."
+              desc: "StableBonds runs on fully non-custodial smart contracts deployed on the Arc network. At no point does StableBonds hold custody of your private keys or principal funds."
             },
             {
               icon: <FileCheck2 className="text-emerald-600" size={20} />,
@@ -59,7 +59,7 @@ export default function SecurityPage() {
             {
               icon: <Terminal className="text-zinc-800 dark:text-white" size={20} />,
               title: "SOC 2 Type II Certified",
-              desc: "StablePay's organizational workflows, developer environments, and server integrations comply with rigorous security, availability, and confidentiality parameters."
+              desc: "StableBonds's organizational workflows, developer environments, and server integrations comply with rigorous security, availability, and confidentiality parameters."
             }
           ].map((pillar, idx) => (
             <div key={idx} className="card-surface p-6 space-y-3 bg-white/50 backdrop-blur-sm">
@@ -102,7 +102,7 @@ export default function SecurityPage() {
         <div className="space-y-4 pt-4 text-center max-w-xl mx-auto">
           <h2 className="text-xl font-bold">Responsible Vulnerability Disclosure</h2>
           <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
-            If you identify a vulnerability in our smart contracts or web platforms, please email <code className="font-mono bg-[var(--muted)] px-1.5 py-0.5 rounded text-[var(--foreground)]">security@stablepay.io</code>. 
+            If you identify a vulnerability in our smart contracts or web platforms, please email <code className="font-mono bg-[var(--muted)] px-1.5 py-0.5 rounded text-[var(--foreground)]">security@StableBonds.io</code>. 
             We run an active Bug Bounty program awarding up to **$50,000 USDC** for verified critical vulnerabilities.
           </p>
         </div>

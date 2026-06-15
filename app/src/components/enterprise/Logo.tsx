@@ -9,7 +9,7 @@ interface LogoProps {
 }
 
 /**
- * StablePay Brand Logo Component
+ * StableBonds Brand Logo Component
  * Designed under the "Swiss-Institutional Monolith" design system.
  * Concept: The Continuous Bond (Infinity Link)
  * A custom geometric construction representing funds that earn interest (looping)
@@ -100,7 +100,7 @@ export default function Logo({ className = '', size = 28, variant = 'primary' }:
         <circle cx="13" cy="10" r="2.2" className="fill-neutral-400" />
       </svg>
       <span className={`tracking-tight text-neutral-950 dark:text-white ${fontClass}`}>
-        StablePay
+        StableBonds
       </span>
     </div>
   );

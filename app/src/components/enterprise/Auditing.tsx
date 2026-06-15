@@ -202,7 +202,7 @@ export default function Auditing() {
     
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `stablepay-onchain-audit-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `StableBonds-onchain-audit-${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -257,7 +257,7 @@ export default function Auditing() {
       <div className="hidden print:block border-b-2 pb-6 mb-6 border-black">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold uppercase tracking-tight text-black">StablePay Audit Report</h1>
+            <h1 className="text-2xl font-bold uppercase tracking-tight text-black">StableBonds Audit Report</h1>
             <p className="text-sm text-gray-600 mt-1">Verified transaction history for this account</p>
           </div>
           <div className="text-right text-xs text-gray-500">

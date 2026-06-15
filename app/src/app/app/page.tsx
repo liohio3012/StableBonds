@@ -203,7 +203,7 @@ export default function AppPortal() {
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-        <div className="animate-pulse text-sm text-[var(--muted-foreground)]">Loading StablePay...</div>
+        <div className="animate-pulse text-sm text-[var(--muted-foreground)]">Loading StableBonds...</div>
       </div>
     );
   }
