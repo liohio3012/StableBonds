@@ -73,13 +73,76 @@ function WelcomeOnboarding() {
           </Link>
         </div>
 
-        {/* Sleek Hero Graphic Illustration */}
-        <div className="mt-14 max-w-4xl mx-auto rounded-2xl overflow-hidden border border-neutral-200/80 dark:border-neutral-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] bg-white/50 dark:bg-black/50 backdrop-blur-xs p-2.5 animate-scale-in">
-          <img 
-            src="/stablepay_hero_graphic.png" 
-            alt="StablePay Treasury Yield Growth Graphics" 
-            className="w-full h-auto rounded-xl object-cover border border-neutral-100/50 dark:border-neutral-900/50"
-          />
+        {/* Sleek Hero Graphic Illustration & Treasury Visualizer */}
+        <div className="mt-14 max-w-4xl mx-auto rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] bg-white/70 dark:bg-black/70 backdrop-blur-md overflow-hidden animate-scale-in text-left">
+          {/* Mock Window Top Bar */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-900/50">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-red-400/80"></span>
+              <span className="w-3 h-3 rounded-full bg-amber-400/80"></span>
+              <span className="w-3 h-3 rounded-full bg-emerald-400/80"></span>
+              <span className="text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">STABLEPAY_DEFI_ENGINE_V1.0</span>
+            </div>
+            <div className="flex items-center gap-2 bg-neutral-200/50 dark:bg-neutral-800/50 px-2.5 py-1 rounded-md text-[10px] font-bold text-[var(--success-foreground)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
+              ENGINE ONLINE
+            </div>
+          </div>
+
+          {/* Interactive Layout: Graphic on one side, telemetry and stats on the other */}
+          <div className="grid md:grid-cols-12 gap-6 p-6 items-center">
+            {/* Graphic Illustration */}
+            <div className="md:col-span-7 rounded-xl overflow-hidden border border-neutral-100 dark:border-neutral-900 bg-white dark:bg-neutral-950 p-2 shadow-inner">
+              <img 
+                src="/stablepay_hero_graphic.png" 
+                alt="StablePay Treasury Yield Growth Graphics" 
+                className="w-full h-auto rounded-lg object-cover"
+              />
+            </div>
+
+            {/* Live Telemetry / Features Walkthrough */}
+            <div className="md:col-span-5 space-y-6">
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
+                  Yield Engine Telemetry
+                </span>
+                <h3 className="text-xl font-bold mt-1 text-[var(--foreground)]">
+                  Staggered Yield Optimization
+                </h3>
+                <p className="text-xs text-[var(--muted-foreground)] mt-2 leading-relaxed">
+                  StablePay auto-routes payment schedules across low-risk senior/junior bond vaults. Watch your balance grow dynamically while awaiting settlement maturity dates.
+                </p>
+              </div>
+
+              {/* Mock Metric Cards */}
+              <div className="grid grid-cols-2 gap-3.5">
+                <div className="border border-neutral-200/60 dark:border-neutral-800/60 rounded-xl p-3 bg-neutral-50/50 dark:bg-neutral-900/50">
+                  <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide">APY Range</span>
+                  <div className="text-base font-bold text-[var(--success)] mt-0.5">4.0% - 12.0%</div>
+                  <span className="text-[9px] text-neutral-400 dark:text-neutral-500">Fixed rate yield</span>
+                </div>
+                <div className="border border-neutral-200/60 dark:border-neutral-800/60 rounded-xl p-3 bg-neutral-50/50 dark:bg-neutral-900/50">
+                  <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide">Settlement</span>
+                  <div className="text-base font-bold text-[var(--foreground)] mt-0.5">100% Auto</div>
+                  <span className="text-[9px] text-neutral-400 dark:text-neutral-500">Zero-gas execution</span>
+                </div>
+              </div>
+
+              {/* Bullet Features */}
+              <div className="space-y-2.5 pt-2">
+                {[
+                  "Paymaster-sponsored gasless transactions",
+                  "Circle CCTP cross-chain collateral bridging",
+                  "Smart account multi-call batching contracts"
+                ].map((feat, idx) => (
+                  <div key={idx} className="flex items-start gap-2.5 text-xs text-neutral-600 dark:text-neutral-400">
+                    <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
