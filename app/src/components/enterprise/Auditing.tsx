@@ -44,9 +44,13 @@ export default function Auditing() {
     if (!publicClient) return;
     setIsLoading(true);
     try {
-      // Query events from the last 10,000 blocks (or full history since it's local testnet)
       const currentBlock = await publicClient.getBlockNumber();
-      const fromBlock = currentBlock > BigInt(10000) ? currentBlock - BigInt(10000) : BigInt(0);
+      
+      // Arc Testnet RPC limits eth_getLogs to a maximum of 10,000 blocks range.
+      // We will query the last 20,000 blocks in chunks of 9,900 blocks to prevent RPC limit issues.
+      const scanRange = BigInt(20000);
+      const chunkSize = BigInt(9900);
+      const startBlock = currentBlock > scanRange ? currentBlock - scanRange : BigInt(0);
 
       const eventNames: ('BondCreated' | 'SettlementExecuted' | 'EarlyWithdrawn' | 'YieldClaimed' | 'BondLossAllocated')[] = [
         'BondCreated',
@@ -60,17 +64,35 @@ export default function Auditing() {
         const eventItem = VAULT_ABI.find(x => x.name === name);
         if (!eventItem) return [];
         
-        const logs = await publicClient.getLogs({
-          address: VAULT_ADDRESS,
-          event: {
-            type: 'event',
-            name: name,
-            inputs: eventItem.inputs
-          },
-          fromBlock,
-          toBlock: 'latest'
-        });
-        return logs.map(l => ({ ...l, eventName: name }));
+        let eventLogs: any[] = [];
+        let chunkStart = startBlock;
+        
+        while (chunkStart < currentBlock) {
+          let chunkEnd = chunkStart + chunkSize;
+          if (chunkEnd > currentBlock) {
+            chunkEnd = currentBlock;
+          }
+          
+          try {
+            const chunkLogs = await publicClient.getLogs({
+              address: VAULT_ADDRESS,
+              event: {
+                type: 'event',
+                name: name,
+                inputs: eventItem.inputs
+              },
+              fromBlock: chunkStart,
+              toBlock: chunkEnd
+            });
+            eventLogs = [...eventLogs, ...chunkLogs];
+          } catch (err) {
+            console.error(`Error fetching ${name} logs from block ${chunkStart} to ${chunkEnd}:`, err);
+          }
+          
+          chunkStart = chunkEnd + BigInt(1);
+        }
+        
+        return eventLogs.map(l => ({ ...l, eventName: name }));
       });
 
       const resolvedLogs = await Promise.all(allLogsPromises);
