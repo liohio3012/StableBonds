@@ -817,44 +817,7 @@ export default function IntentBuilder() {
         setSmartPending(true);
         setSmartSuccess(false);
         try {
-          toast.info("Connecting to Circle Gateway SDK...");
-          await new Promise(r => setTimeout(r, 600));
-
-          toast.info("Generating payment intent...", {
-            description: "Designated Pool: Gateway Designated Pool Manager (Arc Testnet)"
-          });
-          await new Promise(r => setTimeout(r, 600));
-
-          // Deduct from mock balances in localStorage
-          const savedBalances = localStorage.getItem('stablebonds_unified_balances');
-          if (savedBalances) {
-            const parsed = JSON.parse(savedBalances);
-            let remainingToDeduct = parseFloat(amount);
-            const updated = parsed.map((c: any) => {
-              if (remainingToDeduct > 0 && c.balance > 0) {
-                const deduct = Math.min(c.balance, remainingToDeduct);
-                remainingToDeduct -= deduct;
-                return { ...c, balance: c.balance - deduct };
-              }
-              return c;
-            });
-            localStorage.setItem('stablebonds_unified_balances', JSON.stringify(updated));
-            window.dispatchEvent(new Event('storage'));
-          }
-
-          // Add a log entry
-          const savedLogs = localStorage.getItem('stablebonds_gateway_logs');
-          const parsedLogs = savedLogs ? JSON.parse(savedLogs) : [];
-          const randomHash = "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("").slice(0,6) + "..." + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("").slice(-4);
-          const newLog = {
-            id: "tx_" + Math.random().toString(36).substr(2, 9),
-            timestamp: Date.now(),
-            chain: "Unified Pool",
-            amount: parseFloat(amount),
-            status: "Settled",
-            txHash: randomHash
-          };
-          localStorage.setItem('stablebonds_gateway_logs', JSON.stringify([newLog, ...parsedLogs]));
+          toast.info("Preparing Gateway payment via Circle Smart Account...");
 
           const executeCall = {
             to: VAULT_ADDRESS,
@@ -910,44 +873,7 @@ export default function IntentBuilder() {
         try {
           if (!publicClient || !address) return;
           
-          toast.info("Connecting to Circle Gateway SDK...");
-          await new Promise(r => setTimeout(r, 600));
-
-          toast.info("Generating payment intent...", {
-            description: "Requesting signature for payment from Unified Balance"
-          });
-          await new Promise(r => setTimeout(r, 600));
-
-          // Deduct from mock balances in localStorage
-          const savedBalances = localStorage.getItem('stablebonds_unified_balances');
-          if (savedBalances) {
-            const parsed = JSON.parse(savedBalances);
-            let remainingToDeduct = parseFloat(amount);
-            const updated = parsed.map((c: any) => {
-              if (remainingToDeduct > 0 && c.balance > 0) {
-                const deduct = Math.min(c.balance, remainingToDeduct);
-                remainingToDeduct -= deduct;
-                return { ...c, balance: c.balance - deduct };
-              }
-              return c;
-            });
-            localStorage.setItem('stablebonds_unified_balances', JSON.stringify(updated));
-            window.dispatchEvent(new Event('storage'));
-          }
-
-          // Add a log entry
-          const savedLogs = localStorage.getItem('stablebonds_gateway_logs');
-          const parsedLogs = savedLogs ? JSON.parse(savedLogs) : [];
-          const randomHash = "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("").slice(0,6) + "..." + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join("").slice(-4);
-          const newLog = {
-            id: "tx_" + Math.random().toString(36).substr(2, 9),
-            timestamp: Date.now(),
-            chain: "Unified Pool",
-            amount: parseFloat(amount),
-            status: "Settled",
-            txHash: randomHash
-          };
-          localStorage.setItem('stablebonds_gateway_logs', JSON.stringify([newLog, ...parsedLogs]));
+          toast.info("Preparing Gateway payment transaction...");
 
           const { request } = await publicClient.simulateContract({
             account: address,

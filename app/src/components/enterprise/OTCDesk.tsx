@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { useAccount, useReadContract, usePublicClient, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount, useReadContract, usePublicClient, useWriteContract, useWaitForTransactionReceipt, useSimulateContract } from 'wagmi';
 import { parseAbi, formatUnits, parseUnits, encodeFunctionData } from 'viem';
 import { RefreshCw, Tag, ShieldAlert, BadgeAlert, ArrowUpRight, TrendingUp, Info, CheckCircle2, XCircle, ChevronRight, HelpCircle, Loader2, Sparkles, Receipt } from 'lucide-react';
 import { toast } from 'sonner';
@@ -9,7 +9,7 @@ import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 
 const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
-const OTC_ADDRESS = "0x9C07ab0E706fab71113b27dAFd8a51261453a46f" as `0x${string}`; // Default deterministic mock/test address
+const OTC_ADDRESS = "0x9C07ab0E706fab71113b27dAFd8a51261453a46f" as `0x${string}`;
 
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000" as `0x${string}`;
 const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a" as `0x${string}`;
@@ -81,6 +81,7 @@ export default function OTCDesk() {
   const address = isSmartAccount ? circleAccount?.address : eoaAddress;
 
   const publicClient = usePublicClient();
+  const { writeContractAsync } = useWriteContract();
   const [orders, setOrders] = useState<Order[]>([]);
   const [userBonds, setUserBonds] = useState<Bond[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,62 +92,7 @@ export default function OTCDesk() {
   const [listPrice, setListPrice] = useState("");
   const [isApproved, setIsApproved] = useState(false);
 
-  // Mock data as fallback for sandbox view
-  const mockOrders: Order[] = useMemo(() => [
-    {
-      orderId: 1,
-      bondId: 4,
-      seller: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-      price: 9400,
-      isActive: true,
-      bond: {
-        id: 4,
-        owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        principal: 10000,
-        yieldBps: 500,
-        maturityDate: Math.floor(Date.now() / 1000) + 45 * 24 * 60 * 60,
-        isSettled: false,
-        termId: 3,
-        depositToken: "USDC",
-        settlementToken: "USDC",
-        swapAtDeposit: false
-      }
-    },
-    {
-      orderId: 2,
-      bondId: 5,
-      seller: "0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF",
-      price: 4850,
-      isActive: true,
-      bond: {
-        id: 5,
-        owner: "0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF",
-        principal: 5000,
-        yieldBps: 550,
-        maturityDate: Math.floor(Date.now() / 1000) + 80 * 24 * 60 * 60,
-        isSettled: false,
-        termId: 4,
-        depositToken: "USDC",
-        settlementToken: "USDC",
-        swapAtDeposit: false
-      }
-    }
-  ], []);
-
-  const mockUserBonds: Bond[] = useMemo(() => [
-    {
-      id: 8,
-      owner: address || "0xAddress",
-      principal: 2500,
-      yieldBps: 400,
-      maturityDate: Math.floor(Date.now() / 1000) + 20 * 24 * 60 * 60,
-      isSettled: false,
-      termId: 1,
-      depositToken: "USDC",
-      settlementToken: "USDC",
-      swapAtDeposit: false
-    }
-  ], [address]);
+  // No mock data — all data is fetched from on-chain contracts
 
   // Read Vault data
   const { data: nextBondIdData, refetch: refetchNextBond } = useReadContract({
@@ -218,7 +164,7 @@ export default function OTCDesk() {
         }
       }
 
-      setUserBonds(userBondsTemp.length > 0 ? userBondsTemp : mockUserBonds);
+      setUserBonds(userBondsTemp);
 
       // 2. Fetch Active OTC Orders
       const nextOrderId = nextOrderIdData ? Number(nextOrderIdData) : 0;
@@ -287,11 +233,11 @@ export default function OTCDesk() {
         }
       }
 
-      setOrders(activeOrdersTemp.length > 0 ? activeOrdersTemp : mockOrders);
+      setOrders(activeOrdersTemp);
     } catch (err) {
       console.error("Error loading OTC data:", err);
-      setOrders(mockOrders);
-      setUserBonds(mockUserBonds);
+      setOrders([]);
+      setUserBonds([]);
     } finally {
       setIsLoading(false);
     }
@@ -368,16 +314,21 @@ export default function OTCDesk() {
       }
     } else {
       try {
-        // EOA implementation using standard writeContract
         toast.info("Please sign the approval transaction in your wallet", { id: toastId });
-        // Simulating approval for Sandbox mode
-        setTimeout(() => {
-          setIsApproved(true);
-          toast.success("OTC contract approved! (Simulated)", { id: toastId });
-          setIsActionPending(false);
-        }, 1500);
+        const hash = await writeContractAsync({
+          address: VAULT_ADDRESS,
+          abi: VAULT_ABI,
+          functionName: 'setApprovalForAll',
+          args: [OTC_ADDRESS, true]
+        });
+        if (publicClient) {
+          await publicClient.waitForTransactionReceipt({ hash });
+        }
+        setIsApproved(true);
+        toast.success("OTC contract approved!", { id: toastId });
       } catch (err: any) {
         toast.error(`Approval failed: ${err.message}`, { id: toastId });
+      } finally {
         setIsActionPending(false);
       }
     }
@@ -421,23 +372,26 @@ export default function OTCDesk() {
         setIsActionPending(false);
       }
     } else {
-      // EOA/Sandbox simulation
-      setTimeout(() => {
-        const newOrder: Order = {
-          orderId: orders.length + 1,
-          bondId: selectedBondForList.id,
-          seller: address || "0xSeller",
-          price: priceNum,
-          isActive: true,
-          bond: selectedBondForList
-        };
-        setOrders([newOrder, ...orders]);
-        setUserBonds(userBonds.filter(b => b.id !== selectedBondForList.id));
-        toast.success("Bond listed on OTC Desk! (Simulated)", { id: toastId });
+      try {
+        toast.info("Please sign the listing transaction in your wallet", { id: toastId });
+        const hash = await writeContractAsync({
+          address: OTC_ADDRESS,
+          abi: OTC_ABI,
+          functionName: 'listBondForSale',
+          args: [BigInt(selectedBondForList.id), parseUnits(listPrice, 6)]
+        });
+        if (publicClient) {
+          await publicClient.waitForTransactionReceipt({ hash });
+        }
+        toast.success("Bond listed on OTC Desk!", { id: toastId });
         setSelectedBondForList(null);
         setListPrice("");
+        fetchData();
+      } catch (err: any) {
+        toast.error(`Listing failed: ${err.message || err}`, { id: toastId });
+      } finally {
         setIsActionPending(false);
-      }, 1500);
+      }
     }
   };
 
@@ -470,16 +424,24 @@ export default function OTCDesk() {
         setIsActionPending(false);
       }
     } else {
-      // Sandbox cancellation
-      setTimeout(() => {
-        const orderToCancel = orders.find(o => o.orderId === orderId);
-        if (orderToCancel && orderToCancel.bond) {
-          setUserBonds([...userBonds, orderToCancel.bond]);
+      try {
+        toast.info("Please sign the cancellation transaction in your wallet", { id: toastId });
+        const hash = await writeContractAsync({
+          address: OTC_ADDRESS,
+          abi: OTC_ABI,
+          functionName: 'cancelOrder',
+          args: [BigInt(orderId)]
+        });
+        if (publicClient) {
+          await publicClient.waitForTransactionReceipt({ hash });
         }
-        setOrders(orders.filter(o => o.orderId !== orderId));
-        toast.success("Order cancelled and bond returned! (Simulated)", { id: toastId });
+        toast.success("Order cancelled, bond returned to wallet", { id: toastId });
+        fetchData();
+      } catch (err: any) {
+        toast.error(`Cancellation failed: ${err.message || err}`, { id: toastId });
+      } finally {
         setIsActionPending(false);
-      }, 1500);
+      }
     }
   };
 
@@ -525,16 +487,37 @@ export default function OTCDesk() {
         setIsActionPending(false);
       }
     } else {
-      // Sandbox fill order simulation
-      setTimeout(() => {
-        setOrders(orders.filter(o => o.orderId !== order.orderId));
-        if (order.bond) {
-          const boughtBond = { ...order.bond, owner: address || "0xBuyer" };
-          setUserBonds([...userBonds, boughtBond]);
+      try {
+        // Step 1: Approve USDC spend for OTC contract
+        toast.info("Step 1/2: Please approve USDC spend...", { id: toastId });
+        const approveHash = await writeContractAsync({
+          address: USDC_ADDRESS,
+          abi: ERC20_ABI,
+          functionName: 'approve',
+          args: [OTC_ADDRESS, parseUnits(order.price.toString(), 6)]
+        });
+        if (publicClient) {
+          await publicClient.waitForTransactionReceipt({ hash: approveHash });
         }
-        toast.success("Bond purchased successfully! (Simulated)", { id: toastId });
+
+        // Step 2: Fill the order
+        toast.info("Step 2/2: Please sign the purchase transaction...", { id: toastId });
+        const fillHash = await writeContractAsync({
+          address: OTC_ADDRESS,
+          abi: OTC_ABI,
+          functionName: 'fillOrder',
+          args: [BigInt(order.orderId)]
+        });
+        if (publicClient) {
+          await publicClient.waitForTransactionReceipt({ hash: fillHash });
+        }
+        toast.success("Bond purchased successfully!", { id: toastId });
+        fetchData();
+      } catch (err: any) {
+        toast.error(`Purchase failed: ${err.message || err}`, { id: toastId });
+      } finally {
         setIsActionPending(false);
-      }, 1500);
+      }
     }
   };
 
