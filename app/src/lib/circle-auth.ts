@@ -16,7 +16,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts';
 import { keccak256, stringToHex } from 'viem';
 
-const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY || 'TEST_CLIENT_KEY:d048a81fe7b0c79d9a95a1cc999d0fb4:c8e64f7c8c60ac10b39ab6b0e1ef34a4';
+const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY || 'TEST_CLIENT_KEY:eb0549074067880c52277e5ccc53997a:2cbb0805efa5656cc89c26988642207f';
 
 // Use the local API proxy to bypass CORS (modular-sdk.circle.com lacks browser CORS headers).
 // Circle SDK requires an absolute URL, so we prepend the origin.
