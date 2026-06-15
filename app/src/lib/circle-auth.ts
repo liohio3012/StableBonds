@@ -17,7 +17,12 @@ import { privateKeyToAccount } from 'viem/accounts';
 import { keccak256, stringToHex } from 'viem';
 
 const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY || 'TEST_CLIENT_KEY:d048a81fe7b0c79d9a95a1cc999d0fb4:c8e64f7c8c60ac10b39ab6b0e1ef34a4';
-const clientUrl = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL || 'https://w3s-sdk.circle.com/v1/rpc/w3s';
+
+// Use the local API proxy to bypass CORS (w3s-sdk.circle.com lacks browser CORS headers).
+// In the browser, requests go to /api/circle-proxy/* which forwards to w3s-sdk.circle.com.
+const clientUrl = typeof window !== 'undefined'
+  ? '/api/circle-proxy'
+  : (process.env.NEXT_PUBLIC_CIRCLE_CLIENT_URL || 'https://w3s-sdk.circle.com/v1/rpc/w3s');
 
 // Appending /arcTestnet as required by the Circle Modular Wallets specification
 const passkeyTransport = toPasskeyTransport(clientUrl, clientKey);
