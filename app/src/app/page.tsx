@@ -224,7 +224,36 @@ export default function Home() {
 
           <div className="flex items-center gap-2">
             <CircleAuthButton />
-            <ConnectButton label="Connect" showBalance={false} />
+            <ConnectButton.Custom>
+              {({ account, chain, openConnectModal, openAccountModal, openChainModal, mounted }) => {
+                const connected = mounted && account && chain;
+                return (
+                  <div {...(!mounted && { 'aria-hidden': true, style: { opacity: 0, pointerEvents: 'none', userSelect: 'none' } })}>
+                    {(() => {
+                      if (!connected) {
+                        return (
+                          <button onClick={openConnectModal} className="btn-primary text-xs gap-1.5 px-3 py-1.5">
+                            Connect
+                          </button>
+                        );
+                      }
+                      if (chain.unsupported) {
+                        return (
+                          <button onClick={openChainModal} className="btn-primary text-xs gap-1.5 px-3 py-1.5 !bg-red-600 !border-red-600">
+                            Wrong Network
+                          </button>
+                        );
+                      }
+                      return (
+                        <button onClick={openAccountModal} className="btn-secondary text-xs gap-1.5 px-3 py-1.5 font-mono">
+                          {account.displayName}
+                        </button>
+                      );
+                    })()}
+                  </div>
+                );
+              }}
+            </ConnectButton.Custom>
           </div>
         </div>
       </nav>
