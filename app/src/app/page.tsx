@@ -98,16 +98,54 @@ function WelcomeHero() {
 
           {/* Interactive Layout: Graphic on one side, telemetry and stats on the other */}
           <div className="grid md:grid-cols-12 gap-6 p-6 items-center">
-            {/* Graphic Illustration */}
-            <div className="md:col-span-7 rounded-xl overflow-hidden border border-neutral-100 dark:border-neutral-900 bg-white dark:bg-neutral-950 p-2 shadow-inner">
-              <video 
-                src="/stablebounds.mp4" 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="w-full h-auto rounded-lg object-cover shadow-sm"
-              />
+            {/* Video — Premium cinema frame */}
+            <div className="md:col-span-7 relative group">
+              {/* Ambient glow behind the frame */}
+              <div className="absolute inset-0 rounded-2xl blur-2xl opacity-30 scale-95 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse at 50% 80%, #059669 0%, transparent 70%)' }} />
+
+              {/* Outer bezel */}
+              <div className="relative rounded-2xl overflow-hidden border shadow-[0_24px_64px_rgba(0,0,0,0.18),0_4px_16px_rgba(0,0,0,0.10)]"
+                style={{ borderColor: 'rgba(0,0,0,0.14)', background: '#0f0f0f' }}>
+
+                {/* Inner bezel padding — mimics a screen surround */}
+                <div className="p-[6px] pb-[10px]">
+                  <div className="relative rounded-xl overflow-hidden bg-black">
+                    {/* The video */}
+                    <video
+                      src="/stablebounds.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-auto block"
+                      style={{ display: 'block' }}
+                    />
+
+                    {/* Top vignette */}
+                    <div className="absolute inset-x-0 top-0 h-10 pointer-events-none"
+                      style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.28), transparent)' }} />
+
+                    {/* Bottom vignette */}
+                    <div className="absolute inset-x-0 bottom-0 h-12 pointer-events-none"
+                      style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.32), transparent)' }} />
+
+                    {/* LIVE DEMO badge — bottom-left */}
+                    <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider pointer-events-none"
+                      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff' }}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      LIVE DEMO
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom speaker bar — purely decorative */}
+                <div className="h-[10px] flex items-center justify-center gap-1 pb-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="w-4 h-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Live Telemetry / Features Walkthrough */}
