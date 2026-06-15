@@ -287,7 +287,7 @@ export default function AppPortal() {
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] flex flex-col">
       {/* Navbar */}
       <nav className="border-b sticky top-0 z-50 backdrop-blur-xl bg-[var(--background)]/90" style={{ borderColor: 'var(--border)' }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -297,7 +297,7 @@ export default function AppPortal() {
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
             <Link href="/">
-              <Logo size={28} className="cursor-pointer" />
+              <Logo size={36} className="cursor-pointer" />
             </Link>
           </div>
 
@@ -311,20 +311,20 @@ export default function AppPortal() {
                     {(() => {
                       if (!connected) {
                         return (
-                          <button onClick={openConnectModal} className="btn-primary text-xs gap-1.5 px-3 py-1.5">
+                          <button onClick={openConnectModal} className="btn-primary text-sm gap-2 px-5 py-2.5 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm">
                             Connect
                           </button>
                         );
                       }
                       if (chain.unsupported) {
                         return (
-                          <button onClick={openChainModal} className="btn-primary text-xs gap-1.5 px-3 py-1.5 !bg-red-600 !border-red-600">
+                          <button onClick={openChainModal} className="btn-primary text-sm gap-2 px-5 py-2.5 font-semibold !bg-red-600 !border-red-600 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm">
                             Wrong Network
                           </button>
                         );
                       }
                       return (
-                        <button onClick={openAccountModal} className="btn-secondary text-xs gap-1.5 px-3 py-1.5 font-mono">
+                        <button onClick={openAccountModal} className="btn-secondary text-sm gap-2 px-5 py-2.5 font-mono font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm">
                           {account.displayName}
                         </button>
                       );
@@ -340,7 +340,7 @@ export default function AppPortal() {
       {/* Main Container */}
       <div className="flex-1 flex max-w-7xl w-full mx-auto relative">
         {/* Sidebar - Desktop (Collapsible) */}
-        <aside className={`relative hidden md:flex flex-col shrink-0 border-r py-6 transition-all duration-300 ease-in-out sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto ${isSidebarCollapsed ? 'w-16 pr-0 items-center' : 'w-60 pr-6'}`}
+        <aside className={`relative hidden md:flex flex-col shrink-0 border-r py-6 transition-all duration-300 ease-in-out sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto ${isSidebarCollapsed ? 'w-16 pr-0 items-center' : 'w-60 pr-6'}`}
           style={{ borderColor: 'var(--border)' }}>
           
           <button 
@@ -367,7 +367,7 @@ export default function AppPortal() {
         {mobileMenuOpen && (
           <div className="fixed inset-0 z-40 md:hidden bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setMobileMenuOpen(false)}>
             <aside 
-              className="fixed bottom-0 top-14 left-0 w-64 bg-[var(--background)] border-r p-5 shadow-2xl animate-slide-right flex flex-col"
+              className="fixed bottom-0 top-20 left-0 w-64 bg-[var(--background)] border-r p-5 shadow-2xl animate-slide-right flex flex-col"
               style={{ borderColor: 'var(--border)' }}
               onClick={(e) => e.stopPropagation()}
             >
