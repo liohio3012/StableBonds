@@ -6,7 +6,15 @@ import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { useAccount, useDisconnect } from 'wagmi';
 import { Fingerprint, Mail, LogOut, Copy, ChevronDown, User, Loader2, Wallet, X, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { createPublicClient, http, formatUnits, parseAbi } from 'viem';
+import { arcTestnet } from 'viem/chains';
 import Logo from './Logo';
+
+const USDC_BALANCE_ABI = parseAbi([
+  "function balanceOf(address account) view returns (uint256)"
+]);
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
+const RPC_URL = "https://rpc.testnet.arc.network";
 
 export default function CircleAuthButton() {
   const [mounted, setMounted] = useState(false);
@@ -35,6 +43,51 @@ export default function CircleAuthButton() {
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!account?.address) return;
+    
+    let isMounted = true;
+    const fetchBalance = async () => {
+      try {
+        const client = createPublicClient({
+          chain: arcTestnet,
+          transport: http(RPC_URL),
+        });
+
+        const rawBalance = await client.readContract({
+          address: USDC_ADDRESS,
+          abi: USDC_BALANCE_ABI,
+          functionName: 'balanceOf',
+          args: [account.address as `0x${string}`],
+        });
+
+        const formatted = parseFloat(formatUnits(rawBalance as bigint, 6)).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
+        if (isMounted) {
+          setUsdcBalance(formatted);
+        }
+      } catch (err) {
+        console.error('Failed to fetch USDC balance in auth button:', err);
+      }
+    };
+
+    fetchBalance();
+    
+    let interval: NodeJS.Timeout;
+    if (dropdownOpen) {
+      interval = setInterval(fetchBalance, 10000);
+    }
+
+    return () => {
+      isMounted = false;
+      if (interval) clearInterval(interval);
+    };
+  }, [account?.address, dropdownOpen]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -162,6 +215,19 @@ export default function CircleAuthButton() {
               <div className="flex justify-between">
                 <span>Gas Fees</span>
                 <span className="font-medium text-[var(--success)]">Sponsored</span>
+              </div>
+              <div className="flex justify-between items-center py-1.5 border-t border-b border-dashed my-1.5" style={{ borderColor: 'var(--border)' }}>
+                <span>USDC Balance</span>
+                <span className="font-semibold text-[var(--primary)] flex items-center gap-1">
+                  {usdcBalance === null ? (
+                    <Loader2 size={11} className="animate-spin text-[var(--muted-foreground)]" />
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 120 120" className="inline-block" aria-hidden="true"><path fill="#0B53BF" d="M60 120c33.137 0 60-26.863 60-60S93.137 0 60 0 0 26.863 0 60s26.863 60 60 60"></path><path fill="#fff" d="M70.8 16.313v7.725C86.211 28.688 97.498 43.013 97.498 60s-11.287 31.313-26.7 35.963v7.725C90.45 98.888 105 81.15 105 60s-14.55-38.887-34.2-43.687M22.499 60c0-16.987 11.287-31.312 26.7-35.962v-7.725c-19.65 4.8-34.2 22.537-34.2 43.687s14.55 38.888 34.2 43.688v-7.725C33.786 91.35 22.499 76.988 22.499 60"></path><path fill="#fff" d="M76.124 68.363c0-15.338-24.037-9.038-24.037-17.513 0-3.037 2.437-4.987 7.087-4.987 5.55 0 7.463 2.7 8.063 6.337h7.65c-.683-6.826-4.6-11.137-11.138-12.42v-6.03h-7.5v5.814c-7.161.912-11.662 5.083-11.662 11.286 0 15.413 24.075 9.638 24.075 17.963 0 3.15-3.038 5.25-8.176 5.25-6.712 0-8.924-2.963-9.75-7.05h-7.462"></path></svg>
+                      {usdcBalance} USDC
+                    </>
+                  )}
+                </span>
               </div>
             </div>
 
