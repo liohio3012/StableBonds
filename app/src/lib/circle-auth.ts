@@ -38,6 +38,65 @@ export const bundlerClient = createBundlerClient({
   transport: modularTransport,
 });
 
+/**
+ * Because we use a proxy URL, the Circle SDK's `isCircleUrl()` check fails,
+ * causing `toCircleSmartAccount` to skip the critical `circle_getAddress` call
+ * that registers the wallet with Circle's backend. Without this registration,
+ * the bundler returns "Cannot find target wallet".
+ *
+ * This helper manually calls `circle_getAddress` via the proxy to register
+ * the wallet.
+ */
+async function registerWalletWithCircle(owner: any, name: string): Promise<string> {
+  const isWebAuthn = typeof owner.sign === 'function' && 'id' in owner;
+  let ownerConfig: any;
+
+  if (isWebAuthn) {
+    // WebAuthn owner - extract public key coordinates
+    const pubKey = (owner as any).publicKey;
+    if (pubKey) {
+      // Parse the public key to get x,y coordinates
+      const { parsePublicKey } = await import('webauthn-p256');
+      const parsed = parsePublicKey(pubKey);
+      ownerConfig = {
+        webauthnOwners: [{ publicKeyX: parsed.x.toString(), publicKeyY: parsed.y.toString(), weight: 1 }],
+      };
+    } else {
+      // Fallback: skip registration (will use computed address)
+      console.warn('[CircleAuth] Cannot extract public key from WebAuthn owner, skipping registration');
+      return '';
+    }
+  } else {
+    // EOA owner
+    ownerConfig = {
+      owners: [{ address: owner.address, weight: 1 }],
+    };
+  }
+
+  try {
+    const result: any = await client.request({
+      method: 'circle_getAddress' as any,
+      params: [{
+        scaConfiguration: {
+          initialOwnershipConfiguration: {
+            weightedMultisig: {
+              ...ownerConfig,
+              thresholdWeight: 1,
+            },
+          },
+          scaCore: 'circle_6900_v1',
+        },
+        metadata: { name },
+      }],
+    });
+    console.log('[CircleAuth] Wallet registered with Circle backend:', result?.address || result);
+    return result?.address || '';
+  } catch (err: any) {
+    console.warn('[CircleAuth] circle_getAddress call failed (wallet may already be registered):', err.message);
+    return '';
+  }
+}
+
 export interface AuthSession {
   address: string;
   username: string;
@@ -82,6 +141,10 @@ export async function registerPasskey(username: string): Promise<{ account: any;
     localStorage.setItem('sb_passkey_credential', JSON.stringify(credential));
 
     const owner = toWebAuthnAccount({ credential }) as WebAuthnAccount;
+
+    // Register the wallet with Circle backend (required when using proxy URL)
+    await registerWalletWithCircle(owner, safeUsername);
+
     const account = await toCircleSmartAccount({
       client,
       owner,
@@ -115,6 +178,10 @@ export async function loginPasskey(): Promise<{ account: any; session: AuthSessi
     localStorage.setItem('sb_passkey_credential', JSON.stringify(credential));
 
     const owner = toWebAuthnAccount({ credential }) as WebAuthnAccount;
+
+    // Register the wallet with Circle backend (required when using proxy URL)
+    await registerWalletWithCircle(owner, 'passkey-login');
+
     const account = await toCircleSmartAccount({
       client,
       owner,
@@ -160,6 +227,9 @@ export async function loginEmailOTP(
     const seed = keccak256(stringToHex(`${email}_stablebonds_salt_2026`));
     const owner = privateKeyToAccount(seed);
 
+    // Register the wallet with Circle backend (required when using proxy URL)
+    await registerWalletWithCircle(owner, email.split('@')[0]);
+
     const account = await toCircleSmartAccount({
       client,
       owner,
@@ -201,6 +271,10 @@ export async function restoreSession(): Promise<{ account: any; session: AuthSes
 
       const credential = JSON.parse(credStr);
       const owner = toWebAuthnAccount({ credential }) as WebAuthnAccount;
+
+      // Re-register with Circle backend on session restore
+      await registerWalletWithCircle(owner, session.username);
+
       const account = await toCircleSmartAccount({
         client,
         owner,
@@ -213,6 +287,10 @@ export async function restoreSession(): Promise<{ account: any; session: AuthSes
       if (!seed) return null;
 
       const owner = privateKeyToAccount(seed);
+
+      // Re-register with Circle backend on session restore
+      await registerWalletWithCircle(owner, session.username);
+
       const account = await toCircleSmartAccount({
         client,
         owner,

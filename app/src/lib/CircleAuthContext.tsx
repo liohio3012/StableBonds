@@ -10,6 +10,7 @@ import {
   restoreSession,
   logoutSession
 } from './circle-auth';
+import { bundlerClient } from './circle-auth';
 
 interface CircleAuthContextType {
   account: any | null;
@@ -41,8 +42,28 @@ export const CircleAuthProvider = ({ children }: { children: React.ReactNode }) 
       try {
         const restored = await restoreSession();
         if (restored) {
-          setAccount(restored.account);
-          setSession(restored.session);
+          // Validate the restored wallet is known to the current Circle project
+          // by making a lightweight bundler call. If the wallet was created under
+          // a different client key, the bundler won't recognise it.
+          try {
+            await bundlerClient.request({
+              method: 'eth_getCode' as any,
+              params: [restored.account.address, 'latest'],
+            });
+            setAccount(restored.account);
+            setSession(restored.session);
+          } catch (validateErr: any) {
+            const msg = validateErr?.message || validateErr?.details || '';
+            if (msg.includes('Cannot find target wallet') || msg.includes('not accessible')) {
+              console.warn('[CircleAuth] Stale session detected (wallet unknown to current project). Clearing.');
+              logoutSession();
+              toast.info('Session expired due to project key change. Please register or login again.');
+            } else {
+              // Non-wallet error (e.g. network), keep the session
+              setAccount(restored.account);
+              setSession(restored.session);
+            }
+          }
         }
       } catch (err) {
         console.error("Failed to restore Circle session:", err);
