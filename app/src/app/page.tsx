@@ -332,22 +332,22 @@ export default function Home() {
                   Get Started
                   <ArrowRight size={16} />
                 </Link>
-                <Link href="/app" className="btn-secondary px-6 py-3.5 text-sm flex items-center font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all">
+                <Link href="/app" className="btn-secondary px-6 py-3.5 text-sm flex items-center font-semibold hover:bg-neutral-100 transition-all">
                   View Dashboard
                 </Link>
               </div>
 
               {/* Sleek Hero Graphic Illustration & Treasury Visualizer */}
-              <div className="mt-14 max-w-4xl mx-auto rounded-2xl border border-neutral-200/80 dark:border-neutral-800/80 shadow-[0_20px_50px_rgba(0,0,0,0.06)] bg-white/70 dark:bg-black/70 backdrop-blur-md overflow-hidden animate-scale-in text-left">
+              <div className="mt-14 max-w-4xl mx-auto rounded-2xl border border-neutral-200 shadow-[0_20px_50px_rgba(0,0,0,0.06)] bg-white/95 backdrop-blur-md overflow-hidden animate-scale-in text-left">
                 {/* Mock Window Top Bar */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-900/50">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200/80 bg-neutral-50/80">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-red-400/80"></span>
                     <span className="w-3 h-3 rounded-full bg-amber-400/80"></span>
                     <span className="w-3 h-3 rounded-full bg-emerald-400/80"></span>
-                    <span className="text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">STABLEBONDS · TREASURY PLATFORM</span>
+                    <span className="text-[11px] font-semibold text-neutral-500 ml-2 font-mono">STABLEBONDS · TREASURY PLATFORM</span>
                   </div>
-                  <div className="flex items-center gap-2 bg-neutral-200/50 dark:bg-neutral-800/50 px-2.5 py-1 rounded-md text-[10px] font-bold text-[var(--success-foreground)]">
+                  <div className="flex items-center gap-2 bg-neutral-100 px-2.5 py-1 rounded-md text-[10px] font-bold text-[var(--success-foreground)]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
                     Engine Active
                   </div>
@@ -375,7 +375,7 @@ export default function Home() {
                   {/* Live Telemetry / Features Walkthrough */}
                   <div className="md:col-span-5 space-y-6">
                     <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600">
                         Yield Engine Telemetry
                       </span>
                       <h3 className="text-xl font-bold mt-1 text-[var(--foreground)]">
@@ -387,15 +387,15 @@ export default function Home() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3.5">
-                      <div className="border border-neutral-200/60 dark:border-neutral-800/60 rounded-xl p-3 bg-neutral-50/50 dark:bg-neutral-900/50">
-                        <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide">APY Range</span>
+                      <div className="border border-neutral-200/60 rounded-xl p-3 bg-neutral-50/70">
+                        <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide">APY Range</span>
                         <div className="text-base font-bold text-[var(--success)] mt-0.5">4.0% - 12.0%</div>
-                        <span className="text-[9px] text-neutral-400 dark:text-neutral-500">Fixed rate yield</span>
+                        <span className="text-[9px] text-neutral-500">Fixed rate yield</span>
                       </div>
-                      <div className="border border-neutral-200/60 dark:border-neutral-800/60 rounded-xl p-3 bg-neutral-50/50 dark:bg-neutral-900/50">
-                        <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide">Settlement</span>
+                      <div className="border border-neutral-200/60 rounded-xl p-3 bg-neutral-50/70">
+                        <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide">Settlement</span>
                         <div className="text-base font-bold text-[var(--foreground)] mt-0.5">100% Auto</div>
-                        <span className="text-[9px] text-neutral-400 dark:text-neutral-500">No transaction fees</span>
+                        <span className="text-[9px] text-neutral-500">No transaction fees</span>
                       </div>
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export default function Home() {
       </div>
 
       {/* Trust Section: Infrastructure Partners */}
-      <div className="w-full border-t border-b py-8 my-10 bg-neutral-50/30 dark:bg-zinc-950/20" style={{ borderColor: 'var(--border)' }}>
+      <div className="w-full border-t border-b py-8 my-10 bg-neutral-50/80" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-6">
             TRUSTED BY INFRASTRUCTURE PARTNERS
@@ -434,7 +434,7 @@ export default function Home() {
 
       {/* Simulated Live Activity Feed */}
       <div className="max-w-4xl mx-auto px-6 mb-16">
-        <div className="border rounded-2xl p-6 bg-white/40 dark:bg-zinc-950/40 backdrop-blur-md shadow-xs" style={{ borderColor: 'var(--border)' }}>
+        <div className="border rounded-2xl p-6 bg-white/90 backdrop-blur-md shadow-xs" style={{ borderColor: 'var(--border)' }}>
           <div className="flex items-center justify-between pb-3 border-b mb-4" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -444,7 +444,7 @@ export default function Home() {
           </div>
           <div className="space-y-3">
             {activityLogs.map((log) => (
-              <div key={log.id} className="flex items-start justify-between text-xs animate-slide-up bg-black/5 dark:bg-black/20 p-2.5 rounded-lg border border-transparent hover:border-[var(--border)] transition-all">
+              <div key={log.id} className="flex items-start justify-between text-xs animate-slide-up bg-neutral-100/70 p-2.5 rounded-lg border border-transparent hover:border-[var(--border)] transition-all">
                 <div className="flex items-start gap-2.5">
                   <span className={`w-1.5 h-1.5 rounded-full mt-1.5 ${log.type === 'success' ? 'bg-emerald-500' : 'bg-blue-400'}`}></span>
                   <span className="text-[var(--foreground)] font-medium">{log.action}</span>
@@ -591,7 +591,7 @@ export default function Home() {
             {/* AI Copilot Feature Banner */}
             <div className="max-w-4xl mx-auto mb-20">
               <div className="card-surface p-8 relative overflow-hidden border flex flex-col md:flex-row items-center gap-8 shadow-sm"
-                style={{ borderColor: 'var(--border)', background: 'linear-gradient(to right, var(--canvas), rgba(16, 185, 129, 0.03))' }}>
+                style={{ borderColor: 'var(--border)', background: 'linear-gradient(to right, #ffffff, rgba(16, 185, 129, 0.03))' }}>
                 
                 {/* Neon Glow decoration */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] pointer-events-none rounded-full" />
@@ -607,7 +607,7 @@ export default function Home() {
                   <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
                     StableBonds integrates an intelligent AI Copilot powered by Lepton LLM. Simply describe your payouts, budget constraints, or yield targets in plain English:
                   </p>
-                  <div className="bg-black/5 dark:bg-black/35 border rounded-xl p-3 font-mono text-[11px] text-[var(--primary)] border-[var(--border)]">
+                  <div className="bg-neutral-100 border rounded-xl p-3 font-mono text-[11px] text-zinc-800 border-[var(--border)]">
                     <span className="text-neutral-400 select-none">&gt; </span>
                     "Schedule 1,500 USDC to supply-vendor.eth for July 15th and maximize yield."
                   </div>
@@ -624,16 +624,16 @@ export default function Home() {
                   </div>
                   
                   <div className="space-y-2 text-[10px]">
-                    <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
-                      <span className="text-neutral-400">Yield Strategy</span>
+                    <div className="flex justify-between items-center bg-neutral-100/60 p-1.5 rounded">
+                      <span className="text-neutral-500">Yield Strategy</span>
                       <span className="font-bold text-emerald-500">Max Yield (12% APY)</span>
                     </div>
-                    <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
-                      <span className="text-neutral-400">Vault Allocation</span>
+                    <div className="flex justify-between items-center bg-neutral-100/60 p-1.5 rounded">
+                      <span className="text-neutral-500">Vault Allocation</span>
                       <span className="font-bold text-[var(--foreground)]">180d Junior Leg</span>
                     </div>
-                    <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
-                      <span className="text-neutral-400">Estimated Return</span>
+                    <div className="flex justify-between items-center bg-neutral-100/60 p-1.5 rounded">
+                      <span className="text-neutral-500">Estimated Return</span>
                       <span className="font-bold text-emerald-500">+180.00 USDC</span>
                     </div>
                   </div>
@@ -816,7 +816,7 @@ export default function Home() {
 
               {/* Active Use Case Details */}
               <div className="card-surface p-8 relative overflow-hidden border flex flex-col gap-6 shadow-sm min-h-[220px] transition-all duration-300"
-                style={{ borderColor: 'var(--border)', background: 'var(--canvas)' }}>
+                style={{ borderColor: 'var(--border)', background: 'var(--card)' }}>
                 
                 <div className="flex items-center justify-between z-10">
                   <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border"

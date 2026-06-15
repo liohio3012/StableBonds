@@ -107,7 +107,7 @@ export default function Footer() {
             </form>
 
             {/* Status indicator */}
-            <div className="flex items-center gap-4 text-xs shrink-0 self-start sm:self-auto border border-dashed rounded-lg p-2.5 bg-white/45 dark:bg-zinc-900/45 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex items-center gap-4 text-xs shrink-0 self-start sm:self-auto border border-dashed rounded-lg p-2.5 bg-white/90 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
               <div className="flex items-center gap-2">
                 <Activity size={13} style={{ color: networkStatus === 'operational' ? 'var(--success)' : 'var(--danger)' }} className="animate-pulse" />
                 <span className="font-semibold" style={{ color: 'var(--foreground)' }}>Network Layer:</span>
@@ -267,12 +267,12 @@ export default function Footer() {
             <ShieldCheck size={14} className="text-[var(--success)]" />
             SOC 2 Type II Audited
           </span>
-          <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+          <span className="w-1 h-1 rounded-full bg-neutral-300" />
           <span className="flex items-center gap-1.5">
             <ShieldCheck size={14} className="text-[var(--success)]" />
             ISO 27001 Security Standard
           </span>
-          <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+          <span className="w-1 h-1 rounded-full bg-neutral-300" />
           <span className="flex items-center gap-1.5">
             <ShieldCheck size={14} className="text-[var(--success)]" />
             MiCA Compliant Protocols
@@ -300,8 +300,8 @@ export default function Footer() {
               <Globe size={13} />
               <span className="cursor-pointer hover:text-[var(--foreground)]">US (English)</span>
             </div>
-            <div className="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-            <div className="flex items-center gap-1.5 bg-white/70 dark:bg-zinc-900/70 border px-2.5 py-1 rounded-lg" style={{ borderColor: 'var(--border)' }}>
+            <div className="w-1.5 h-1.5 rounded-full bg-neutral-300" />
+            <div className="flex items-center gap-1.5 bg-white/90 border px-2.5 py-1 rounded-lg" style={{ borderColor: 'var(--border)' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
               <span>Target Gas:</span>
               <span className="font-bold text-[var(--foreground)]">~0.01 USDC</span>
