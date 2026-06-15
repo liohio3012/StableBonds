@@ -1482,7 +1482,7 @@ export default function IntentBuilder() {
                 id="vendor-address"
               />
               <p className="text-[11px] mt-1.5" style={{ color: 'var(--muted-foreground)' }}>
-                ℹ️ Ask your vendor for their payment address. It's like a bank account number for receiving funds.
+                <Info size={12} className="inline-block shrink-0 mr-1 align-text-bottom" /> Ask your vendor for their payment address. It's like a bank account number for receiving funds.
               </p>
             </div>
           </div>
