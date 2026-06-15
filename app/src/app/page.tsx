@@ -288,35 +288,41 @@ function WelcomeFeatures() {
         </div>
       </div>
 
-      {/* Interactive Testimonial Section */}
+      {/* Example Use Case Section */}
       <div className="max-w-4xl mx-auto mb-20 animate-fade-in">
         <h3 className="font-bold text-center text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-6">
-          Trusted by Enterprise Treasuries
+          Example Use Case
         </h3>
         
-        <div className="card-surface p-8 relative overflow-hidden border flex flex-col md:flex-row items-center gap-8 shadow-sm" 
+        <div className="card-surface p-8 relative overflow-hidden border flex flex-col md:flex-row items-start gap-8 shadow-sm" 
           style={{ borderColor: 'var(--border)', background: 'var(--canvas)' }}>
-          {/* Quote icon background decoration */}
+          {/* Decorative icon */}
           <div className="absolute -top-4 -right-4 text-neutral-100/40 dark:text-neutral-900/40 pointer-events-none text-[120px] font-serif select-none leading-none">
-            “
+            "
           </div>
           
-          {/* Circular Headshot Avatar */}
-          <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-emerald-500/30 shadow-md shrink-0 bg-neutral-100">
-            <img 
-              src="/treasurer_avatar.png" 
-              alt="Marc Werner" 
-              className="w-full h-full object-cover scale-105"
-            />
+          {/* Scenario icon */}
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border"
+            style={{ background: 'var(--success-soft)', borderColor: 'var(--success-border)' }}>
+            <TrendingUp size={28} className="text-[var(--success)]" />
           </div>
 
-          <div className="space-y-3 flex-grow text-center md:text-left">
+          <div className="space-y-3 flex-grow">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border"
+                style={{ background: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
+                Illustrative Scenario
+              </span>
+            </div>
             <p className="text-sm md:text-base italic leading-relaxed text-[var(--foreground)] font-medium">
-              "StableBonds completely modernized our B2B vendor payouts. By placing our invoice settlement funds into Arc bond vaults, we earned over $45,000 in passive yield this quarter alone. The auto-maturity execution is flawless."
+              "A B2B logistics company holds $500,000 in idle USDC awaiting invoice settlement. 
+              Instead of leaving it idle, they allocate it into StableBonds 90-day senior vaults at 5% APY — 
+              earning ~$6,250 in yield while funds await disbursement. Payouts are automated on maturity with no manual intervention."
             </p>
-            <div>
-              <h4 className="font-bold text-sm text-[var(--foreground)]">Marc Werner</h4>
-              <p className="text-xs text-[var(--muted-foreground)]">VP of Treasury, Helvetia Logistical Group</p>
+            <div className="flex flex-wrap gap-4 pt-1 text-[11px] font-semibold text-[var(--muted-foreground)]">
+              <span>$500K principal · 90-day term</span>
+              <span className="text-[var(--success)]">~$6,250 yield earned</span>
+              <span>100% automated settlement</span>
             </div>
           </div>
         </div>
