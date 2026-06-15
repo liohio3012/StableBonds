@@ -221,12 +221,12 @@ export default function Home() {
 
   // --- Command Palette Items Filtration ---
   const navItems = [
-    { name: "Launch Treasury Dashboard", desc: "Go to app payment view", url: "/app" },
-    { name: "Active Bond Vaults", desc: "View senior and junior tranches", url: "/app" },
+    { name: "Launch Treasury Dashboard", desc: "Go to app payment view", url: "/app?tab=strategy" },
+    { name: "Active Bond Vaults", desc: "View senior and junior tranches", url: "/app?tab=ladder" },
     { name: "System Status Page", desc: "Real-time service health check", url: "#status" },
     { name: "Technical Documentation", desc: "Circle WaaS & Arc APIs developer guide", url: "/docs" },
-    { name: "Enterprise Compliance Center", desc: "Setup role-based policies", url: "/app" },
-    { name: "A2A OTC Secondary Desk", desc: "Trade seasoned discounted bonds", url: "/app" }
+    { name: "Enterprise Compliance Center", desc: "Setup role-based policies", url: "/app?tab=compliance" },
+    { name: "A2A OTC Secondary Desk", desc: "Trade seasoned discounted bonds", url: "/app?tab=otc" }
   ];
 
   const filteredNavItems = navItems.filter(item => 

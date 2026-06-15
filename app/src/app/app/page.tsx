@@ -158,6 +158,16 @@ const TAB_META: Record<string, { title: string; description: string }> = {
 export default function AppPortal() {
   const [mounted, setMounted] = React.useState(false);
   const [activeTab, setActiveTab] = useState<'treasury' | 'strategy' | 'calendar' | 'ladder' | 'compliance' | 'otc' | 'unified' | 'agent' | 'multisig' | 'auditing'>('strategy');
+
+  const handleTabChange = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tab);
+      window.history.pushState(null, '', url.pathname + url.search);
+    }
+  };
+
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
   const { account: circleAccount, isSmartAccount } = useCircleAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -176,6 +186,14 @@ export default function AppPortal() {
 
   React.useEffect(() => {
     setMounted(true);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      const validTabs = ['treasury', 'strategy', 'calendar', 'ladder', 'compliance', 'otc', 'unified', 'agent', 'multisig', 'auditing'];
+      if (tabParam && validTabs.includes(tabParam)) {
+        setActiveTab(tabParam as any);
+      }
+    }
   }, []);
 
   // Poll local storage for compliance status
@@ -355,7 +373,7 @@ export default function AppPortal() {
           <div className="w-full mt-4">
             <SidebarContent 
               activeTab={activeTab} 
-              setActiveTab={setActiveTab} 
+              setActiveTab={handleTabChange} 
               isSidebarCollapsed={isSidebarCollapsed}
               collapsedGroups={collapsedGroups}
               toggleGroup={toggleGroup}
@@ -371,7 +389,7 @@ export default function AppPortal() {
               style={{ borderColor: 'var(--border)' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <SidebarContent activeTab={activeTab} setActiveTab={(tab) => { setActiveTab(tab); setMobileMenuOpen(false); }} />
+              <SidebarContent activeTab={activeTab} setActiveTab={(tab) => { handleTabChange(tab); setMobileMenuOpen(false); }} />
             </aside>
           </div>
         )}
@@ -392,7 +410,7 @@ export default function AppPortal() {
                 </div>
               </div>
               <button 
-                onClick={() => setActiveTab('compliance')} 
+                onClick={() => handleTabChange('compliance')} 
                 className="btn-primary text-xs whitespace-nowrap bg-amber-600 hover:bg-amber-500 border-amber-500 text-white gap-1.5 px-4 py-2 self-start sm:self-center flex items-center font-semibold"
               >
                 Start KYC Onboarding
@@ -419,12 +437,12 @@ export default function AppPortal() {
           {activeTab === 'treasury' && (
             <div className="space-y-6 animate-fade-in">
               <YieldStreamer />
-              <TreasuryDashboard onListOTC={() => setActiveTab('otc')} />
+              <TreasuryDashboard onListOTC={() => handleTabChange('otc')} />
             </div>
           )}
            {activeTab === 'unified' && <UnifiedBalance />}
           {activeTab === 'calendar' && <MaturityCalendar />}
-          {activeTab === 'ladder' && <BondLadderBuilder onNavigateToCompliance={() => setActiveTab('compliance')} onNavigateToTab={(tab: any) => setActiveTab(tab)} />}
+          {activeTab === 'ladder' && <BondLadderBuilder onNavigateToCompliance={() => handleTabChange('compliance')} onNavigateToTab={(tab: any) => handleTabChange(tab)} />}
           {activeTab === 'compliance' && <CompliancePortal />}
           {activeTab === 'otc' && <OTCDesk />}
           {activeTab === 'agent' && <AgentManager />}
@@ -432,7 +450,7 @@ export default function AppPortal() {
           {activeTab === 'auditing' && <Auditing />}
           {activeTab === 'strategy' && (
             <div className="animate-fade-in">
-              <IntentBuilder onNavigateToCompliance={() => setActiveTab('compliance')} onNavigateToTab={(tab: any) => setActiveTab(tab)} />
+              <IntentBuilder onNavigateToCompliance={() => handleTabChange('compliance')} onNavigateToTab={(tab: any) => handleTabChange(tab)} />
               <div className="mt-8 text-center max-w-md mx-auto">
                 <div className="flex items-center justify-center gap-5 text-[11px] font-medium text-[var(--muted-foreground)]">
                   <span className="flex items-center gap-1">
@@ -468,7 +486,7 @@ export default function AppPortal() {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
+              onClick={() => handleTabChange(item.id as any)}
               className={`flex flex-col items-center gap-1 transition-all cursor-pointer ${
                 isActive ? 'text-[var(--primary)] font-semibold scale-105' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
               }`}
