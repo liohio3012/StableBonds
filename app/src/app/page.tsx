@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock, Calendar } from 'lucide-react';
+import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock, Calendar, Bot } from 'lucide-react';
 import Logo from "@/components/enterprise/Logo";
 import Footer from "@/components/enterprise/Footer";
 import Link from 'next/link';
@@ -134,9 +134,10 @@ function WelcomeOnboarding() {
               {/* Bullet Features */}
               <div className="space-y-2.5 pt-2">
                 {[
-                  "Paymaster-sponsored gasless transactions",
-                  "Circle CCTP cross-chain collateral bridging",
-                  "Smart account multi-call batching contracts"
+                  "Circle Programmable Wallets & Smart Accounts",
+                  "Cross-chain balance routing via Circle CCTP",
+                  "Lepton LLM-powered Autonomous AI Copilot",
+                  "Gasless paymaster-sponsored settlement"
                 ].map((feat, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-neutral-600 dark:text-neutral-400">
                     <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
@@ -177,6 +178,64 @@ function WelcomeOnboarding() {
             <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">{item.desc}</p>
           </div>
         ))}
+      </div>
+
+      {/* AI Copilot Feature Banner */}
+      <div className="max-w-4xl mx-auto mb-20">
+        <div className="card-surface p-8 relative overflow-hidden border flex flex-col md:flex-row items-center gap-8 shadow-sm"
+          style={{ borderColor: 'var(--border)', background: 'linear-gradient(to right, var(--canvas), rgba(16, 185, 129, 0.03))' }}>
+          
+          {/* Neon Glow decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[80px] pointer-events-none rounded-full" />
+          
+          <div className="space-y-4 flex-grow text-left max-w-xl z-10">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-[var(--primary-soft)] text-[var(--primary)] border border-[var(--primary-border)]">
+              <Bot size={12} className="animate-pulse" />
+              Autonomous AI Copilot
+            </div>
+            <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
+              Agentic Treasury Management
+            </h3>
+            <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
+              StableBonds integrates an intelligent AI Copilot powered by Lepton LLM. Simply describe your payouts, budget constraints, or yield targets in plain English:
+            </p>
+            <div className="bg-black/5 dark:bg-black/35 border rounded-xl p-3 font-mono text-[11px] text-[var(--primary)] border-[var(--border)]">
+              <span className="text-neutral-400 select-none">&gt; </span>
+              "Schedule 1,500 USDC to supply-vendor.eth for July 15th and maximize yield."
+            </div>
+            <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
+              The agent automatically drafts optimized payment intents, calculates weighted maturity tranches, and queues multi-sig authorizations for compliance officers.
+            </p>
+          </div>
+
+          {/* Graphical Representation of AI Actions */}
+          <div className="w-full md:w-64 border rounded-xl p-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm space-y-3 shadow-inner shrink-0 z-10" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex items-center gap-2 pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
+              <Bot size={16} className="text-emerald-500" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground)]">Agent Telemetry</span>
+            </div>
+            
+            <div className="space-y-2 text-[10px]">
+              <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
+                <span className="text-neutral-400">Yield Strategy</span>
+                <span className="font-bold text-emerald-500">Max Yield (12% APY)</span>
+              </div>
+              <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
+                <span className="text-neutral-400">Vault Allocation</span>
+                <span className="font-bold text-[var(--foreground)]">180d Junior Leg</span>
+              </div>
+              <div className="flex justify-between items-center bg-[var(--muted)] p-1.5 rounded">
+                <span className="text-neutral-400">Estimated Return</span>
+                <span className="font-bold text-emerald-500">+180.00 USDC</span>
+              </div>
+            </div>
+
+            <div className="pt-1 flex items-center justify-between text-[9px] text-neutral-400">
+              <span>Status: Waiting approval</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Yield tiers summary */}
