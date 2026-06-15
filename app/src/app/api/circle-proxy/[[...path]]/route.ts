@@ -27,23 +27,18 @@ Incoming Headers: ${JSON.stringify(Object.fromEntries(request.headers.entries())
 `;
     appendLog(logMsg);
 
-    // Forward only the specific headers required by the Circle SDK to avoid breaking the Node fetch call (e.g. via accept-encoding or cookie headers)
+    // Forward the headers required by Circle (including authorization, app info, client key, user-agent)
+    // and preserve the browser's origin and referer so they match the WebAuthn signature payload origin.
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent'];
+    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent', 'origin', 'referer'];
     for (const name of headersToForward) {
       const value = request.headers.get(name);
       if (value) {
         headers[name] = value;
       }
     }
-
-    // Force origin & referer to localhost. Since the Circle Client Key's Allowed Domains configuration
-    // whitelists localhost by default, spoofing these headers in our server-side proxy bypasses the
-    // 401 Unauthorized (Invalid credentials) origin validation when deployed to production domains.
-    headers['origin'] = 'http://localhost:3000';
-    headers['referer'] = 'http://localhost:3000/';
 
     appendLog(`Forwarded Headers: ${JSON.stringify(headers)}\n`);
 
