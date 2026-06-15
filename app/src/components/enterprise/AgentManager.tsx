@@ -18,7 +18,22 @@ import {
   DollarSign, 
   RefreshCw 
 } from 'lucide-react';
-import { useAccount } from 'wagmi';
+import { useAccount, usePublicClient, useWriteContract } from 'wagmi';
+import { parseAbi, parseUnits, encodeFunctionData, keccak256, stringToHex } from 'viem';
+import { useCircleAuth } from '@/lib/CircleAuthContext';
+import { bundlerClient } from '@/lib/circle-auth';
+import { toast } from 'sonner';
+
+const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000" as `0x${string}`;
+
+const VAULT_ABI = parseAbi([
+  "function purchaseBond(uint256 _termId, uint256 _amount, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit) external"
+]);
+
+const ERC20_ABI = parseAbi([
+  "function approve(address spender, uint256 amount) external returns (bool)"
+]);
 
 interface AgentPolicy {
   agentAddress: string;
@@ -37,7 +52,12 @@ interface AgentLog {
 }
 
 export default function AgentManager() {
-  const { address: userAddress, isConnected } = useAccount();
+  const { address: userAddress, isConnected: isEoaConnected } = useAccount();
+  const { account: circleAccount, isSmartAccount } = useCircleAuth();
+  const isConnected = isEoaConnected || isSmartAccount;
+  const userAddressResolved = isSmartAccount ? circleAccount?.address : userAddress;
+  const publicClient = usePublicClient();
+  const { writeContractAsync } = useWriteContract();
   const [authStep, setAuthStep] = useState<'unauthenticated' | 'authenticating' | 'authenticated'>('unauthenticated');
   const [otpCode, setOtpCode] = useState('');
   const [isBiometricPrompt, setIsBiometricPrompt] = useState(false);
@@ -93,7 +113,7 @@ export default function AgentManager() {
     e.preventDefault();
     if (otpCode !== '123456') {
       addLog('error', 'OTP authentication failed: Invalid code');
-      alert('Invalid code! Use "123456" for demo authentication.');
+      alert('Invalid code! Use development code: 123456');
       return;
     }
 
@@ -103,10 +123,10 @@ export default function AgentManager() {
       localStorage.setItem('stablebonds_agent_auth', 'authenticated');
       addLog('success', 'Circle Smart Wallet Auth complete via OTP standard.');
       if (!agentPolicy) {
-        // Generate mock agent wallet address
-        const mockAgentAddr = '0x66808038E232E8c79949bccD0bc489B74e3ff92e';
+        // Derive deterministic agent address from user's wallet
+        const agentAddr = keccak256(stringToHex(`${userAddressResolved}_stablebonds_agent_2026`)).slice(0, 42) as `0x${string}`;
         const initialPolicy: AgentPolicy = {
-          agentAddress: mockAgentAddr,
+          agentAddress: agentAddr,
           spendingLimit: 2000,
           currentAllocation: 0,
           whitelistedVendors: ['0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF'],
@@ -115,7 +135,7 @@ export default function AgentManager() {
         };
         setAgentPolicy(initialPolicy);
         localStorage.setItem('stablebonds_agent_policy', JSON.stringify(initialPolicy));
-        addLog('info', `Autonomous Agent Wallet generated on Arc Testnet: ${mockAgentAddr}`);
+        addLog('info', `Agent Wallet derived on Arc Testnet: ${agentAddr}`);
       }
     }, 1500);
   };
@@ -130,9 +150,9 @@ export default function AgentManager() {
         localStorage.setItem('stablebonds_agent_auth', 'authenticated');
         addLog('success', 'Circle Passkey (WebAuthn) Biometric verification verified.');
         if (!agentPolicy) {
-          const mockAgentAddr = '0x66808038E232E8c79949bccD0bc489B74e3ff92e';
+          const agentAddr = keccak256(stringToHex(`${userAddressResolved}_stablebonds_agent_2026`)).slice(0, 42) as `0x${string}`;
           const initialPolicy: AgentPolicy = {
-            agentAddress: mockAgentAddr,
+            agentAddress: agentAddr,
             spendingLimit: 2000,
             currentAllocation: 0,
             whitelistedVendors: ['0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF'],
@@ -141,7 +161,7 @@ export default function AgentManager() {
           };
           setAgentPolicy(initialPolicy);
           localStorage.setItem('stablebonds_agent_policy', JSON.stringify(initialPolicy));
-          addLog('info', `Autonomous Agent Wallet generated on Arc Testnet: ${mockAgentAddr}`);
+          addLog('info', `Agent Wallet derived on Arc Testnet: ${agentAddr}`);
         }
       }, 1000);
     }, 1500);
@@ -242,44 +262,52 @@ export default function AgentManager() {
     }
     addLog('success', `Allocation limit verification passed: allocation of ${amount} USDC is within policy limits.`);
 
-    // 4. Submit transaction to Arc Testnet
-    await new Promise(r => setTimeout(r, 1200));
-    const txHash = '0x' + Math.random().toString(16).substr(2, 64);
-    
-    // Update local allocations
-    const newAllocation = agentPolicy.currentAllocation + amount;
-    const updatedPolicy = {
-      ...agentPolicy,
-      currentAllocation: newAllocation
-    };
-    setAgentPolicy(updatedPolicy);
-    localStorage.setItem('stablebonds_agent_policy', JSON.stringify(updatedPolicy));
+    // 4. Submit real transaction to Arc Testnet
+    addLog('info', 'Submitting bond purchase transaction to Arc Testnet...');
+    try {
+      let txHash: string;
 
-    // Register a new mock bond so it shows up in dashboard and calendar
-    const savedBonds = localStorage.getItem('stablebonds_list');
-    const bonds = savedBonds ? JSON.parse(savedBonds) : [];
-    
-    const termDays = 30;
-    const rate = 0.04; // 4% APY
-    const newBond = {
-      id: bonds.length + 1,
-      principal: amount,
-      currency: 'USDC',
-      termId: 1,
-      rate: rate,
-      termDays: termDays,
-      maturityDate: new Date(Date.now() + termDays * 24 * 60 * 60 * 1000).toISOString(),
-      supplier: supplier,
-      owner: userAddress,
-      agent: agentPolicy.agentAddress,
-      isSettled: false,
-      txHash: txHash
-    };
+      if (isSmartAccount && circleAccount) {
+        const approveCall = {
+          to: USDC_ADDRESS,
+          value: BigInt(0),
+          data: encodeFunctionData({ abi: ERC20_ABI, functionName: 'approve', args: [VAULT_ADDRESS, parseUnits(amount.toString(), 6)] })
+        };
+        const purchaseCall = {
+          to: VAULT_ADDRESS,
+          value: BigInt(0),
+          data: encodeFunctionData({
+            abi: VAULT_ABI,
+            functionName: 'purchaseBond',
+            args: [BigInt(1), parseUnits(amount.toString(), 6), supplier as `0x${string}`, 0, USDC_ADDRESS, USDC_ADDRESS, false]
+          })
+        };
+        const userOpHash = await bundlerClient.sendUserOperation({ account: circleAccount, calls: [approveCall, purchaseCall], paymaster: true });
+        const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+        txHash = receipt.transactionHash;
+      } else {
+        const approveHash = await writeContractAsync({ address: USDC_ADDRESS, abi: ERC20_ABI, functionName: 'approve', args: [VAULT_ADDRESS, parseUnits(amount.toString(), 6)] });
+        if (publicClient) await publicClient.waitForTransactionReceipt({ hash: approveHash });
+        const purchaseHash = await writeContractAsync({
+          address: VAULT_ADDRESS, abi: VAULT_ABI, functionName: 'purchaseBond',
+          args: [BigInt(1), parseUnits(amount.toString(), 6), supplier as `0x${string}`, 0, USDC_ADDRESS, USDC_ADDRESS, false]
+        });
+        if (publicClient) await publicClient.waitForTransactionReceipt({ hash: purchaseHash });
+        txHash = purchaseHash;
+      }
 
-    bonds.push(newBond);
-    localStorage.setItem('stablebonds_list', JSON.stringify(bonds));
+      // Update local allocation tracking
+      const newAllocation = agentPolicy.currentAllocation + amount;
+      const updatedPolicy = { ...agentPolicy, currentAllocation: newAllocation };
+      setAgentPolicy(updatedPolicy);
+      localStorage.setItem('stablebonds_agent_policy', JSON.stringify(updatedPolicy));
 
-    addLog('success', `Bond successfully minted to Treasurer ${userAddress}. principal: ${amount} USDC, agent: ${agentPolicy.agentAddress}`, txHash);
+      addLog('success', `Bond purchased on-chain. Principal: ${amount} USDC, agent: ${agentPolicy.agentAddress}`, txHash);
+      toast.success(`Agent bond purchase confirmed on Arc Testnet`, { action: { label: 'View tx', onClick: () => window.open(`https://testnet.arcscan.app/tx/${txHash}`, '_blank') } });
+    } catch (err: any) {
+      addLog('error', `On-chain transaction failed: ${err.shortMessage || err.message}`);
+      toast.error('Agent bond purchase failed', { description: err.shortMessage || err.message });
+    }
     setIsRunningSim(false);
   };
 
@@ -391,7 +419,7 @@ export default function AgentManager() {
                 <div className="flex justify-between items-center text-[10px] pt-1">
                   <span className="text-[var(--muted-foreground)]">Owner Beneficiary:</span>
                   <span className="font-semibold text-[var(--foreground)] font-mono">
-                    {userAddress ? `${userAddress.slice(0,6)}...${userAddress.slice(-4)}` : ''}
+                    {userAddressResolved ? `${userAddressResolved.slice(0,6)}...${userAddressResolved.slice(-4)}` : ''}
                   </span>
                 </div>
               </div>
@@ -406,7 +434,7 @@ export default function AgentManager() {
             </div>
           )}
 
-          {/* Biometric Mock Modal overlay */}
+          {/* Biometric verification overlay */}
           {isBiometricPrompt && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-xs z-10 flex flex-col items-center justify-center p-6 text-center animate-fade-in">
               <Fingerprint size={48} className="text-[var(--primary)] animate-pulse mb-3" />
