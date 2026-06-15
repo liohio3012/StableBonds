@@ -98,41 +98,23 @@ function WelcomeHero() {
 
           {/* Interactive Layout: Graphic on one side, telemetry and stats on the other */}
           <div className="grid md:grid-cols-12 gap-6 p-6 items-center">
-            {/* Video — Clean floating card */}
+            {/* Video */}
             <div className="md:col-span-7 relative group">
               {/* Ambient glow behind */}
               <div className="absolute inset-0 rounded-2xl blur-2xl opacity-20 scale-95 pointer-events-none"
                 style={{ background: 'radial-gradient(ellipse at 50% 100%, #059669 0%, transparent 65%)' }} />
 
-              {/* Card frame — clean, no dark surround */}
-              <div className="relative rounded-2xl overflow-hidden border shadow-[0_20px_48px_rgba(0,0,0,0.10),0_2px_8px_rgba(0,0,0,0.06)]"
-                style={{ borderColor: 'var(--border)' }}>
-
-                {/* Video + overlays */}
-                <div className="relative">
+              {/* Frameless card — no border, just shadow */}
+              <div className="relative rounded-2xl overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)]">
+                <div className="relative" style={{ aspectRatio: '16/9' }}>
                   <video
                     src="/stablebounds.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className="w-full h-auto block"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-
-                  {/* Subtle top vignette */}
-                  <div className="absolute inset-x-0 top-0 h-8 pointer-events-none"
-                    style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.15), transparent)' }} />
-
-                  {/* Subtle bottom vignette */}
-                  <div className="absolute inset-x-0 bottom-0 h-10 pointer-events-none"
-                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.18), transparent)' }} />
-
-                  {/* LIVE DEMO badge — bottom-left */}
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider pointer-events-none"
-                    style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    LIVE DEMO
-                  </div>
                 </div>
               </div>
             </div>
