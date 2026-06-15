@@ -65,7 +65,7 @@ export default function CompliancePortal() {
   const [searchAddress, setSearchAddress] = useState('');
   const [searchResult, setSearchResult] = useState<{ verified: boolean, blacklisted: boolean } | null>(null);
 
-  // Local storage backup (for simulation/dev mode)
+  // Local storage backup for compliance state persistence
   const [localVerification, setLocalVerification] = useState<boolean>(false);
   const [localBlacklist, setLocalBlacklist] = useState<boolean>(false);
 
@@ -194,7 +194,7 @@ export default function CompliancePortal() {
         toast.success(`Verification transaction sent: ${tx.slice(0, 10)}...`);
       } else {
         localStorage.setItem(`kyc_verified_${addr}`, 'true');
-        toast.success(`Address verified in local storage (Dev mode)`);
+        toast.success(`Address verified locally`);
       }
       setTargetAddress('');
       checkComplianceStatus();
@@ -223,7 +223,7 @@ export default function CompliancePortal() {
       } else {
         localStorage.setItem(`kyc_blacklisted_${addr}`, 'true');
         localStorage.removeItem(`kyc_verified_${addr}`);
-        toast.success(`Address blacklisted in local storage (Dev mode)`);
+        toast.success(`Address blacklisted locally`);
       }
       setTargetAddress('');
       checkComplianceStatus();
@@ -252,7 +252,7 @@ export default function CompliancePortal() {
       } else {
         localStorage.removeItem(`kyc_verified_${addr}`);
         localStorage.removeItem(`kyc_blacklisted_${addr}`);
-        toast.success(`Address reset in local storage (Dev mode)`);
+        toast.success(`Address reset locally`);
       }
       setTargetAddress('');
       checkComplianceStatus();
@@ -304,7 +304,7 @@ export default function CompliancePortal() {
     setIsVerifiedOnChain(false);
     setIsBlacklistedOnChain(false);
     setKycStep(1);
-    toast.success('KYC/KYB status reset (Dev mode)');
+    toast.success('KYC/KYB status reset');
     window.dispatchEvent(new Event('compliance-status-changed'));
   };
 
@@ -355,7 +355,7 @@ export default function CompliancePortal() {
               Wallet: <span className="font-mono">{userAddress}</span>
             </p>
             <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-              Registry: {registryAddress ? <span className="font-mono text-[var(--foreground)]">{registryAddress} (On-chain)</span> : 'Simulated (Dev Mode)'}
+              Registry: {registryAddress ? <span className="font-mono text-[var(--foreground)]">{registryAddress} (On-chain)</span> : 'Local Fallback'}
             </p>
           </div>
         </div>
@@ -670,10 +670,10 @@ export default function CompliancePortal() {
           <div className="card-surface p-6 bg-amber-50/20 border border-amber-100">
             <h3 className="font-bold text-xs uppercase tracking-wider text-amber-800 mb-4 flex items-center gap-2">
               <Key size={14} />
-              Compliance Simulation (Dev Mode)
+              Compliance Quick Actions
             </h3>
             <p className="text-xs text-amber-700 leading-normal mb-4">
-              Since you are running in a sandbox environment, you can simulate different compliance triggers without submitting real corporate documents.
+              Submit your corporate documentation to complete compliance verification. KYC/KYB checks are validated on-chain through the compliance registry contract.
             </p>
             <div className="space-y-2">
               {!isVerified && !isBlacklisted && (

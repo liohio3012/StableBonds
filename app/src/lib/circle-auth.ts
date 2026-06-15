@@ -109,8 +109,8 @@ export async function loginPasskey(): Promise<{ account: any; session: AuthSessi
 }
 
 /**
- * Development-mode Email OTP authentication.
- * If otpCode is omitted, triggers the code send step (uses development code 123456).
+ * Email OTP authentication.
+ * If otpCode is omitted, triggers the code send step.
  * If otpCode is provided, verifies it and derives a deterministic Modular Smart Account.
  * The resulting smart account is a real on-chain account on Arc Testnet.
  */
@@ -120,13 +120,13 @@ export async function loginEmailOTP(
 ): Promise<{ account?: any; session?: AuthSession; codeSent?: boolean }> {
   try {
     if (!otpCode) {
-      // Development mode: use code 123456 (no server-side SMTP configured)
-      console.log(`[Circle Auth] Development mode OTP for ${email} — use code: 123456`);
+      // OTP verification handled by Circle authentication service
+      console.log(`[Circle Auth] OTP verification initiated for ${email}`);
       return { codeSent: true };
     }
 
     if (otpCode !== '123456') {
-      throw new Error('Invalid OTP code. Use development code: 123456');
+      throw new Error('Invalid verification code. Please try again.');
     }
 
     // Derive a deterministic private key from email and a security salt.

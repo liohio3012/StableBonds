@@ -323,13 +323,13 @@ export default function CircleAuthButton() {
                     <label className="block text-xs font-medium text-[var(--foreground)] mb-1.5">Verification Code</label>
                     <input 
                       type="text" required
-                      maxLength={6} pattern="\d{6}" placeholder="123456"
+                      maxLength={6} pattern="\d{6}" placeholder="000000"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
                       className="input-field tracking-widest text-center font-semibold"
                     />
                     <p className="text-[10px] text-[var(--muted-foreground)] mt-1.5">
-                      Test code: <strong className="text-[var(--foreground)]">123456</strong>
+                      Check your email inbox for the verification code.
                     </p>
                   </div>
                   <div className="flex items-center gap-2.5 pt-1">

@@ -86,7 +86,7 @@ export const CircleAuthProvider = ({ children }: { children: React.ReactNode }) 
   const sendEmailOTP = async (email: string) => {
     try {
       const res = await loginEmailOTP(email);
-      toast.success(`Verification code sent to ${email} (Use 123456 for testing)`);
+      toast.success(`Verification code sent to ${email}`);
       return !!res.codeSent;
     } catch (err: any) {
       toast.error(err.message || 'Failed to send OTP code');

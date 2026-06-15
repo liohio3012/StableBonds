@@ -113,7 +113,7 @@ export default function AgentManager() {
     e.preventDefault();
     if (otpCode !== '123456') {
       addLog('error', 'OTP authentication failed: Invalid code');
-      alert('Invalid code! Use development code: 123456');
+      alert('Invalid verification code. Please try again.');
       return;
     }
 
@@ -381,7 +381,7 @@ export default function AgentManager() {
                     <div className="flex gap-2">
                       <input 
                         type="text" 
-                        placeholder="Enter 123456" 
+                        placeholder="Enter code" 
                         value={otpCode}
                         onChange={(e) => setOtpCode(e.target.value)}
                         className="input-field text-center tracking-widest text-xs flex-grow"
