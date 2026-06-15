@@ -93,10 +93,13 @@ function WelcomeOnboarding() {
           <div className="grid md:grid-cols-12 gap-6 p-6 items-center">
             {/* Graphic Illustration */}
             <div className="md:col-span-7 rounded-xl overflow-hidden border border-neutral-100 dark:border-neutral-900 bg-white dark:bg-neutral-950 p-2 shadow-inner">
-              <img 
-                src="/stablepay_hero_graphic.png" 
-                alt="StablePay Treasury Yield Growth Graphics" 
-                className="w-full h-auto rounded-lg object-cover"
+              <video 
+                src="/stablebounds.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                className="w-full h-auto rounded-lg object-cover shadow-sm"
               />
             </div>
 
@@ -182,7 +185,7 @@ function WelcomeOnboarding() {
           <h3 className="font-bold text-sm text-[var(--foreground)]">Current Yield Tiers</h3>
           <span className="text-xs text-[var(--muted-foreground)] font-medium">Updated live from smart contract</span>
         </div>
-        <div className="grid grid-cols-5 gap-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
           {[
             { term: '30d', senior: '4.0%', junior: '8.0%' },
             { term: '60d', senior: '4.5%', junior: '9.0%' },
