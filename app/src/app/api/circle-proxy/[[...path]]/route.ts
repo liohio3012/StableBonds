@@ -19,13 +19,19 @@ export async function POST(
     const targetUrl = pathSegment ? `${CIRCLE_UPSTREAM}/${pathSegment}` : CIRCLE_UPSTREAM;
 
     const body = await request.text();
-    console.log(`[circle-proxy] POST request to: ${targetUrl}`);
+    const logMsg = `
+=========================================
+[${new Date().toISOString()}] POST request to: ${targetUrl}
+Request Body: ${body}
+Incoming Headers: ${JSON.stringify(Object.fromEntries(request.headers.entries()))}
+`;
+    appendLog(logMsg);
 
     // Forward only the specific headers required by the Circle SDK to avoid breaking the Node fetch call (e.g. via accept-encoding or cookie headers)
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent'];
+    const headersToForward = ['authorization', 'x-appinfo', 'x-client-key', 'user-agent', 'origin', 'referer'];
     for (const name of headersToForward) {
       const value = request.headers.get(name);
       if (value) {
@@ -33,7 +39,7 @@ export async function POST(
       }
     }
 
-    console.log(`[circle-proxy] Forwarding headers: ${JSON.stringify(headers)}`);
+    appendLog(`Forwarded Headers: ${JSON.stringify(headers)}\n`);
 
     const upstreamRes = await fetch(targetUrl, {
       method: 'POST',
@@ -42,8 +48,10 @@ export async function POST(
     });
 
     const data = await upstreamRes.text();
-    console.log(`[circle-proxy] Upstream response status: ${upstreamRes.status}`);
-    console.log(`[circle-proxy] Upstream response body: ${data}`);
+    appendLog(`Upstream Status: ${upstreamRes.status}
+Upstream Response Body: ${data}
+=========================================
+`);
 
     return new NextResponse(data, {
       status: upstreamRes.status,
@@ -52,11 +60,22 @@ export async function POST(
       },
     });
   } catch (err: any) {
-    console.error('[circle-proxy] upstream error:', err.message);
+    appendLog(`Upstream Error: ${err.message}\n`);
     return NextResponse.json(
       { jsonrpc: '2.0', id: null, error: { code: -32603, message: err.message } },
       { status: 502 }
     );
+  }
+}
+
+function appendLog(msg: string) {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const logPath = path.resolve('scratch/proxy-logs.txt');
+    fs.appendFileSync(logPath, msg);
+  } catch (e) {
+    console.error('Failed to write log to file:', e);
   }
 }
 

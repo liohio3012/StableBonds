@@ -89,6 +89,27 @@ async function runCheck() {
   console.log(`[Info] API Key: ${apiKey.substring(0, 20)}...`);
   console.log(`[Info] Entity Secret: ${entitySecret ? 'Present (64 chars hex)' : 'Missing'}\n`);
 
+  if (clientKey && apiKey) {
+    const clientKeyParts = clientKey.split(':');
+    const apiKeyParts = apiKey.split(':');
+    if (clientKeyParts.length >= 2 && apiKeyParts.length >= 2) {
+      const clientTenant = clientKeyParts[1];
+      const apiTenant = apiKeyParts[1];
+      if (clientTenant !== apiTenant) {
+        console.log('⚠️ ==================================================');
+        console.log('⚠️ WARNING: TENANT ID MISMATCH DETECTED!');
+        console.log('⚠️ ==================================================');
+        console.log(`   Client Key Tenant ID: ${clientTenant}`);
+        console.log(`   API Key Tenant ID:    ${apiTenant}`);
+        console.log('   Both keys MUST belong to the same Circle Developer Account/Project.');
+        console.log('   This mismatch causes the Bundler to fail with "Cannot find target wallet"');
+        console.log('   when estimating or submitting smart account transactions.\n');
+      } else {
+        console.log('✅ Client Key and API Key match Tenant ID (OK).\n');
+      }
+    }
+  }
+
   // Step 1: Fetch Public Key from Circle
   console.log('[Step 1] Connecting to Circle API to fetch Public Key...');
   
