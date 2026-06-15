@@ -6,16 +6,18 @@ const CIRCLE_UPSTREAM = process.env.CIRCLE_MODULAR_SDK_URL || 'https://w3s-sdk.c
  * Proxy POST requests from the browser to Circle's w3s-sdk RPC endpoint.
  * This avoids CORS issues since w3s-sdk.circle.com does not send
  * Access-Control-Allow-Origin headers for browser requests.
+ * Uses optional catch-all [[...path]] to handle both base calls (/api/circle-proxy)
+ * and subpath calls (/api/circle-proxy/arcTestnet).
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> }
+  { params }: { params: Promise<{ path?: string[] }> }
 ) {
-  const { path } = await params;
-  const pathSegment = path.join('/');
-  const targetUrl = `${CIRCLE_UPSTREAM}/${pathSegment}`;
-
   try {
+    const { path } = await params;
+    const pathSegment = path ? path.join('/') : '';
+    const targetUrl = pathSegment ? `${CIRCLE_UPSTREAM}/${pathSegment}` : CIRCLE_UPSTREAM;
+
     const body = await request.text();
 
     const upstreamRes = await fetch(targetUrl, {
