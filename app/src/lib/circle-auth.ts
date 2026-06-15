@@ -16,7 +16,12 @@ import {
 import { privateKeyToAccount } from 'viem/accounts';
 import { keccak256, stringToHex } from 'viem';
 
-const clientKey = process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY || 'TEST_CLIENT_KEY:eb0549074067880c52277e5ccc53997a:2cbb0805efa5656cc89c26988642207f';
+// Resolve the Client Key dynamically.
+// For local development on localhost, we default to the localhost-configured key.
+// For production, we prioritize the environment variable NEXT_PUBLIC_CIRCLE_CLIENT_KEY.
+const clientKey = (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+  ? 'TEST_CLIENT_KEY:eb0549074067880c52277e5ccc53997a:2cbb0805efa5656cc89c26988642207f'
+  : (process.env.NEXT_PUBLIC_CIRCLE_CLIENT_KEY || 'TEST_CLIENT_KEY:eb0549074067880c52277e5ccc53997a:2cbb0805efa5656cc89c26988642207f');
 
 // Use the local API proxy to bypass CORS (modular-sdk.circle.com lacks browser CORS headers).
 // Circle SDK requires an absolute URL, so we prepend the origin.

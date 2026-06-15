@@ -71,10 +71,17 @@ Upstream Response Body: ${data}
 
 function appendLog(msg: string) {
   try {
-    const fs = require('fs');
-    const path = require('path');
-    const logPath = path.resolve('scratch/proxy-logs.txt');
-    fs.appendFileSync(logPath, msg);
+    console.log(msg.trim());
+    if (process.env.NODE_ENV === 'development') {
+      const fs = require('fs');
+      const path = require('path');
+      const logPath = path.resolve('scratch/proxy-logs.txt');
+      const dir = path.dirname(logPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.appendFileSync(logPath, msg);
+    }
   } catch (e) {
     console.error('Failed to write log to file:', e);
   }
