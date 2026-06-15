@@ -115,14 +115,14 @@ export default function Footer() {
             <div className="flex items-center gap-4 text-xs shrink-0 self-start sm:self-auto border border-dashed rounded-lg p-2.5 bg-white/45 dark:bg-zinc-900/45 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
               <div className="flex items-center gap-2">
                 <Activity size={13} style={{ color: networkStatus === 'operational' ? 'var(--success)' : 'var(--danger)' }} className="animate-pulse" />
-                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>System Status:</span>
+                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>Platform:</span>
               </div>
               <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded" 
                 style={{ 
                   background: networkStatus === 'operational' ? 'var(--success-soft)' : 'var(--danger-soft)', 
                   color: networkStatus === 'operational' ? 'var(--success-foreground)' : 'var(--danger-foreground)' 
                 }}>
-                {networkStatus === 'operational' ? 'All Systems Operational' : 'Degraded Performance'}
+                {networkStatus === 'operational' ? 'Fully Operational' : 'Temporary Slowdown'}
               </span>
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function Footer() {
               © 2026 StablePay Inc. All rights reserved.
             </div>
             <p className="text-[10px] max-w-xl leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-              StablePay is a decentralized corporate treasury platform. USDC and EURC are issued by Circle Internet Financial, LLC and Circle Internet Financial Europe SAS. Transaction finality and settling are executed natively on the Arc Testnet block network (Chain ID 5042002).
+              StablePay is an enterprise treasury management platform. USDC and EURC are regulated digital dollars issued by Circle Internet Financial. Payments settle in real-time on Arc blockchain infrastructure.
             </p>
           </div>
 
@@ -299,7 +299,7 @@ export default function Footer() {
             <div className="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
             <div className="flex items-center gap-1.5 bg-white/70 dark:bg-zinc-900/70 border px-2.5 py-1 rounded-lg" style={{ borderColor: 'var(--border)' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-              <span>Arc Network Fees:</span>
+              <span>Transaction fee:</span>
               <span className="font-bold text-[var(--foreground)]">~0.01 USDC</span>
             </div>
           </div>

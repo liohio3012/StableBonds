@@ -258,7 +258,7 @@ export default function Auditing() {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold uppercase tracking-tight text-black">StablePay Audit Report</h1>
-            <p className="text-sm text-gray-600 mt-1">Immutably compiled from Arc Testnet ledger feeds</p>
+            <p className="text-sm text-gray-600 mt-1">Verified transaction history for this account</p>
           </div>
           <div className="text-right text-xs text-gray-500">
             <p>Generated: {new Date().toLocaleString()}</p>
@@ -355,8 +355,8 @@ export default function Auditing() {
 
       {/* Audit compliance footnote */}
       <div className="text-center text-[10px] mt-6 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-        <p>This document constitutes an on-chain ledger audit matching Sarbanes-Oxley (SOX) Web3 accounting standards.</p>
-        <p className="mt-0.5">Cryptographically signed and validated by Arc Testnet validator nodes under security compliance rules.</p>
+        <p>All transactions in this report are permanently recorded and tamper-proof.</p>
+        <p className="mt-0.5">Independently verifiable and audit-ready for enterprise compliance requirements.</p>
       </div>
     </div>
   );

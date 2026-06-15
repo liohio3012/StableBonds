@@ -142,11 +142,11 @@ export default function UnifiedBalance() {
           <div className="space-y-2">
             <span className="badge badge-primary text-xs font-semibold px-2 py-1">
               <Sparkles size={11} className="mr-1" />
-              Live On-Chain Data
+              Live Balance
             </span>
             <h2 className="text-xl font-bold text-[var(--foreground)]">Unified Treasury Balance</h2>
             <p className="text-sm text-[var(--muted-foreground)] max-w-xl leading-relaxed">
-              Real-time USDC balance from your connected wallet on Arc Testnet. All balances are read directly from the blockchain via ERC-20 <code className="text-[10px] px-1 py-0.5 rounded bg-[var(--muted)] font-mono">balanceOf</code> calls.
+              Your current USDC balance across all connected accounts, updated in real time.
             </p>
           </div>
           <button 
@@ -196,7 +196,7 @@ export default function UnifiedBalance() {
                   </div>
                   <div className="text-xs text-[var(--success)] font-semibold flex items-center justify-end gap-1 mt-0.5">
                     <TrendingUp size={12} />
-                    On-Chain Verified
+                    Verified Balance
                   </div>
                 </div>
               </div>
@@ -205,7 +205,7 @@ export default function UnifiedBalance() {
               {isLoading && balances.length === 0 && (
                 <div className="flex items-center justify-center gap-3 py-8">
                   <Loader2 className="animate-spin text-[var(--primary)]" size={24} />
-                  <p className="text-sm text-[var(--muted-foreground)]">Reading USDC balances from blockchain...</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">Fetching your latest balance&hellip;</p>
                 </div>
               )}
 
@@ -257,7 +257,7 @@ export default function UnifiedBalance() {
                 <div className="flex items-center gap-2 p-4 rounded-lg border bg-[var(--info-soft)] text-[var(--info)] border-transparent">
                   <Info size={14} className="shrink-0" />
                   <p className="text-xs leading-relaxed">
-                    Your wallet has no USDC balance on the connected chains. Get testnet USDC from{' '}
+                    Your wallet has no USDC balance yet. To get started, top up from{' '}
                     <a href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer" className="underline font-semibold">
                       faucet.circle.com
                     </a>
@@ -297,7 +297,7 @@ export default function UnifiedBalance() {
                       {isSmartAccount ? 'Circle Smart Account' : 'EOA Wallet'}
                     </span>
                     <span className="text-[10px] text-[var(--muted-foreground)]">
-                      Arc Testnet (Chain ID: 5042002)
+                      Arc Network
                     </span>
                   </div>
 
@@ -324,15 +324,15 @@ export default function UnifiedBalance() {
               <div className="space-y-3 text-xs text-[var(--muted-foreground)] leading-relaxed">
                 <div className="flex gap-2">
                   <div className="w-5 h-5 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                  <p>Balances are read from on-chain USDC contracts using ERC-20 <code className="text-[10px] px-1 py-0.5 rounded bg-[var(--muted)] font-mono">balanceOf()</code></p>
+                  <p>Your balance is read automatically and updated in real time when you connect your account.</p>
                 </div>
                 <div className="flex gap-2">
                   <div className="w-5 h-5 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
-                  <p>On Arc, USDC at <code className="text-[10px] px-1 py-0.5 rounded bg-[var(--muted)] font-mono">0x3600...0000</code> uses 6 decimals for the ERC-20 interface</p>
+                  <p>USDC balances reflect spendable funds available for scheduling payments or investing in bond vaults.</p>
                 </div>
                 <div className="flex gap-2">
                   <div className="w-5 h-5 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
-                  <p>Get testnet USDC from <a href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer" className="text-[var(--primary)] hover:underline font-semibold">faucet.circle.com</a></p>
+                  <p>Need USDC to get started? Top up from <a href="https://faucet.circle.com" target="_blank" rel="noopener noreferrer" className="text-[var(--primary)] hover:underline font-semibold">faucet.circle.com</a></p>
                 </div>
               </div>
             </div>

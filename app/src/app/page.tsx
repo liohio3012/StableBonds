@@ -81,11 +81,11 @@ function WelcomeHero() {
               <span className="w-3 h-3 rounded-full bg-red-400/80"></span>
               <span className="w-3 h-3 rounded-full bg-amber-400/80"></span>
               <span className="w-3 h-3 rounded-full bg-emerald-400/80"></span>
-              <span className="text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">STABLEPAY_DEFI_ENGINE_V1.0</span>
+              <span className="text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">STABLEBONDS · TREASURY PLATFORM</span>
             </div>
             <div className="flex items-center gap-2 bg-neutral-200/50 dark:bg-neutral-800/50 px-2.5 py-1 rounded-md text-[10px] font-bold text-[var(--success-foreground)]">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse"></span>
-              ENGINE ONLINE
+              Platform Active
             </div>
           </div>
 
@@ -127,7 +127,7 @@ function WelcomeHero() {
                 <div className="border border-neutral-200/60 dark:border-neutral-800/60 rounded-xl p-3 bg-neutral-50/50 dark:bg-neutral-900/50">
                   <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide">Settlement</span>
                   <div className="text-base font-bold text-[var(--foreground)] mt-0.5">100% Auto</div>
-                  <span className="text-[9px] text-neutral-400 dark:text-neutral-500">Zero-gas execution</span>
+                  <span className="text-[9px] text-neutral-400 dark:text-neutral-500">No transaction fees</span>
                 </div>
               </div>
 
@@ -238,7 +238,7 @@ function WelcomeFeatures() {
             </div>
 
             <div className="pt-1 flex items-center justify-between text-[9px] text-neutral-400">
-              <span>Status: Waiting approval</span>
+              <span>Pending authorization</span>
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
             </div>
           </div>
@@ -249,7 +249,7 @@ function WelcomeFeatures() {
       <div className="card-surface max-w-4xl mx-auto p-8 mb-20 shadow-sm border" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-sm text-[var(--foreground)]">Current Yield Tiers</h3>
-          <span className="text-xs text-[var(--muted-foreground)] font-medium">Updated live from smart contract</span>
+          <span className="text-xs text-[var(--muted-foreground)] font-medium">Rates updated in real-time</span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
           {[
@@ -267,8 +267,8 @@ function WelcomeFeatures() {
           ))}
         </div>
         <div className="flex items-center gap-6 mt-4 text-[10px] text-[var(--muted-foreground)] font-medium">
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[var(--foreground)]"></span> Senior Tranche</span>
-          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[var(--success)]"></span> Junior Tranche</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[var(--foreground)]"></span> Capital Protected</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded bg-[var(--success)]"></span> Boosted Return</span>
         </div>
       </div>
 
@@ -381,7 +381,7 @@ export default function Home() {
                 <div key={loop} className="flex shrink-0 items-center gap-8 px-10 text-[11px] font-black tracking-widest whitespace-nowrap" style={{ color: '#fafafa' }}>
                   <span className="flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m13 2-3 6.5h5L9 22"/></svg>
-                    POWERED BY LEPTON AI
+                    POWERED BY STABLEBONDS AI
                   </span>
                   <span style={{ color: '#52525b' }}>—</span>
                   <span className="flex items-center gap-1.5">
