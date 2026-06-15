@@ -16,7 +16,10 @@ import {
   Loader2, 
   Terminal, 
   DollarSign, 
-  RefreshCw 
+  RefreshCw,
+  AlertTriangle,
+  XCircle,
+  Info
 } from 'lucide-react';
 import { useAccount, usePublicClient, useWriteContract } from 'wagmi';
 import { parseAbi, parseUnits, encodeFunctionData, keccak256, stringToHex } from 'viem';
@@ -28,7 +31,7 @@ const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${strin
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000" as `0x${string}`;
 
 const VAULT_ABI = parseAbi([
-  "function purchaseBond(uint256 _termId, uint256 _amount, address _supplier, uint32 _destDomain, address _depositToken, address _settlementToken, bool _swapAtDeposit) external"
+  "function createBondWithIntent(uint256 _amount, uint256 _termId, address _supplier, uint32 _destDomain) external"
 ]);
 
 const ERC20_ABI = parseAbi([
@@ -69,6 +72,7 @@ export default function AgentManager() {
   const [newVendor, setNewVendor] = useState('');
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [isRunningSim, setIsRunningSim] = useState(false);
+  const [invoiceText, setInvoiceText] = useState('AWS Server Hosting Invoice - Due in 35 Days');
 
   // Initialize and load state
   useEffect(() => {
@@ -236,36 +240,108 @@ export default function AgentManager() {
     if (!agentPolicy || !isConnected) return;
 
     setIsRunningSim(true);
-    addLog('info', `Autonomous trigger received: agent initiating bond purchase of ${amount} USDC.`);
+    addLog('info', `Autonomous Agent triggered for payment optimization: ${amount} USDC.`);
 
-    // 1. Simulate check compliance
-    await new Promise(r => setTimeout(r, 800));
-    addLog('info', `Checking compliance whitelists for agent beneficial owner (${userAddress})...`);
-    
-    // 2. Validate vendor whitelist
-    await new Promise(r => setTimeout(r, 800));
+    // 1. Check local whitelists & limits
+    await new Promise(r => setTimeout(r, 600));
     const isVendorOk = agentPolicy.whitelistedVendors.includes(supplier);
     if (!isVendorOk) {
-      addLog('error', `Agent Execution Aborted: Vendor address ${supplier} is NOT in the whitelisted vendors policy list.`);
+      addLog('error', `Agent Execution Aborted: Vendor address ${supplier} is NOT whitelisted.`);
       setIsRunningSim(false);
       return;
     }
-    addLog('success', `Vendor validation passed: supplier ${supplier} matches policy whitelist.`);
-
-    // 3. Validate spending policy limits
-    await new Promise(r => setTimeout(r, 800));
     const remainingLimit = agentPolicy.spendingLimit - agentPolicy.currentAllocation;
     if (amount > remainingLimit) {
-      addLog('error', `Agent Execution Aborted: Bond allocation of ${amount} USDC exceeds remaining limit of ${remainingLimit} USDC (Limit: ${agentPolicy.spendingLimit} USDC).`);
+      addLog('error', `Agent Execution Aborted: Exceeds spending limit.`);
       setIsRunningSim(false);
       return;
     }
-    addLog('success', `Allocation limit verification passed: allocation of ${amount} USDC is within policy limits.`);
 
-    // 4. Submit real transaction to Arc Testnet
-    addLog('info', 'Submitting bond purchase transaction to Arc Testnet...');
+    // 2. Request DeepSeek AI Agent Decision without payment (expects 402)
+    addLog('info', 'Invoking DeepSeek AI Decision Endpoint (/api/agent/decide)...');
+    await new Promise(r => setTimeout(r, 800));
+
     try {
-      let txHash: string;
+      let decideRes = await fetch('/api/agent/decide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, supplier, invoiceText })
+      });
+
+      let txHashForPayment = '';
+
+      if (decideRes.status === 402) {
+        const payload = await decideRes.json();
+        addLog('warning', `HTTP 402 Protected: ${payload.message}`);
+        addLog('info', `Executing micro-payment of ${payload.requiredAmount} USDC from Smart Account to treasury...`);
+        
+        // Execute real micropayment transaction to clear x402 gate
+        const paymentAmountRaw = parseUnits(payload.requiredAmount, 6);
+        let payTxHash: string;
+
+        if (isSmartAccount && circleAccount) {
+          const payCall = {
+            to: USDC_ADDRESS,
+            value: BigInt(0),
+            data: encodeFunctionData({
+              abi: ERC20_ABI,
+              functionName: 'approve',
+              args: [payload.destination, paymentAmountRaw]
+            })
+          };
+          const transferCall = {
+            to: USDC_ADDRESS,
+            value: BigInt(0),
+            data: encodeFunctionData({
+              abi: parseAbi(["function transfer(address recipient, uint256 amount) external returns (bool)"]),
+              functionName: 'transfer',
+              args: [payload.destination, paymentAmountRaw]
+            })
+          };
+          const userOpHash = await bundlerClient.sendUserOperation({
+            account: circleAccount,
+            calls: [payCall, transferCall],
+            paymaster: true
+          });
+          addLog('info', `Submitting payment UserOperation: ${userOpHash.slice(0, 10)}...`);
+          const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
+          payTxHash = receipt.transactionHash;
+        } else {
+          const payHash = await writeContractAsync({
+            address: USDC_ADDRESS,
+            abi: parseAbi(["function transfer(address recipient, uint256 amount) external returns (bool)"]),
+            functionName: 'transfer',
+            args: [payload.destination, paymentAmountRaw]
+          });
+          if (publicClient) await publicClient.waitForTransactionReceipt({ hash: payHash });
+          payTxHash = payHash;
+        }
+
+        addLog('success', `Micropayment successful! Transaction Hash verified on-chain.`, payTxHash);
+        txHashForPayment = payTxHash;
+        
+        // Retry with payment proof
+        addLog('info', 'Retrying DeepSeek decision with payment verification proof...');
+        decideRes = await fetch('/api/agent/decide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, supplier, invoiceText, txHash: txHashForPayment })
+        });
+      }
+
+      if (!decideRes.ok) {
+        const errPayload = await decideRes.json();
+        throw new Error(errPayload.error || 'DeepSeek call failed');
+      }
+
+      const decidePayload = await decideRes.json();
+      const decision = decidePayload.decision;
+      addLog('success', `DeepSeek AI Decision: ${decision.recommendation}`);
+      addLog('success', `AI optimized terms: Term ID ${decision.optimalTermId} (${decision.optimalTranche} Tranche), Savings prediction: ${decision.savingsPrediction}`);
+
+      // 3. Purchase bond on-chain with optimized Term ID
+      addLog('info', `Submitting AI-optimized bond purchase (Term ID: ${decision.optimalTermId}) to Arc Testnet...`);
+      let purchaseTxHash: string;
 
       if (isSmartAccount && circleAccount) {
         const approveCall = {
@@ -278,36 +354,37 @@ export default function AgentManager() {
           value: BigInt(0),
           data: encodeFunctionData({
             abi: VAULT_ABI,
-            functionName: 'purchaseBond',
-            args: [BigInt(1), parseUnits(amount.toString(), 6), supplier as `0x${string}`, 0, USDC_ADDRESS, USDC_ADDRESS, false]
+            functionName: 'createBondWithIntent',
+            args: [parseUnits(amount.toString(), 6), BigInt(decision.optimalTermId), supplier as `0x${string}`, 0]
           })
         };
         const userOpHash = await bundlerClient.sendUserOperation({ account: circleAccount, calls: [approveCall, purchaseCall], paymaster: true });
         const { receipt } = await bundlerClient.waitForUserOperationReceipt({ hash: userOpHash });
-        txHash = receipt.transactionHash;
+        purchaseTxHash = receipt.transactionHash;
       } else {
         const approveHash = await writeContractAsync({ address: USDC_ADDRESS, abi: ERC20_ABI, functionName: 'approve', args: [VAULT_ADDRESS, parseUnits(amount.toString(), 6)] });
         if (publicClient) await publicClient.waitForTransactionReceipt({ hash: approveHash });
         const purchaseHash = await writeContractAsync({
-          address: VAULT_ADDRESS, abi: VAULT_ABI, functionName: 'purchaseBond',
-          args: [BigInt(1), parseUnits(amount.toString(), 6), supplier as `0x${string}`, 0, USDC_ADDRESS, USDC_ADDRESS, false]
+          address: VAULT_ADDRESS, abi: VAULT_ABI, functionName: 'createBondWithIntent',
+          args: [parseUnits(amount.toString(), 6), BigInt(decision.optimalTermId), supplier as `0x${string}`, 0]
         });
         if (publicClient) await publicClient.waitForTransactionReceipt({ hash: purchaseHash });
-        txHash = purchaseHash;
+        purchaseTxHash = purchaseHash;
       }
 
-      // Update local allocation tracking
       const newAllocation = agentPolicy.currentAllocation + amount;
       const updatedPolicy = { ...agentPolicy, currentAllocation: newAllocation };
       setAgentPolicy(updatedPolicy);
       localStorage.setItem('stablebonds_agent_policy', JSON.stringify(updatedPolicy));
 
-      addLog('success', `Bond purchased on-chain. Principal: ${amount} USDC, agent: ${agentPolicy.agentAddress}`, txHash);
-      toast.success(`Agent bond purchase confirmed on Arc Testnet`, { action: { label: 'View tx', onClick: () => window.open(`https://testnet.arcscan.app/tx/${txHash}`, '_blank') } });
+      addLog('success', `AI-optimized bond purchased on-chain!`, purchaseTxHash);
+      toast.success(`Agent bond purchase confirmed on Arc Testnet`, { action: { label: 'View tx', onClick: () => window.open(`https://testnet.arcscan.app/tx/${purchaseTxHash}`, '_blank') } });
+
     } catch (err: any) {
-      addLog('error', `On-chain transaction failed: ${err.shortMessage || err.message}`);
-      toast.error('Agent bond purchase failed', { description: err.shortMessage || err.message });
+      addLog('error', `Agent execution failed: ${err.message}`);
+      toast.error('Agent execution failed', { description: err.message });
     }
+
     setIsRunningSim(false);
   };
 
@@ -524,7 +601,7 @@ export default function AgentManager() {
       {/* Terminal / Monitor Column */}
       <div className="md:col-span-2 space-y-6">
         {/* Main Terminal View */}
-        <div className="card-surface p-6 flex flex-col h-[520px]">
+        <div className="card-surface p-6 flex flex-col min-h-[540px]">
           <div className="flex items-center justify-between border-b pb-4 mb-4" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-center gap-2">
               <Terminal size={18} className="text-[var(--primary)]" />
@@ -543,27 +620,81 @@ export default function AgentManager() {
             </div>
           </div>
 
-          {/* Console Output */}
-          <div className="flex-grow bg-[#0c1017] rounded-xl p-4 font-mono text-xs overflow-y-auto text-green-400 space-y-2 border border-slate-800">
-            {logs.map((log, i) => (
-              <div key={i} className="leading-relaxed">
-                <span className="text-gray-500 mr-2">[{log.timestamp}]</span>
-                <span className={`font-bold mr-1.5 ${
-                  log.type === 'success' ? 'text-green-500' :
-                  log.type === 'error' ? 'text-red-500' :
-                  log.type === 'warning' ? 'text-amber-500' : 'text-blue-400'
-                }`}>
-                  {log.type.toUpperCase()}:
-                </span>
-                <span className="text-slate-100">{log.message}</span>
-                {log.txHash && (
-                  <div className="text-[10px] text-gray-500 pl-16">
-                    tx: <span className="underline select-all">{log.txHash}</span>
+          {/* Premium Visual Log Feed */}
+          <div className="h-[300px] bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 overflow-y-auto space-y-2.5 shadow-inner backdrop-blur-xs">
+            {logs.map((log, i) => {
+              let rowStyle = "flex items-start gap-2.5 p-3 rounded-xl border text-xs transition-all duration-150 hover:shadow-xs ";
+              let badgeStyle = "flex items-center gap-1 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wide shrink-0 ";
+              let messageStyle = "text-slate-700 font-medium text-left leading-relaxed ";
+              let icon = <Info size={14} className="text-blue-500" />;
+
+              if (log.type === 'success') {
+                rowStyle += "bg-emerald-50/50 border-emerald-100/60 text-emerald-800";
+                badgeStyle += "bg-emerald-100/70 text-emerald-800";
+                icon = <CheckCircle2 size={14} className="text-emerald-600 mt-0.5 shrink-0" />;
+              } else if (log.type === 'error') {
+                rowStyle += "bg-rose-50/50 border-rose-100/60 text-rose-800";
+                badgeStyle += "bg-rose-100/70 text-rose-800";
+                icon = <XCircle size={14} className="text-rose-600 mt-0.5 shrink-0" />;
+              } else if (log.type === 'warning') {
+                rowStyle += "bg-amber-50/50 border-amber-100/60 text-amber-800";
+                badgeStyle += "bg-amber-100/70 text-amber-800";
+                icon = <AlertTriangle size={14} className="text-amber-600 mt-0.5 shrink-0" />;
+              } else {
+                rowStyle += "bg-blue-50/40 border-blue-100/40 text-blue-800";
+                badgeStyle += "bg-blue-100/60 text-blue-800";
+                icon = <Info size={14} className="text-blue-600 mt-0.5 shrink-0" />;
+              }
+
+              return (
+                <div key={i} className={rowStyle}>
+                  {icon}
+                  <div className="flex-grow space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className={badgeStyle}>{log.type}</span>
+                      <span className="text-[10px] text-slate-400 font-mono font-medium">{log.timestamp}</span>
+                    </div>
+                    <p className={messageStyle}>{log.message}</p>
+                    {log.txHash && (
+                      <div className="text-[10px] bg-white/60 border border-slate-200/40 rounded p-1.5 font-mono break-all text-slate-500 select-all flex items-center justify-between gap-2">
+                        <span className="truncate">Tx: {log.txHash}</span>
+                        <a 
+                          href={`https://testnet.arcscan.app/tx/${log.txHash}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[9px] font-bold text-[var(--primary)] hover:underline shrink-0"
+                        >
+                          View Scan ↗
+                        </a>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
+
+          {/* Invoice Input Box */}
+          {agentPolicy && (
+            <div className="mt-3 mb-2 p-3.5 rounded-xl border bg-slate-50/50 border-slate-200/80 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block text-left">
+                  Invoice Details for Autonomous Allocation Routing
+                </label>
+                <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/50 text-amber-700 animate-pulse flex items-center gap-1">
+                  <span className="w-1 h-1 rounded-full bg-amber-500"></span>
+                  DeepSeek Engine (x402 Protected)
+                </span>
+              </div>
+              <input 
+                type="text" 
+                value={invoiceText}
+                onChange={(e) => setInvoiceText(e.target.value)}
+                className="w-full text-xs bg-white border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-amber-500/30 focus:border-amber-500/50 hover:border-slate-300 rounded-xl transition-all p-2.5 shadow-xs"
+                placeholder="e.g. AWS Server Hosting Invoice - Due in 35 Days"
+              />
+            </div>
+          )}
 
           {/* Simulation Controllers */}
           {agentPolicy && (
@@ -582,7 +713,7 @@ export default function AgentManager() {
 
               <div className="flex items-center justify-end gap-2">
                 <button 
-                  onClick={() => handleRunSimulation(500, '0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF')}
+                  onClick={() => handleRunSimulation(2, '0x98e1fa94CAcaB856f79CfBa238d983C4beDC3BfF')}
                   disabled={isRunningSim}
                   className="btn-primary text-xs py-3 px-4 gap-1.5 disabled:opacity-50"
                 >
@@ -594,7 +725,7 @@ export default function AgentManager() {
                   ) : (
                     <>
                       <Play size={13} />
-                      Simulate Agent Bond Buy ($500)
+                      Simulate Agent Bond Buy ($2)
                     </>
                   )}
                 </button>
