@@ -265,7 +265,7 @@ export default function Home() {
           >
             <Search size={14} />
             <span className="text-[11px] font-semibold flex-grow text-left">Quick Search...</span>
-            <div className="flex items-center gap-0.5 text-[9px] font-bold bg-neutral-200 dark:bg-neutral-800 px-1 py-0.2 rounded border" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex items-center gap-0.5 text-[9px] font-bold bg-neutral-200 px-1 py-0.2 rounded border" style={{ borderColor: 'var(--border)' }}>
               <Command size={8} />
               <span>K</span>
             </div>
@@ -495,7 +495,7 @@ export default function Home() {
 
             {/* Enterprise Platform Interface Walkthrough Section */}
             <div className="max-w-4xl mx-auto mb-20 text-center">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">Platform Tour</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600">Platform Tour</span>
               <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1 mb-3">Enterprise Treasury Interface</h3>
               <p className="text-xs text-[var(--muted-foreground)] max-w-xl mx-auto mb-8">
                 Explore the professional tools engineered for automated balance tracking, regulatory compliance, OTC secondary trade desks, and AI-driven bond scheduling.
@@ -517,7 +517,7 @@ export default function Home() {
                     className={`px-4 py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                       activeScreenshotTab === tab.id
                         ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)] shadow-xs'
-                        : 'bg-white dark:bg-zinc-950 text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-neutral-400'
+                        : 'bg-white text-[var(--muted-foreground)] border-[var(--border)] hover:text-[var(--foreground)] hover:border-neutral-400'
                     }`}
                   >
                     {tab.label}
@@ -526,24 +526,24 @@ export default function Home() {
               </div>
 
               {/* Dynamic Screenshot Previewer with Browser frame */}
-              <div className="border rounded-2xl overflow-hidden shadow-2xl bg-white/50 dark:bg-zinc-950/50 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
+              <div className="border rounded-2xl overflow-hidden shadow-2xl bg-white" style={{ borderColor: 'var(--border)' }}>
                 {/* Browser bar */}
-                <div className="flex items-center justify-between px-5 py-3 border-b bg-neutral-100/40 dark:bg-zinc-900/40" style={{ borderColor: 'var(--border)' }}>
+                <div className="flex items-center justify-between px-5 py-3 border-b bg-neutral-100/40" style={{ borderColor: 'var(--border)' }}>
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-400/80"></span>
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80"></span>
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80"></span>
-                    <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 ml-2 font-mono">
+                    <span className="text-[10px] font-bold text-neutral-400 ml-2 font-mono">
                       https://www.stablebonds.space/app/{activeScreenshotTab}
                     </span>
                   </div>
-                  <div className="text-[9px] font-bold text-neutral-400 bg-neutral-200/50 dark:bg-neutral-800/50 px-2 py-0.5 rounded uppercase">
+                  <div className="text-[9px] font-bold text-neutral-400 bg-neutral-200/50 px-2 py-0.5 rounded uppercase">
                     Secured Layer
                   </div>
                 </div>
 
                 {/* Screenshot Display Box */}
-                <div className="relative bg-neutral-100 dark:bg-zinc-900/50 p-2 min-h-[350px] flex items-center justify-center">
+                <div className="relative bg-neutral-50 p-2 min-h-[350px] flex items-center justify-center">
                   {activeScreenshotTab === 'treasury' && (
                     <img
                       src="/screenshots/dashboard_overview.png"
@@ -617,7 +617,7 @@ export default function Home() {
                 </div>
 
                 {/* Graphical Representation of AI Actions */}
-                <div className="w-full md:w-64 border rounded-xl p-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-sm space-y-3 shadow-inner shrink-0 z-10" style={{ borderColor: 'var(--border)' }}>
+                <div className="w-full md:w-64 border rounded-xl p-4 bg-white/95 backdrop-blur-sm space-y-3 shadow-inner shrink-0 z-10" style={{ borderColor: 'var(--border)' }}>
                   <div className="flex items-center gap-2 pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
                     <Bot size={16} className="text-emerald-500" />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--foreground)]">Agent Telemetry</span>
@@ -674,9 +674,9 @@ export default function Home() {
             </div>
 
             {/* Interactive ROI Calculator Section */}
-            <div className="max-w-4xl mx-auto mb-20 border rounded-2xl p-8 bg-neutral-50/20 dark:bg-zinc-950/10 shadow-sm" style={{ borderColor: 'var(--border)' }}>
+            <div className="max-w-4xl mx-auto mb-20 border rounded-2xl p-8 bg-neutral-50/25 shadow-sm" style={{ borderColor: 'var(--border)' }}>
               <div className="text-center max-w-xl mx-auto mb-8">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">Calculator</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600">Calculator</span>
                 <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1">Project Your Treasury Return</h3>
                 <p className="text-xs text-[var(--muted-foreground)] mt-2">Adjust your principal, duration, and risk profile to calculate your estimated yield return relative to typical bank cash deposits.</p>
               </div>
@@ -717,7 +717,7 @@ export default function Home() {
                           className={`py-2 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                             calcDuration === d
                               ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)]'
-                              : 'bg-white dark:bg-zinc-900 border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                              : 'bg-white border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                           }`}
                         >
                           {d}d
@@ -758,27 +758,27 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Outputs Panel */}
-                <div className="md:col-span-5 border rounded-2xl p-6 bg-white dark:bg-zinc-950 space-y-5 shadow-inner" style={{ borderColor: 'var(--border)' }}>
-                  <div className="pb-3 border-b" style={{ borderColor: 'var(--border)' }}>
-                    <span className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest block">Yield Rate</span>
-                    <span className="text-3xl font-extrabold text-emerald-500 font-mono">{calculatorYieldInfo.rate}% <span className="text-xs font-bold text-[var(--muted-foreground)]">APY</span></span>
+                {/* Outputs Panel (Fixed Dark Styling) */}
+                <div className="md:col-span-5 border rounded-2xl p-6 bg-black text-white space-y-5 shadow-inner" style={{ borderColor: 'var(--border)' }}>
+                  <div className="pb-3 border-b border-zinc-800">
+                    <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block font-sans">Yield Rate</span>
+                    <span className="text-3xl font-extrabold text-emerald-500 font-mono">{calculatorYieldInfo.rate}% <span className="text-xs font-bold text-zinc-400">APY</span></span>
                   </div>
                   <div className="space-y-3 text-xs">
                     <div className="flex justify-between items-center py-1">
-                      <span className="text-[var(--muted-foreground)]">Accrued Vault Yield</span>
+                      <span className="text-zinc-400 font-medium">Accrued Vault Yield</span>
                       <span className="font-bold text-emerald-500 font-mono">+${calculatorYieldInfo.earnings} USDC</span>
                     </div>
-                    <div className="flex justify-between items-center py-1 border-b" style={{ borderColor: 'var(--border)' }}>
-                      <span className="text-[var(--muted-foreground)]">Traditional Bank Yield (0.1%)</span>
-                      <span className="font-semibold text-neutral-400 font-mono">+${(calcPrincipal * 0.001 * (calcDuration / 365)).toFixed(2)} USDC</span>
+                    <div className="flex justify-between items-center py-1 border-b border-zinc-800">
+                      <span className="text-zinc-400 font-medium">Traditional Bank Yield (0.1%)</span>
+                      <span className="font-semibold text-zinc-500 font-mono">+${(calcPrincipal * 0.001 * (calcDuration / 365)).toFixed(2)} USDC</span>
                     </div>
                     <div className="flex justify-between items-center py-1 pt-3">
-                      <span className="text-[var(--foreground)] font-bold">Total Settlement Value</span>
-                      <span className="text-sm font-extrabold text-[var(--foreground)] font-mono">${calculatorYieldInfo.finalVal} USDC</span>
+                      <span className="text-white font-bold">Total Settlement Value</span>
+                      <span className="text-sm font-extrabold text-white font-mono">${calculatorYieldInfo.finalVal} USDC</span>
                     </div>
                   </div>
-                  <div className="pt-2 text-[10px] text-[var(--muted-foreground)] leading-relaxed italic bg-[var(--muted)] p-2.5 rounded-lg border" style={{ borderColor: 'var(--border)' }}>
+                  <div className="pt-2 text-[10px] text-zinc-400 leading-relaxed italic bg-zinc-900/50 p-2.5 rounded-lg border border-zinc-800">
                     Note: calculations are based on stable pool yield returns. Returns are simulated for illustration.
                   </div>
                 </div>
@@ -855,7 +855,7 @@ export default function Home() {
 
             {/* Why Teams Choose StableBonds */}
             <div className="max-w-4xl mx-auto mb-20 text-center">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">Overview</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600">Overview</span>
               <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1 mb-8">Why Teams Choose StableBonds</h3>
               
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
@@ -867,7 +867,7 @@ export default function Home() {
                   { title: "Gasless Paymaster Support", desc: "We sponsor network transaction fees to eliminate complex gas token management for corporate finance." },
                   { title: "Autonomous Copilot Dispatch", desc: "Lepton LLM coprocessor reviews yield efficiency curves and schedules payout intents automatically." }
                 ].map((item, idx) => (
-                  <div key={idx} className="border rounded-xl p-5 bg-white/30 dark:bg-zinc-950/10 hover:border-emerald-500/50 transition-all" style={{ borderColor: 'var(--border)' }}>
+                  <div key={idx} className="border rounded-xl p-5 bg-white/60 hover:border-emerald-500/50 transition-all" style={{ borderColor: 'var(--border)' }}>
                     <h4 className="text-xs font-bold text-[var(--foreground)] mb-2 flex items-center gap-2">
                       <CheckCircle2 size={14} className="text-emerald-500 shrink-0" />
                       {item.title}
@@ -881,7 +881,7 @@ export default function Home() {
             {/* Enterprise Security Section */}
             <div className="max-w-4xl mx-auto mb-20">
               <div className="text-center mb-8">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">Security</span>
+                <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600">Security</span>
                 <h3 className="text-2xl font-bold tracking-tight text-[var(--foreground)] mt-1">Enterprise-Grade Security</h3>
               </div>
               <div className="grid md:grid-cols-3 gap-5">
@@ -895,7 +895,7 @@ export default function Home() {
                 ].map((sec, idx) => {
                   const SecIcon = sec.icon;
                   return (
-                    <div key={idx} className="border rounded-xl p-5 bg-white/20 dark:bg-zinc-950/5 hover:border-neutral-400 transition-all" style={{ borderColor: 'var(--border)' }}>
+                    <div key={idx} className="border rounded-xl p-5 bg-white/80 hover:border-neutral-400 transition-all" style={{ borderColor: 'var(--border)' }}>
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-500/10 text-emerald-500 mb-3 border border-emerald-500/20">
                         <SecIcon size={16} />
                       </div>
@@ -908,7 +908,7 @@ export default function Home() {
             </div>
 
             {/* Live Operational Status Center */}
-            <div id="status" className="max-w-4xl mx-auto mb-20 border rounded-2xl p-6 bg-white/40 dark:bg-zinc-950/40" style={{ borderColor: 'var(--border)' }}>
+            <div id="status" className="max-w-4xl mx-auto mb-20 border rounded-2xl p-6 bg-white/80" style={{ borderColor: 'var(--border)' }}>
               <div className="flex items-center justify-between pb-3 border-b mb-6" style={{ borderColor: 'var(--border)' }}>
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -932,7 +932,7 @@ export default function Home() {
                   { name: "USDC Routing Node", key: "routing", status: statusHealth.routing },
                   { name: "Compliance API", key: "api", status: statusHealth.api }
                 ].map((s) => (
-                  <div key={s.key} className="bg-black/5 dark:bg-black/20 p-3 rounded-lg border border-transparent hover:border-[var(--border)] transition-all">
+                  <div key={s.key} className="bg-neutral-100/60 p-3 rounded-lg border border-transparent hover:border-[var(--border)] transition-all">
                     <span className="text-[10px] font-bold text-[var(--muted-foreground)] block mb-1">{s.name}</span>
                     <div className="flex items-center gap-1.5">
                       <span className={`w-1.5 h-1.5 rounded-full ${s.status === 'healthy' ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'}`} />
@@ -954,13 +954,13 @@ export default function Home() {
                   return (
                     <div 
                       key={idx} 
-                      className="border rounded-xl overflow-hidden transition-all bg-white/20 dark:bg-zinc-950/10" 
+                      className="border rounded-xl overflow-hidden transition-all bg-white/80" 
                       style={{ borderColor: 'var(--border)' }}
                     >
                       <button
                         type="button"
                         onClick={() => setFaqOpen(prev => ({ ...prev, [idx]: !prev[idx] }))}
-                        className="w-full flex items-center justify-between p-4 text-left font-bold text-xs text-[var(--foreground)] hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer"
+                        className="w-full flex items-center justify-between p-4 text-left font-bold text-xs text-[var(--foreground)] hover:bg-black/5 transition-all cursor-pointer"
                       >
                         <span>{faq.q}</span>
                         <ChevronDown size={14} className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
