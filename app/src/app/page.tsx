@@ -8,7 +8,7 @@ import BondLadderBuilder from "@/components/enterprise/BondLadderBuilder";
 import OTCDesk from "@/components/enterprise/OTCDesk";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount } from 'wagmi';
-import { Shield, CalendarClock, TrendingUp, ArrowRight, Sparkles, ChevronRight } from 'lucide-react';
+import { Shield, CalendarClock, TrendingUp, ArrowRight, CheckCircle2, Lock, Clock } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import CircleAuthButton from '@/components/enterprise/CircleAuthButton';
 import CompliancePortal from "@/components/enterprise/CompliancePortal";
@@ -18,110 +18,170 @@ import YieldStreamer from "@/components/enterprise/YieldStreamer";
 import MultiSigDesk from "@/components/enterprise/MultiSigDesk";
 import Auditing from "@/components/enterprise/Auditing";
 
+const TABS = [
+  { id: 'strategy', label: 'New Payment' },
+  { id: 'unified', label: 'Unified Balance' },
+  { id: 'ladder', label: 'Bond Ladder' },
+  { id: 'calendar', label: 'Maturity Calendar' },
+  { id: 'treasury', label: 'My Payments' },
+  { id: 'otc', label: 'Secondary Market' },
+  { id: 'compliance', label: 'Compliance' },
+  { id: 'agent', label: 'Agent Copilot' },
+  { id: 'multisig', label: 'Multi-Sig' },
+  { id: 'auditing', label: 'Audit Suite' },
+] as const;
+
+const TAB_META: Record<string, { title: string; description: string }> = {
+  treasury: {
+    title: 'Payment History',
+    description: 'Track all scheduled payments. Your funds earn interest until each due date, then settle automatically.',
+  },
+  strategy: {
+    title: 'Schedule a Payment',
+    description: 'Set up a payment that earns tiered annual interest while it waits. Vendor gets paid on time — you keep the yield.',
+  },
+  unified: {
+    title: 'Unified Balance',
+    description: 'Aggregate and deploy USDC/EURC across EVM chains and Solana via Circle Gateway SDK.',
+  },
+  calendar: {
+    title: 'Maturity Calendar',
+    description: 'Visualize when cash flows mature and invoices settle on a calendar grid.',
+  },
+  ladder: {
+    title: 'Bond Ladder Builder',
+    description: 'Build staggered treasury bond portfolios aligned with future accounts payable.',
+  },
+  compliance: {
+    title: 'Compliance Center',
+    description: 'Verify corporate identity and manage compliance whitelist/blacklist parameters.',
+  },
+  otc: {
+    title: 'Secondary Trading Desk',
+    description: 'Buy and sell seasoned bonds for liquidity or higher yield-to-maturity on discounted debt.',
+  },
+  agent: {
+    title: 'Agent Copilot',
+    description: 'Deploy autonomous agents with spending limits to automate treasury allocations.',
+  },
+  multisig: {
+    title: 'Multi-Sig Desk',
+    description: 'Approve corporate allocations via decentralized consensus rules.',
+  },
+  auditing: {
+    title: 'Audit Suite',
+    description: 'Review ledger entries, reconcile balances, and export audit reports.',
+  },
+};
+
 function WelcomeOnboarding({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <div className="animate-fade-in">
       {/* Hero */}
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
-          style={{ background: 'var(--primary-soft)', color: 'var(--primary)', border: '1px solid var(--primary-border)' }}>
-          <Sparkles size={12} />
-          New: Your money earns while it waits
+      <div className="max-w-2xl mx-auto text-center pt-8 pb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-semibold mb-6"
+          style={{ background: 'var(--success-soft)', color: 'var(--success-foreground)', border: '1px solid var(--success-border)' }}>
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--success)' }}></span>
+          Live on Arc Testnet
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight" style={{ color: 'var(--foreground)' }}>
-          Pay vendors on time.<br />
-          <span style={{ color: 'var(--primary)' }}>Earn interest automatically.</span>
+
+        <h1 className="text-3xl md:text-[42px] font-semibold tracking-tight leading-[1.2] text-[var(--foreground)]">
+          Corporate treasury infrastructure<br />
+          that earns while it settles.
         </h1>
-        <p className="text-lg mt-4 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-          Schedule your business payments in advance. While your money waits for the 
-          due date, it earns <strong className="font-semibold" style={{ color: 'var(--success)' }}>5% interest per year</strong> — 
-          then gets delivered automatically. No manual work.
+
+        <p className="text-base mt-5 leading-relaxed text-[var(--muted-foreground)] max-w-lg mx-auto">
+          Schedule vendor payments on the Arc blockchain. Your funds earn up to
+          <span className="font-semibold text-[var(--foreground)]"> 12% APY </span>
+          in USDC bond vaults while waiting for the due date, then settle automatically.
         </p>
+
+        <div className="flex items-center justify-center gap-3 mt-8">
+          <button onClick={onGetStarted} className="btn-primary gap-2 px-5 py-2.5 text-sm">
+            Get Started
+            <ArrowRight size={15} />
+          </button>
+          <button onClick={onGetStarted} className="btn-secondary px-5 py-2.5 text-sm">
+            View Dashboard
+          </button>
+        </div>
       </div>
 
-      {/* How It Works - Progressive Disclosure */}
-      <div className="grid md:grid-cols-3 gap-5 max-w-3xl mx-auto mb-12">
+      {/* How it works — 3-column grid */}
+      <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-16">
         {[
           {
-            icon: <CalendarClock size={22} />,
-            step: "1",
-            title: "Schedule a payment",
-            desc: "Enter the amount, due date, and your vendor's account. Like setting up a bank transfer — but smarter.",
+            icon: <CalendarClock size={18} />,
+            title: "Schedule payment",
+            desc: "Enter amount, due date, and vendor address. Choose your yield tier.",
           },
           {
-            icon: <TrendingUp size={22} />,
-            step: "2",
-            title: "Earn while you wait",
-            desc: "Your money earns 5% annual interest in a secure holding account until the due date arrives.",
+            icon: <TrendingUp size={18} />,
+            title: "Earn yield",
+            desc: "Funds earn 4-12% APY in USDC bond vaults until the maturity date.",
           },
           {
-            icon: <Shield size={22} />,
-            step: "3",
-            title: "Auto-delivery on time",
-            desc: "On the exact due date, your vendor receives the full payment automatically. You keep the interest earned.",
+            icon: <CheckCircle2 size={18} />,
+            title: "Auto-settle",
+            desc: "On the due date, principal is delivered to your vendor automatically.",
           },
         ].map((item, i) => (
-          <div 
-            key={i} 
-            className="card-surface p-6 hover:shadow-md transition-all duration-300 animate-slide-up group cursor-default"
-            style={{ animationDelay: `${i * 0.1}s` }}
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
-                style={{ background: 'var(--primary)' }}>
-                {item.icon}
-              </div>
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--muted-foreground)' }}>
-                Step {item.step}
-              </span>
+          <div key={i} className="card-surface p-5 animate-slide-up" style={{ animationDelay: `${i * 0.08}s` }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3 text-[var(--foreground)]"
+              style={{ background: 'var(--muted)' }}>
+              {item.icon}
             </div>
-            <h3 className="font-semibold text-base mb-1.5" style={{ color: 'var(--foreground)' }}>{item.title}</h3>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>{item.desc}</p>
+            <h3 className="font-semibold text-sm mb-1 text-[var(--foreground)]">{item.title}</h3>
+            <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">{item.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* CTA */}
-      <div className="text-center">
-        <button 
-          onClick={onGetStarted}
-          className="btn-primary text-base px-8 py-3 gap-2 group"
-        >
-          Schedule Your First Payment
-          <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-        </button>
-        <p className="text-xs mt-3" style={{ color: 'var(--muted-foreground)' }}>
-          Free to use · No hidden fees · Cancel anytime
-        </p>
+      {/* Yield tiers summary */}
+      <div className="card-surface max-w-3xl mx-auto p-6 mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-sm text-[var(--foreground)]">Current Yield Tiers</h3>
+          <span className="text-xs text-[var(--muted-foreground)]">Updated live from smart contract</span>
+        </div>
+        <div className="grid grid-cols-5 gap-3">
+          {[
+            { term: '30d', senior: '4.0%', junior: '8.0%' },
+            { term: '60d', senior: '4.5%', junior: '9.0%' },
+            { term: '90d', senior: '5.0%', junior: '10.0%' },
+            { term: '180d', senior: '5.5%', junior: '11.0%' },
+            { term: '365d', senior: '6.0%', junior: '12.0%' },
+          ].map((tier) => (
+            <div key={tier.term} className="text-center p-3 rounded-lg" style={{ background: 'var(--muted)' }}>
+              <div className="text-xs font-medium text-[var(--muted-foreground)] mb-1">{tier.term}</div>
+              <div className="text-sm font-semibold text-[var(--foreground)]">{tier.senior}</div>
+              <div className="text-xs text-[var(--success-foreground)] font-medium">{tier.junior}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-4 mt-3 text-[10px] text-[var(--muted-foreground)]">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[var(--foreground)]"></span> Senior Tranche</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-[var(--success)]"></span> Junior Tranche</span>
+        </div>
       </div>
 
-      {/* Trust Indicators */}
-      <div className="mt-16 pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 text-xs font-medium" 
-          style={{ color: 'var(--muted-foreground)' }}>
-          <div className="flex items-center gap-2">
-            <Shield size={14} style={{ color: 'var(--success)' }} />
-            Bank-grade security
+      {/* Trust footer */}
+      <div className="border-t pt-8" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex flex-wrap items-center justify-center gap-8 text-xs font-medium text-[var(--muted-foreground)]">
+          <div className="flex items-center gap-1.5">
+            <Shield size={14} className="text-[var(--success)]" />
+            Bank-grade custody
           </div>
-          <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--primary)' }}>
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            Powered by Circle
+          <div className="flex items-center gap-1.5">
+            <Lock size={14} />
+            Circle WaaS + CCTP
           </div>
-          <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--warning)' }}>
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-            Funds insured up to $250K
+          <div className="flex items-center gap-1.5">
+            <Clock size={14} />
+            Sub-second finality
           </div>
-          <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--info)' }}>
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            24/7 automatic settlement
+          <div className="flex items-center gap-1.5">
+            <CheckCircle2 size={14} />
+            USDC gas fees
           </div>
         </div>
       </div>
@@ -140,258 +200,107 @@ export default function Home() {
     setMounted(true);
   }, []);
 
-  // Show onboarding only for disconnected users or first-time visitors
   const isConnected = mounted && (isEoaConnected || isSmartAccount);
   const shouldShowOnboarding = !isConnected && showOnboarding;
+  const meta = TAB_META[activeTab];
 
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--background)' }}>
-        <div className="animate-pulse" style={{ color: 'var(--muted-foreground)' }}>Loading StablePay...</div>
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <div className="animate-pulse text-sm text-[var(--muted-foreground)]">Loading StablePay...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-      {/* Premium Navbar */}
-      <nav className="border-b sticky top-0 z-50 backdrop-blur-xl" 
-        style={{ 
-          borderColor: 'var(--border)', 
-          background: 'rgba(250, 251, 252, 0.85)' 
-        }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
-          {/* Brand */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm"
-              style={{ background: 'var(--primary)' }}>
-              <span className="text-white font-bold text-sm">S</span>
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+      {/* Navbar */}
+      <nav className="border-b sticky top-0 z-50 backdrop-blur-xl bg-[var(--background)]/90" style={{ borderColor: 'var(--border)' }}>
+        <div className="max-w-5xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-md flex items-center justify-center bg-[var(--primary)]">
+              <span className="text-[var(--primary-foreground)] font-semibold text-xs">S</span>
             </div>
-            <span className="font-semibold text-base tracking-tight" style={{ color: 'var(--foreground)' }}>
-              StablePay
-            </span>
+            <span className="font-semibold text-sm tracking-tight">StablePay</span>
           </div>
 
-          {/* Navigation */}
-          <div className="flex items-center gap-2 md:gap-4 text-sm font-medium">
-            {isConnected && (
-              <>
-                <button 
-                  onClick={() => { setActiveTab('strategy'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'strategy' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  New Payment
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('unified'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'unified' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Unified Balance
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('ladder'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'ladder' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Bond Ladder
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('calendar'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'calendar' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Maturity Calendar
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('treasury'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'treasury' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  My Payments
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('otc'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'otc' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Secondary Market
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('compliance'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'compliance' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Compliance Center
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('agent'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'agent' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Agent Copilot
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('multisig'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'multisig' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                  }`}
-                >
-                  Multi-Sig Desk
-                </button>
-                <button 
-                  onClick={() => { setActiveTab('auditing'); setShowOnboarding(false); }}
-                  className={`py-4 md:py-5 px-2 md:px-3 border-b-2 transition-all duration-200 text-xs md:text-sm ${
-                    activeTab === 'auditing' 
-                      ? 'border-[var(--primary)] text-[var(--foreground)] font-semibold' 
-                      : 'border-transparent text-[var(--muted-foreground)] hover:text(--foreground)'
-                  }`}
-                >
-                  Audit Suite
-                </button>
-                <div className="h-6 w-px mx-1 md:mx-2" style={{ background: 'var(--border)' }}></div>
-              </>
-            )}
-            
+          <div className="flex items-center gap-2">
             <CircleAuthButton />
-            
-            <ConnectButton 
-              label="Connect Account"
-              showBalance={false}
-            />
+            <ConnectButton label="Connect" showBalance={false} />
           </div>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
+      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8">
         {shouldShowOnboarding ? (
           <WelcomeOnboarding onGetStarted={() => setShowOnboarding(false)} />
         ) : (
           <>
-            {/* Page Header */}
-            <div className="mb-8 max-w-2xl animate-fade-in">
-              {/* Live Status Indicator */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-4 shadow-xs"
-                style={{ 
-                  background: 'var(--success-soft)', 
-                  color: 'var(--success-foreground)', 
-                  border: '1px solid var(--success-border)' 
-                }}>
-                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--success)' }}></span>
-                System online · All payments processing normally
+            {/* Tab Navigation — underline style */}
+            <div className="mb-6 overflow-x-auto scrollbar-none border-b" style={{ borderColor: 'var(--border)' }}>
+              <div className="flex items-center gap-0 flex-nowrap min-w-max">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => { setActiveTab(tab.id as any); setShowOnboarding(false); }}
+                    className={`px-3.5 py-2.5 text-[13px] font-medium transition-colors duration-150 whitespace-nowrap cursor-pointer border-b-2 -mb-px ${
+                      activeTab === tab.id
+                        ? 'border-[var(--foreground)] text-[var(--foreground)]'
+                        : 'border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-              
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
-                {activeTab === 'treasury' && 'Your Payment History'}
-                {activeTab === 'strategy' && 'Schedule a New Payment'}
-                {activeTab === 'unified' && 'Unified Balance'}
-                {activeTab === 'calendar' && 'Maturity Calendar'}
-                {activeTab === 'ladder' && 'Bond Ladder Builder'}
-                {activeTab === 'compliance' && 'Compliance Center'}
-                {activeTab === 'otc' && 'Secondary OTC Trading Desk'}
-                {activeTab === 'agent' && 'Autonomous Agent Copilot'}
-                {activeTab === 'multisig' && 'Consensus Multi-Sig Desk'}
-                {activeTab === 'auditing' && 'Enterprise Accounting & Auditing'}
-              </h1>
-              <p className="mt-2 text-base leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                {activeTab === 'treasury' && 'Track all your scheduled payments in one place. Your money earns interest until each due date, then gets delivered automatically.'}
-                {activeTab === 'strategy' && 'Set up a payment that earns tiered annual interest while it waits. Your vendor gets paid on time, automatically — you keep the earnings.'}
-                {activeTab === 'unified' && 'Aggregate, monitor, and deploy USDC/EURC held across major EVM chains and Solana using Circle Gateway SDK.'}
-                {activeTab === 'calendar' && 'Visualize exactly when corporate cash flows mature and invoices get settled on a daily or monthly calendar grid.'}
-                {activeTab === 'ladder' && 'Build a staggered treasury bond portfolio to align with future accounts payable, ensuring continuous cash flow cycles and maximum yield.'}
-                {activeTab === 'compliance' && 'Verify your corporate identity to satisfy institutional regulatory guidelines and manage compliance whitelist/blacklist parameters.'}
-                {activeTab === 'otc' && 'Buy and sell seasoned bonds to secure liquidity without early exit penalties, or capture higher yield-to-maturity (YTM) on discounted corporate debt.'}
-                {activeTab === 'agent' && 'Deploy autonomous AI agent co-pilots with smart spending limits and whitelists to automate treasury allocations on Arc.'}
-                {activeTab === 'multisig' && 'Approve corporate allocations and administrative actions via decentralized consensus rules.'}
-                {activeTab === 'auditing' && 'Review live ledger entries, reconcile balances, and export financial audit reports.'}
-              </p>
             </div>
 
-            {/* Tab Content */}
+            {/* Page Header */}
+            <div className="mb-6 animate-fade-in">
+              <div className="flex items-center gap-3 mb-1">
+                <h1 className="text-xl font-semibold tracking-tight text-[var(--foreground)]">
+                  {meta.title}
+                </h1>
+                <div className="badge badge-success">
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[var(--success)]"></span>
+                  Live
+                </div>
+              </div>
+              <p className="text-sm text-[var(--muted-foreground)] max-w-xl">{meta.description}</p>
+            </div>
+
+            {/* Content */}
             {activeTab === 'treasury' && (
               <div className="space-y-6 animate-fade-in">
                 <YieldStreamer />
-                <TreasuryDashboard 
-                  onListOTC={(bond) => {
-                    setActiveTab('otc');
-                  }} 
-                />
+                <TreasuryDashboard onListOTC={() => setActiveTab('otc')} />
               </div>
             )}
-
             {activeTab === 'unified' && <UnifiedBalance />}
-            
             {activeTab === 'calendar' && <MaturityCalendar />}
-            
             {activeTab === 'ladder' && <BondLadderBuilder />}
-
             {activeTab === 'compliance' && <CompliancePortal />}
-
             {activeTab === 'otc' && <OTCDesk />}
-
             {activeTab === 'agent' && <AgentManager />}
-
             {activeTab === 'multisig' && <MultiSigDesk />}
-
             {activeTab === 'auditing' && <Auditing />}
-
             {activeTab === 'strategy' && (
               <div className="animate-fade-in">
                 <IntentBuilder />
-                
-                {/* Trust & Safety Footer */}
-                <div className="mt-10 text-center max-w-lg mx-auto">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-center gap-2 text-xs font-semibold" style={{ color: 'var(--primary)' }}>
-                      <Shield size={14} />
-                      Bank-grade security powered by Circle
-                    </div>
-                    <p className="text-xs leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                      Your funds are held securely until the release date. You can cancel and withdraw early, 
-                      subject to standard terms. All payments are tracked on a secure public ledger for full transparency.
-                    </p>
-                    <div className="flex items-center justify-center gap-4 text-[10px] font-medium pt-1" style={{ color: 'var(--muted-foreground)' }}>
-                      <span className="flex items-center gap-1">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Instant confirmation
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        No hidden fees
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Cancel anytime
-                      </span>
-                    </div>
+                <div className="mt-8 text-center max-w-md mx-auto">
+                  <div className="flex items-center justify-center gap-5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-[var(--success)]" />
+                      Instant confirmation
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-[var(--success)]" />
+                      No hidden fees
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <CheckCircle2 size={12} className="text-[var(--success)]" />
+                      Cancel anytime
+                    </span>
                   </div>
                 </div>
               </div>
@@ -400,14 +309,13 @@ export default function Home() {
         )}
       </main>
 
-      {/* Minimal Footer */}
-      <footer className="border-t py-6 mt-12" style={{ borderColor: 'var(--border-subtle)' }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs" style={{ color: 'var(--muted-foreground)' }}>
-          <span>© 2026 StablePay. Secure business payments, simplified.</span>
+      <footer className="border-t py-5 mt-12" style={{ borderColor: 'var(--border)' }}>
+        <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
+          <span>© 2026 StablePay · Treasury infrastructure on Arc</span>
           <div className="flex items-center gap-4">
-            <span className="hover:underline cursor-pointer">How It Works</span>
-            <span className="hover:underline cursor-pointer">Security</span>
-            <span className="hover:underline cursor-pointer">Terms</span>
+            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Documentation</span>
+            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Security</span>
+            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Terms</span>
           </div>
         </div>
       </footer>
