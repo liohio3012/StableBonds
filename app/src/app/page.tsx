@@ -150,60 +150,43 @@ function WelcomeOnboarding() {
         </div>
       </div>
 
-      {/* High-Contrast Slanted Marquee Divider */}
-      <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 py-3 shadow-[0_10px_30px_rgba(16,185,129,0.12)] border-y border-emerald-300 dark:border-emerald-600 -rotate-[1.2deg] my-16 select-none z-20">
-        <style>{`
-          @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee-slanted {
-            display: flex;
-            width: max-content;
-            animation: marquee 20s linear infinite;
-          }
-        `}</style>
-        <div className="animate-marquee-slanted gap-12 flex">
-          {[1, 2].map((loop) => (
-            <div key={loop} className="flex shrink-0 items-center justify-around gap-16 min-w-full text-zinc-950 text-xs font-black tracking-widest">
-              <span className="flex items-center gap-2">
-                ⚡ POWERED BY LEPTON AI
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
-              <span className="flex items-center gap-2">
-                💳 SECURED BY CIRCLE WAAS & SMART ACCOUNTS
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
-              <span className="flex items-center gap-2">
-                🟢 LIVE ON ARC BLOCKCHAIN
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
-              <span className="flex items-center gap-2">
-                📈 APY VAULT SYSTEM: 12.0% MAX
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
-              <span className="flex items-center gap-2">
-                💸 GASLESS TRANSACTIONS ENABLED
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
-              <span className="flex items-center gap-2">
-                🔗 CROSS-CHAIN COLLATERAL ROUTING
-              </span>
-              <span className="flex items-center gap-2">
-                ◆
-              </span>
+      {/* High-Contrast Slanted Marquee Divider — clipped wrapper prevents layout overflow */}
+      <div className="relative w-full overflow-hidden my-14 select-none" style={{ height: '52px' }}>
+        {/* The rotated strip is scaled wider than the viewport so no white gaps appear at edges */}
+        <div className="absolute inset-0 flex items-center -rotate-[1.2deg] scale-x-[1.06] origin-center">
+          <div className="w-full overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 py-3 shadow-[0_8px_24px_rgba(16,185,129,0.18)] border-y border-emerald-300 dark:border-emerald-600">
+            <style>{`
+              @keyframes sbmarquee {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-sb-marquee {
+                display: flex;
+                width: max-content;
+                animation: sbmarquee 22s linear infinite;
+              }
+            `}</style>
+            <div className="animate-sb-marquee flex gap-0">
+              {[1, 2].map((loop) => (
+                <div key={loop} className="flex shrink-0 items-center gap-10 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
+                  <span>⚡ POWERED BY LEPTON AI</span>
+                  <span className="opacity-50">◆</span>
+                  <span>💳 CIRCLE WAAS &amp; SMART ACCOUNTS</span>
+                  <span className="opacity-50">◆</span>
+                  <span>🟢 LIVE ON ARC BLOCKCHAIN</span>
+                  <span className="opacity-50">◆</span>
+                  <span>📈 APY UP TO 12.0%</span>
+                  <span className="opacity-50">◆</span>
+                  <span>💸 GASLESS USDC PAYMENTS</span>
+                  <span className="opacity-50">◆</span>
+                  <span>🔗 CROSS-CHAIN VIA CIRCLE CCTP</span>
+                  <span className="opacity-50">◆</span>
+                  <span>🤖 AUTONOMOUS AI COPILOT</span>
+                  <span className="opacity-50">◆</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
