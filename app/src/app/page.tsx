@@ -980,7 +980,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto mb-20 text-center border rounded-2xl p-10 bg-black text-white relative overflow-hidden">
               <div className="absolute inset-0 bg-radial-gradient from-emerald-500/10 to-transparent pointer-events-none" />
               <Logo size={48} variant="icon" className="mx-auto mb-6 opacity-80" />
-              <h3 className="text-2xl font-bold tracking-tight mb-2">Maximize your corporate capital efficiency</h3>
+              <h3 className="text-2xl font-bold tracking-tight mb-2 text-white" style={{ color: '#ffffff' }}>Maximize your corporate capital efficiency</h3>
               <p className="text-xs text-zinc-400 max-w-md mx-auto mb-8">Schedule automated payment streams today. Secure yield via compliant bond tranches natively settled in USDC.</p>
               
               <div className="flex flex-wrap items-center justify-center gap-4">
