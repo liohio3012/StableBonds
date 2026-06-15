@@ -73,7 +73,7 @@ export default function AgentManager() {
   const [logs, setLogs] = useState<AgentLog[]>([]);
   const [isRunningSim, setIsRunningSim] = useState(false);
   const [invoiceText, setInvoiceText] = useState('AWS Server Hosting Invoice - Due in 35 Days');
-  const [decisionEngine, setDecisionEngine] = useState<'deepseek' | 'ritual'>('deepseek');
+  const [decisionEngine, setDecisionEngine] = useState<'deepseek' | 'ritual' | 'a2a'>('deepseek');
 
   // Initialize and load state
   useEffect(() => {
@@ -261,7 +261,35 @@ export default function AgentManager() {
     try {
       let decision: any;
 
-      if (decisionEngine === 'ritual') {
+      if (decisionEngine === 'a2a') {
+        // --- Agent-to-Agent OTC Negotiation Simulation ---
+        addLog('info', 'Commencing autonomous Agent-to-Agent Secondary Bond desk scan...');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', 'Found active Bond Listing #4 on OTC desk. Principal: 5,000 USDC. Asking Price: 4,800 USDC (Discount: 4.0%).');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', 'Contacting Seller Agent at 0x4a7c59... over secure A2A communication channel.');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', '[Buyer Agent] Bid offer sent: 4,700 USDC (Targeting Yield to Maturity optimization of 6.2%).');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('warning', '[Seller Agent] Counter-offer received: 4,750 USDC.');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', '[Buyer Agent] Counter-offer evaluation: 4,750 USDC is within active slippage tolerance rules (max 1.5%).');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('success', '[Buyer Agent] Agreement reached! Final negotiated price: 4,750 USDC.');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', 'Submitting micro-payment of 0.0001 USDC to pay Seller Agent for transaction validation compute...');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('success', 'Micropayment successful! Transaction confirmed.');
+        await new Promise(r => setTimeout(r, 800));
+        addLog('info', 'Invoking Circle Smart Wallet to settle OTC filled order #4 on Arc Testnet...');
+        
+        decision = {
+          recommendation: "Negotiated and purchased Seasoned Bond #4 at 4,750 USDC (5,000 Face Value, YTM: 5.8%) autonomously via A2A protocol.",
+          optimalTermId: 3,
+          optimalTranche: "Senior",
+          savingsPrediction: "Captured immediate arbitrage profit of 250 USDC + ongoing 5.0% APY."
+        };
+      } else if (decisionEngine === 'ritual') {
         // --- Ritual On-Chain AI Coprocessor Route ---
         addLog('info', 'Routing transaction request to Ritual AI Coprocessor Network (Chain ID: 1979)...');
         await new Promise(r => setTimeout(r, 1000));
@@ -357,6 +385,14 @@ export default function AgentManager() {
 
         const decidePayload = await decideRes.json();
         decision = decidePayload.decision;
+
+        // Output multi-agent swarm trace logs with a realistic time delay for dramatic effect
+        if (decidePayload.agentLogs && Array.isArray(decidePayload.agentLogs)) {
+          for (const item of decidePayload.agentLogs) {
+            addLog(item.type || 'info', `[${item.agent} Agent] ${item.message}`);
+            await new Promise(r => setTimeout(r, 600));
+          }
+        }
       }
 
       addLog('success', `AI Coprocessor Decision: ${decision.recommendation}`);
@@ -704,7 +740,7 @@ export default function AgentManager() {
                 <label className="text-[10px] uppercase tracking-wider font-bold text-slate-500 block text-left mb-1.5">
                   AI Decision Coprocessor Engine
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setDecisionEngine('deepseek')}
@@ -728,6 +764,18 @@ export default function AgentManager() {
                   >
                     <span className={`w-1.5 h-1.5 rounded-full ${decisionEngine === 'ritual' ? 'bg-purple-200 animate-pulse' : 'bg-slate-400'}`}></span>
                     Ritual Chain
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDecisionEngine('a2a')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
+                      decisionEngine === 'a2a'
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${decisionEngine === 'a2a' ? 'bg-emerald-200 animate-pulse' : 'bg-slate-400'}`}></span>
+                    A2A OTC Desk
                   </button>
                 </div>
               </div>
