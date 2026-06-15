@@ -42,7 +42,7 @@ const GithubIcon = ({ size = 16 }: { size?: number }) => (
 export default function Home() {
   // --- States for advanced interactive components ---
   const [activeUseCase, setActiveUseCase] = useState(0);
-  const [activeScreenshotTab, setActiveScreenshotTab] = useState('dashboard');
+  const [activeScreenshotTab, setActiveScreenshotTab] = useState('treasury');
   const [calcPrincipal, setCalcPrincipal] = useState(150000);
   const [calcDuration, setCalcDuration] = useState(90);
   const [calcTranche, setCalcTranche] = useState<'senior' | 'junior'>('senior');
@@ -504,11 +504,11 @@ export default function Home() {
               {/* Tabs for Interface Selection */}
               <div className="flex flex-wrap justify-center gap-1.5 mb-6 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
                 {[
-                  { id: 'dashboard', label: 'Treasury Cockpit', desc: 'Overview of assets, payouts, and flows.' },
+                  { id: 'treasury', label: 'Treasury Cockpit', desc: 'Overview of assets, payouts, and flows.' },
                   { id: 'ladder', label: 'Bond Ladder Builder', desc: 'Staggered asset maturity duration tools.' },
+                  { id: 'unified', label: 'Unified Balance', desc: 'Cross-chain balances aggregated in real-time.' },
                   { id: 'agent', label: 'AI Coprocessor Desk', desc: 'Autonomous negotiation & auto scheduling.' },
-                  { id: 'otc', label: 'Secondary OTC Market', desc: 'Seasoned discounted bonds trade desk.' },
-                  { id: 'compliance', label: 'Compliance & Limits', desc: 'Role approvals and KYC verification.' }
+                  { id: 'auditing', label: 'Auditing Ledger Suite', desc: 'Immutable audit logs and reports.' }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -544,7 +544,7 @@ export default function Home() {
 
                 {/* Screenshot Display Box */}
                 <div className="relative bg-neutral-100 dark:bg-zinc-900/50 p-2 min-h-[350px] flex items-center justify-center">
-                  {activeScreenshotTab === 'dashboard' && (
+                  {activeScreenshotTab === 'treasury' && (
                     <img
                       src="/screenshots/dashboard_overview.png"
                       alt="StableBonds Treasury Cockpit Giao diện"
@@ -554,32 +554,32 @@ export default function Home() {
                   )}
                   {activeScreenshotTab === 'ladder' && (
                     <img
-                      src="/screenshots/bond_ladder.png"
+                      src="/screenshots/agent_copilot.png"
                       alt="StableBonds Yield Ladder Builder Giao diện"
+                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                  )}
+                  {activeScreenshotTab === 'unified' && (
+                    <img
+                      src="/screenshots/bond_ladder.png"
+                      alt="StableBonds Unified Balance Giao diện"
                       className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
                       style={{ borderColor: 'var(--border)' }}
                     />
                   )}
                   {activeScreenshotTab === 'agent' && (
                     <img
-                      src="/screenshots/agent_copilot.png"
+                      src="/screenshots/compliance.png"
                       alt="StableBonds AI Coprocessor Desk Giao diện"
                       className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
                       style={{ borderColor: 'var(--border)' }}
                     />
                   )}
-                  {activeScreenshotTab === 'otc' && (
+                  {activeScreenshotTab === 'auditing' && (
                     <img
                       src="/screenshots/otc_secondary.png"
-                      alt="StableBonds Secondary OTC Market Giao diện"
-                      className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
-                      style={{ borderColor: 'var(--border)' }}
-                    />
-                  )}
-                  {activeScreenshotTab === 'compliance' && (
-                    <img
-                      src="/screenshots/compliance.png"
-                      alt="StableBonds Compliance Controls Giao diện"
+                      alt="StableBonds Auditing Ledger Suite Giao diện"
                       className="rounded-lg border shadow-lg max-w-full h-auto object-contain animate-scale-in"
                       style={{ borderColor: 'var(--border)' }}
                     />
