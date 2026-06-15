@@ -36,7 +36,7 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-function WelcomeOnboarding() {
+function WelcomeHero() {
   return (
     <div className="animate-fade-in relative">
       {/* Background Ambient Blobs */}
@@ -149,12 +149,18 @@ function WelcomeOnboarding() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* High-Contrast Slanted Marquee Divider — clipped wrapper prevents layout overflow */}
-      <div className="relative w-full overflow-hidden my-14 select-none" style={{ height: '52px' }}>
-        {/* The rotated strip is scaled wider than the viewport so no white gaps appear at edges */}
-        <div className="absolute inset-0 flex items-center -rotate-[1.2deg] scale-x-[1.06] origin-center">
-          <div className="w-full overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 py-3 shadow-[0_8px_24px_rgba(16,185,129,0.18)] border-y border-emerald-300 dark:border-emerald-600">
+function WelcomeFeatures() {
+  return (
+    <div className="animate-fade-in">
+
+      <div className="my-14 select-none" style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)', overflow: 'hidden', height: '56px', position: 'relative' }}>
+        {/* Rotated strip with x-scale to cover corners */}
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', transform: 'rotate(-1.2deg) scaleX(1.05)', transformOrigin: 'center' }}>
+          <div className="w-full overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 shadow-[0_8px_32px_rgba(16,185,129,0.25)] border-y border-emerald-300 dark:border-emerald-600" style={{ padding: '10px 0' }}>
             <style>{`
               @keyframes sbmarquee {
                 0% { transform: translateX(0%); }
@@ -170,19 +176,19 @@ function WelcomeOnboarding() {
               {[1, 2].map((loop) => (
                 <div key={loop} className="flex shrink-0 items-center gap-10 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
                   <span>⚡ POWERED BY LEPTON AI</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>💳 CIRCLE WAAS &amp; SMART ACCOUNTS</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>🟢 LIVE ON ARC BLOCKCHAIN</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>📈 APY UP TO 12.0%</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>💸 GASLESS USDC PAYMENTS</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>🔗 CROSS-CHAIN VIA CIRCLE CCTP</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                   <span>🤖 AUTONOMOUS AI COPILOT</span>
-                  <span className="opacity-50">◆</span>
+                  <span className="opacity-40">◆</span>
                 </div>
               ))}
             </div>
@@ -387,10 +393,56 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Main Container */}
-      <div className="flex-grow flex max-w-7xl w-full mx-auto relative px-6 py-12">
+      {/* Main Container — Hero Section */}
+      <div className="flex-grow flex max-w-7xl w-full mx-auto relative px-6 pt-12">
         <main className="flex-grow">
-          <WelcomeOnboarding />
+          <WelcomeHero />
+        </main>
+      </div>
+
+      {/* Full-Width Marquee Divider — outside the max-width container */}
+      <div className="w-full overflow-hidden select-none" style={{ height: '56px', position: 'relative', margin: '3.5rem 0' }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', transform: 'rotate(-1.2deg) scaleX(1.04)', transformOrigin: 'center' }}>
+          <div className="w-full overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 shadow-[0_8px_32px_rgba(16,185,129,0.25)] border-y border-emerald-300 dark:border-emerald-600" style={{ padding: '10px 0' }}>
+            <style>{`
+              @keyframes sbmarquee {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-sb-marquee {
+                display: flex;
+                width: max-content;
+                animation: sbmarquee 22s linear infinite;
+              }
+            `}</style>
+            <div className="animate-sb-marquee flex gap-0">
+              {[1, 2].map((loop) => (
+                <div key={loop} className="flex shrink-0 items-center gap-10 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
+                  <span>⚡ POWERED BY LEPTON AI</span>
+                  <span className="opacity-40">◆</span>
+                  <span>💳 CIRCLE WAAS &amp; SMART ACCOUNTS</span>
+                  <span className="opacity-40">◆</span>
+                  <span>🟢 LIVE ON ARC BLOCKCHAIN</span>
+                  <span className="opacity-40">◆</span>
+                  <span>📈 APY UP TO 12.0%</span>
+                  <span className="opacity-40">◆</span>
+                  <span>💸 GASLESS USDC PAYMENTS</span>
+                  <span className="opacity-40">◆</span>
+                  <span>🔗 CROSS-CHAIN VIA CIRCLE CCTP</span>
+                  <span className="opacity-40">◆</span>
+                  <span>🤖 AUTONOMOUS AI COPILOT</span>
+                  <span className="opacity-40">◆</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section — inside max-width container */}
+      <div className="flex-grow flex max-w-7xl w-full mx-auto relative px-6 pb-12">
+        <main className="flex-grow">
+          <WelcomeFeatures />
         </main>
       </div>
 
