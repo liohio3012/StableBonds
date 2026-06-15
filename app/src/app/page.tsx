@@ -18,6 +18,7 @@ import YieldStreamer from "@/components/enterprise/YieldStreamer";
 import MultiSigDesk from "@/components/enterprise/MultiSigDesk";
 import Auditing from "@/components/enterprise/Auditing";
 import Logo from "@/components/enterprise/Logo";
+import Footer from "@/components/enterprise/Footer";
 
 const TABS = [
   { id: 'strategy', label: 'New Payment' },
@@ -306,16 +307,7 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="border-t py-5 mt-12" style={{ borderColor: 'var(--border)' }}>
-        <div className="max-w-5xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
-          <span>© 2026 StablePay · Treasury infrastructure on Arc</span>
-          <div className="flex items-center gap-4">
-            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Documentation</span>
-            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Security</span>
-            <span className="hover:text-[var(--foreground)] cursor-pointer transition-colors">Terms</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
