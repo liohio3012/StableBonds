@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient, useSwitchChain } from 'wagmi';
 import { parseAbi, parseUnits, encodeFunctionData, encodeAbiParameters, pad, keccak256, decodeAbiParameters } from 'viem';
 import { toast } from 'sonner';
-import { ExternalLink, Shield, HelpCircle, CheckCircle2, Clock, ArrowRight, Info, Wallet, Building2, Calendar, DollarSign, Loader2, RefreshCw, AlertOctagon } from 'lucide-react';
+import { ExternalLink, Shield, HelpCircle, CheckCircle2, Clock, ArrowRight, Info, Wallet, Building2, Calendar, DollarSign, Loader2, RefreshCw, AlertOctagon, ChevronRight, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 import CustomDropdown from './CustomDropdown';
@@ -298,7 +298,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
   );
 }
 
-export default function IntentBuilder({ onNavigateToCompliance }: { onNavigateToCompliance?: () => void }) {
+export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab }: { onNavigateToCompliance?: () => void; onNavigateToTab?: (tab: string) => void }) {
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
   const { account: circleAccount, isSmartAccount, logout } = useCircleAuth();
   const publicClient = usePublicClient();
@@ -376,6 +376,7 @@ export default function IntentBuilder({ onNavigateToCompliance }: { onNavigateTo
   const [smartPending, setSmartPending] = useState(false);
   const [smartConfirming, setSmartConfirming] = useState(false);
   const [smartSuccess, setSmartSuccess] = useState(false);
+  const [showSuccessWorkflowModal, setShowSuccessWorkflowModal] = useState(false);
   
   const [amount, setAmount] = useState('');
   const [selectedTermId, setSelectedTermId] = useState(1);
@@ -507,6 +508,12 @@ export default function IntentBuilder({ onNavigateToCompliance }: { onNavigateTo
       });
     }
   }, [isBondSuccess, bondHash]);
+
+  useEffect(() => {
+    if (displayIsSuccess) {
+      setShowSuccessWorkflowModal(true);
+    }
+  }, [displayIsSuccess]);
 
   const currentStep = isSmartAccount ? 2 : (isApproved ? 2 : 1);
 
@@ -1700,6 +1707,135 @@ export default function IntentBuilder({ onNavigateToCompliance }: { onNavigateTo
           </div>
         </div>
       </div>
+
+      {/* Workflow Success Modal */}
+      {showSuccessWorkflowModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
+          <div className="card-surface max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in p-6 text-left"
+            style={{ border: '1px solid var(--border)', background: 'var(--canvas)' }}>
+            
+            {/* Modal Header */}
+            <div className="text-center pb-4 border-b" style={{ borderColor: 'var(--border)' }}>
+              <div className="w-12 h-12 rounded-full bg-[var(--success-soft)] text-[var(--success)] flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 size={28} />
+              </div>
+              <h3 className="text-lg font-bold text-[var(--foreground)]">
+                Payment Scheduled!
+              </h3>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                Your treasury position has been recorded on-chain.
+              </p>
+            </div>
+
+            {/* Position Summary */}
+            <div className="my-5 p-4 rounded-xl space-y-2.5 text-xs border" style={{ background: 'var(--muted)', borderColor: 'var(--border)' }}>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Principal Amount:</span>
+                <span className="font-semibold text-[var(--foreground)]">{amount} {depositToken}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Maturity APY:</span>
+                <span className="font-semibold text-[var(--success)]">{selectedTerm.apyLabel}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Estimated Yield:</span>
+                <span className="font-semibold text-[var(--success)]">+{projectedYield} {depositToken}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                <span style={{ color: 'var(--muted-foreground)' }}>Due Date:</span>
+                <span className="font-semibold text-[var(--foreground)]">{releaseDate}</span>
+              </div>
+              <div className="flex justify-between items-start pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                <span style={{ color: 'var(--muted-foreground)' }}>Target Vendor:</span>
+                <span className="font-mono text-[10px] block truncate max-w-[180px] text-[var(--foreground)]">{supplierAddress}</span>
+              </div>
+            </div>
+
+            {/* Next Steps Recommendations */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+                Recommended Actions:
+              </h4>
+              
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessWorkflowModal(false);
+                    onNavigateToTab?.('calendar');
+                  }}
+                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0">
+                      <Calendar size={14} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-[var(--foreground)]">View on Maturity Calendar</div>
+                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Track your cash releases and automatic settle events.</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessWorkflowModal(false);
+                    onNavigateToTab?.('treasury');
+                  }}
+                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[var(--info-soft)] text-[var(--info)] flex items-center justify-center shrink-0">
+                      <TrendingUp size={14} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-[var(--foreground)]">Monitor Interest Accrual</div>
+                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Watch your balance grow in real-time in the dashboard.</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                {displayBondHash && (
+                  <a
+                    href={`https://testnet.arcscan.app/tx/${displayBondHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                    style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-md bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0">
+                        <ArrowUpRight size={14} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-[var(--foreground)]">Inspect Block Explorer</div>
+                        <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Verify the raw transaction hash on the Arc Chain.</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowSuccessWorkflowModal(false)}
+                className="btn-secondary text-xs px-4 py-2 font-bold w-full cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

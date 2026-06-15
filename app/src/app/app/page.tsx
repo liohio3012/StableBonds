@@ -422,9 +422,9 @@ export default function AppPortal() {
               <TreasuryDashboard onListOTC={() => setActiveTab('otc')} />
             </div>
           )}
-          {activeTab === 'unified' && <UnifiedBalance />}
+           {activeTab === 'unified' && <UnifiedBalance />}
           {activeTab === 'calendar' && <MaturityCalendar />}
-          {activeTab === 'ladder' && <BondLadderBuilder onNavigateToCompliance={() => setActiveTab('compliance')} />}
+          {activeTab === 'ladder' && <BondLadderBuilder onNavigateToCompliance={() => setActiveTab('compliance')} onNavigateToTab={(tab: any) => setActiveTab(tab)} />}
           {activeTab === 'compliance' && <CompliancePortal />}
           {activeTab === 'otc' && <OTCDesk />}
           {activeTab === 'agent' && <AgentManager />}
@@ -432,7 +432,7 @@ export default function AppPortal() {
           {activeTab === 'auditing' && <Auditing />}
           {activeTab === 'strategy' && (
             <div className="animate-fade-in">
-              <IntentBuilder onNavigateToCompliance={() => setActiveTab('compliance')} />
+              <IntentBuilder onNavigateToCompliance={() => setActiveTab('compliance')} onNavigateToTab={(tab: any) => setActiveTab(tab)} />
               <div className="mt-8 text-center max-w-md mx-auto">
                 <div className="flex items-center justify-center gap-5 text-[11px] font-medium text-[var(--muted-foreground)]">
                   <span className="flex items-center gap-1">
