@@ -15,7 +15,7 @@ export default function AboutPage() {
           <Link href="/" className="cursor-pointer">
             <Logo size={28} />
           </Link>
-          <Link href="/" className="btn-secondary py-1.5 px-3.5 text-xs font-semibold flex items-center gap-1">
+          <Link href="/app" className="btn-secondary py-1.5 px-3.5 text-xs font-semibold flex items-center gap-1">
             <ArrowLeft size={13} />
             Back to App
           </Link>
