@@ -157,45 +157,6 @@ function WelcomeFeatures() {
   return (
     <div className="animate-fade-in">
 
-      <div className="my-14 select-none" style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)', overflow: 'hidden', height: '56px', position: 'relative' }}>
-        {/* Rotated strip with x-scale to cover corners */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', transform: 'rotate(-1.2deg) scaleX(1.05)', transformOrigin: 'center' }}>
-          <div className="w-full overflow-hidden bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 shadow-[0_8px_32px_rgba(16,185,129,0.25)] border-y border-emerald-300 dark:border-emerald-600" style={{ padding: '10px 0' }}>
-            <style>{`
-              @keyframes sbmarquee {
-                0% { transform: translateX(0%); }
-                100% { transform: translateX(-50%); }
-              }
-              .animate-sb-marquee {
-                display: flex;
-                width: max-content;
-                animation: sbmarquee 22s linear infinite;
-              }
-            `}</style>
-            <div className="animate-sb-marquee flex gap-0">
-              {[1, 2].map((loop) => (
-                <div key={loop} className="flex shrink-0 items-center gap-10 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
-                  <span>⚡ POWERED BY LEPTON AI</span>
-                  <span className="opacity-40">◆</span>
-                  <span>💳 CIRCLE WAAS &amp; SMART ACCOUNTS</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🟢 LIVE ON ARC BLOCKCHAIN</span>
-                  <span className="opacity-40">◆</span>
-                  <span>📈 APY UP TO 12.0%</span>
-                  <span className="opacity-40">◆</span>
-                  <span>💸 GASLESS USDC PAYMENTS</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🔗 CROSS-CHAIN VIA CIRCLE CCTP</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🤖 AUTONOMOUS AI COPILOT</span>
-                  <span className="opacity-40">◆</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* How it works — 3-column grid */}
       <div className="grid md:grid-cols-3 gap-5 max-w-4xl mx-auto mb-20">
         {[
@@ -417,21 +378,42 @@ export default function Home() {
             `}</style>
             <div className="animate-sb-marquee flex gap-0">
               {[1, 2].map((loop) => (
-                <div key={loop} className="flex shrink-0 items-center gap-10 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
-                  <span>⚡ POWERED BY LEPTON AI</span>
-                  <span className="opacity-40">◆</span>
-                  <span>💳 CIRCLE WAAS &amp; SMART ACCOUNTS</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🟢 LIVE ON ARC BLOCKCHAIN</span>
-                  <span className="opacity-40">◆</span>
-                  <span>📈 APY UP TO 12.0%</span>
-                  <span className="opacity-40">◆</span>
-                  <span>💸 GASLESS USDC PAYMENTS</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🔗 CROSS-CHAIN VIA CIRCLE CCTP</span>
-                  <span className="opacity-40">◆</span>
-                  <span>🤖 AUTONOMOUS AI COPILOT</span>
-                  <span className="opacity-40">◆</span>
+                <div key={loop} className="flex shrink-0 items-center gap-8 px-10 text-zinc-950 text-[11px] font-black tracking-widest whitespace-nowrap">
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m13 2-3 6.5h5L9 22"/></svg>
+                    POWERED BY LEPTON AI
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    CIRCLE WAAS &amp; SMART ACCOUNTS
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    LIVE ON ARC BLOCKCHAIN
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                    APY UP TO 12.0%
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                    GASLESS USDC PAYMENTS
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    CROSS-CHAIN VIA CCTP
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+                    AUTONOMOUS AI COPILOT
+                  </span>
+                  <span className="opacity-30 text-base">|</span>
                 </div>
               ))}
             </div>
