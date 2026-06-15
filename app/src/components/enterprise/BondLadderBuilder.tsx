@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
 import { parseAbi, parseUnits, encodeFunctionData, isAddress } from 'viem';
 import { toast } from 'sonner';
-import { Layers, Info, TrendingUp, Loader2, ArrowRight, Shield, Wallet, CheckCircle2, HelpCircle, AlertTriangle, AlertOctagon } from 'lucide-react';
+import { Layers, Info, TrendingUp, Loader2, ArrowRight, Shield, Wallet, CheckCircle2, HelpCircle, AlertTriangle, AlertOctagon, Calendar, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 import CustomDropdown from './CustomDropdown';
@@ -118,7 +118,37 @@ const NETWORK_OPTIONS = [
   { value: "22", label: "International Transfer", icon: "" },
 ];
 
-export default function BondLadderBuilder({ onNavigateToCompliance }: { onNavigateToCompliance?: () => void }) {
+// Tooltip Component — contextual helper
+function Tooltip({ text }: { text: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+  return (
+    <span className="relative inline-flex ml-1">
+      <button
+        type="button"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+        className="text-[var(--muted-foreground)] hover:text-[var(--primary)] transition-colors"
+        aria-label="More info"
+      >
+        <HelpCircle size={13} />
+      </button>
+      {isVisible && (
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs font-medium leading-snug w-56 z-50 shadow-lg animate-fade-in text-left"
+          style={{ 
+            background: 'var(--foreground)', 
+            color: 'var(--primary-foreground)' 
+          }}>
+          {text}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 -mt-1"
+            style={{ background: 'var(--foreground)' }}></div>
+        </div>
+      )}
+    </span>
+  );
+}
+
+export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateToTab }: { onNavigateToCompliance?: () => void; onNavigateToTab?: (tab: string) => void }) {
   const { address: eoaAddress, isConnected: isEoaConnected } = useAccount();
   const { account: circleAccount, isSmartAccount } = useCircleAuth();
   const isConnected = isEoaConnected || isSmartAccount;
@@ -204,6 +234,13 @@ export default function BondLadderBuilder({ onNavigateToCompliance }: { onNaviga
   const [smartPending, setSmartPending] = useState(false);
   const [smartConfirming, setSmartConfirming] = useState(false);
   const [smartTxHash, setSmartTxHash] = useState<string | null>(null);
+  const [showSuccessWorkflowModal, setShowSuccessWorkflowModal] = useState(false);
+
+  React.useEffect(() => {
+    if (smartTxHash) {
+      setShowSuccessWorkflowModal(true);
+    }
+  }, [smartTxHash]);
 
   // EOA Execution States
   const { data: approveHash, writeContract: writeApprove, isPending: isApproving } = useWriteContract();
@@ -527,8 +564,9 @@ export default function BondLadderBuilder({ onNavigateToCompliance }: { onNaviga
           {/* Summary Cards */}
           <div className="grid grid-cols-3 gap-3">
             <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
-              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+              <span className="text-[10px] uppercase font-bold flex items-center justify-center" style={{ color: 'var(--muted-foreground)' }}>
                 Allocated Budget
+                <Tooltip text="The sum of all USDC/EURC allocations scheduled across the active legs of the bond ladder." />
               </span>
               <p className="text-lg font-bold mt-1" style={{ color: 'var(--foreground)' }}>
                 {summary.totalAllocated.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -539,8 +577,9 @@ export default function BondLadderBuilder({ onNavigateToCompliance }: { onNaviga
             </div>
             
             <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
-              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+              <span className="text-[10px] uppercase font-bold flex items-center justify-center" style={{ color: 'var(--muted-foreground)' }}>
                 Weighted APY
+                <Tooltip text="The average annualized yield of the ladder, weighted by the capital allocated to each maturity duration." />
               </span>
               <p className="text-lg font-bold mt-1" style={{ color: 'var(--success)' }}>
                 {summary.weightedAPY.toFixed(2)}%
@@ -551,8 +590,9 @@ export default function BondLadderBuilder({ onNavigateToCompliance }: { onNaviga
             </div>
 
             <div className="card-surface p-4 text-center border" style={{ borderColor: 'var(--border)' }}>
-              <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--muted-foreground)' }}>
+              <span className="text-[10px] uppercase font-bold flex items-center justify-center" style={{ color: 'var(--muted-foreground)' }}>
                 Projected Return
+                <Tooltip text="The total estimated interest yield earned at maturity across all staggered legs." />
               </span>
               <p className="text-lg font-bold mt-1" style={{ color: 'var(--success)' }}>
                 +{summary.totalInterest.toFixed(2)}
@@ -675,6 +715,131 @@ export default function BondLadderBuilder({ onNavigateToCompliance }: { onNaviga
         </div>
 
       </div>
+
+      {/* Workflow Success Modal */}
+      {showSuccessWorkflowModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
+          <div className="card-surface max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in p-6 text-left"
+            style={{ border: '1px solid var(--border)', background: 'var(--canvas)' }}>
+            
+            {/* Modal Header */}
+            <div className="text-center pb-4 border-b" style={{ borderColor: 'var(--border)' }}>
+              <div className="w-12 h-12 rounded-full bg-[var(--success-soft)] text-[var(--success)] flex items-center justify-center mx-auto mb-3">
+                <CheckCircle2 size={28} />
+              </div>
+              <h3 className="text-lg font-bold text-[var(--foreground)]">
+                Staggered Maturity Schedule Active!
+              </h3>
+              <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                Your staggered bond ladder has been successfully deployed on-chain.
+              </p>
+            </div>
+
+            {/* Position Summary */}
+            <div className="my-5 p-4 rounded-xl space-y-2.5 text-xs border" style={{ background: 'var(--muted)', borderColor: 'var(--border)' }}>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Total Budget:</span>
+                <span className="font-semibold text-[var(--foreground)]">{totalBudget} {depositToken}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Weighted APY:</span>
+                <span className="font-semibold text-[var(--success)]">{summary.weightedAPY.toFixed(2)}% APY</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span style={{ color: 'var(--muted-foreground)' }}>Total Staggered Legs:</span>
+                <span className="font-semibold text-[var(--foreground)]">{legs.length} Maturities</span>
+              </div>
+              <div className="flex justify-between items-start pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                <span style={{ color: 'var(--muted-foreground)' }}>Target Vendor:</span>
+                <span className="font-mono text-[10px] block truncate max-w-[180px] text-[var(--foreground)]">{supplierAddress || "0x3522...6b0a"}</span>
+              </div>
+            </div>
+
+            {/* Next Steps Recommendations */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+                Recommended Actions:
+              </h4>
+              
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessWorkflowModal(false);
+                    onNavigateToTab?.('calendar');
+                  }}
+                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0">
+                      <Calendar size={14} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-[var(--foreground)]">View Maturity Dates</div>
+                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Visualize cash releases and automated settlement events.</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessWorkflowModal(false);
+                    onNavigateToTab?.('treasury');
+                  }}
+                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[var(--info-soft)] text-[var(--info)] flex items-center justify-center shrink-0">
+                      <TrendingUp size={14} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-[var(--foreground)]">Monitor Interest Accrual</div>
+                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Track daily yield accrual across your active bonds.</div>
+                    </div>
+                  </div>
+                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                </button>
+
+                {smartTxHash && (
+                  <a
+                    href={`https://testnet.arcscan.app/tx/${smartTxHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
+                    style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-md bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0">
+                        <ArrowUpRight size={14} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-[var(--foreground)]">Verify Multi-Call Batch Transaction</div>
+                        <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Inspect the atomic user operation on Arc Explorer.</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="mt-6 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowSuccessWorkflowModal(false)}
+                className="btn-secondary text-xs px-4 py-2 font-bold w-full cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
