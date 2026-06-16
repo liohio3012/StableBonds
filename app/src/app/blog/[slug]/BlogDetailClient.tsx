@@ -223,7 +223,51 @@ const EmailOtpMockup = () => {
   );
 };
 
-// A simple and safe Markdown parser to render H2, H3, lists, tables, code blocks, alerts
+const InteractiveChecklist = ({ items }: { items: { text: string; checked: boolean }[] }) => {
+  const [tasks, setTasks] = useState(items);
+  
+  const toggleTask = (index: number) => {
+    const newTasks = [...tasks];
+    newTasks[index].checked = !newTasks[index].checked;
+    setTasks(newTasks);
+  };
+
+  return (
+    <div className="my-6 p-5 rounded-2xl border border-[var(--border)] bg-neutral-50/20 backdrop-blur-sm space-y-3 text-left shadow-xs">
+      <div className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5 pb-2.5 border-b border-[var(--border-subtle)]">
+        <Check size={14} className="text-[var(--primary)]" />
+        Launch Checklist
+      </div>
+      <div className="space-y-3 pt-1">
+        {tasks.map((task, idx) => (
+          <div 
+            key={idx} 
+            onClick={() => toggleTask(idx)}
+            className="flex items-start gap-3 cursor-pointer group select-none"
+          >
+            <div className={`mt-0.5 w-4.5 h-4.5 rounded-md border flex items-center justify-center transition-all shrink-0 ${
+              task.checked 
+                ? 'bg-[var(--primary)] border-[var(--primary)] text-white shadow-xs' 
+                : 'border-[var(--border)] group-hover:border-[var(--primary)] bg-[var(--card)]'
+            }`}>
+              {task.checked && <Check size={11} strokeWidth={3} />}
+            </div>
+            <span 
+              className={`text-xs md:text-sm transition-all ${
+                task.checked 
+                  ? 'line-through text-[var(--muted-foreground)] opacity-70' 
+                  : 'text-[var(--foreground)] font-medium'
+              }`}
+              dangerouslySetInnerHTML={{ __html: parseInlineMarkdown(task.text) }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// A simple and safe Markdown parser to render H2, H3, lists, tables, code blocks, alerts, horizontal rules, checklists
 const renderMarkdown = (markdown: string) => {
   const lines = markdown.split('\n');
   let inList = false;
@@ -363,7 +407,31 @@ const renderMarkdown = (markdown: string) => {
       continue;
     }
 
-    // 5. Bullet Lists (*)
+    // 5. Checklists (- [ ] / - [x])
+    if (line.startsWith('- [ ]') || line.startsWith('- [x]') || line.startsWith('* [ ]') || line.startsWith('* [x]')) {
+      flushList();
+      flushTable();
+      const checklistItems = [];
+      let j = i;
+      while (j < lines.length) {
+        const currLine = lines[j].trim();
+        if (currLine.startsWith('- [ ]') || currLine.startsWith('- [x]') || currLine.startsWith('* [ ]') || currLine.startsWith('* [x]')) {
+          const checked = currLine.includes('[x]');
+          const text = currLine.substring(5).trim();
+          checklistItems.push({ text, checked });
+          j++;
+        } else {
+          break;
+        }
+      }
+      i = j - 1;
+      renderedElements.push(
+        <InteractiveChecklist key={`checklist-${elementKey++}`} items={checklistItems} />
+      );
+      continue;
+    }
+
+    // 6. Bullet Lists (*)
     if (line.startsWith('* ')) {
       flushTable();
       inList = true;
@@ -371,7 +439,7 @@ const renderMarkdown = (markdown: string) => {
       continue;
     }
 
-    // 6. Tables (|)
+    // 7. Tables (|)
     if (line.startsWith('|')) {
       flushList();
       // Skip separator row | :--- | :--- |
@@ -388,14 +456,24 @@ const renderMarkdown = (markdown: string) => {
       continue;
     }
 
-    // 7. Empty lines
+    // 8. Horizontal Rules (---)
+    if (line === '---') {
+      flushList();
+      flushTable();
+      renderedElements.push(
+        <hr key={`hr-${elementKey++}`} className="my-8 border-t border-[var(--border-subtle)]" />
+      );
+      continue;
+    }
+
+    // 9. Empty lines
     if (line === '') {
       flushList();
       flushTable();
       continue;
     }
 
-    // 8. Plain paragraph
+    // 10. Plain paragraph
     if (!inList && !inTable) {
       renderedElements.push(
         <p key={`p-${elementKey++}`} className="text-xs md:text-sm leading-relaxed text-[var(--muted-foreground)] my-4"
@@ -414,7 +492,7 @@ const renderMarkdown = (markdown: string) => {
   return renderedElements;
 };
 
-// Safe parser for inline styles: bold (**), links ([]()), inline code (`)
+// Safe parser for inline styles: bold (**), italic (* or _), links ([]()), inline code (`)
 const parseInlineMarkdown = (text: string): string => {
   let html = text
     .replace(/&/g, "&amp;")
@@ -424,7 +502,11 @@ const parseInlineMarkdown = (text: string): string => {
   // Bold (**text**)
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-  // Inline code (`code`)
+  // Italic (*text* or _text_)
+  html = html.replace(/\*(.*?)\*/g, '<span class="italic text-[var(--muted-foreground)]">$1</span>');
+  html = html.replace(/_(.*?)_/g, '<span class="italic text-[var(--muted-foreground)]">$1</span>');
+
+  // Inline code (`)
   html = html.replace(/`(.*?)`/g, '<code class="font-mono bg-neutral-100 text-[var(--primary)] px-1 py-0.5 rounded text-[11px]">$1</code>');
 
   // Markdown links ([text](url))
