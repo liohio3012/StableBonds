@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount, useReadContract, usePublicClient, useWatchContractEvent, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseAbi, formatUnits, encodeFunctionData } from 'viem';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, TrendingUp, CheckCircle2, Clock, ArrowUpRight, AlertCircle, X, Loader2, Info } from 'lucide-react';
@@ -97,6 +98,11 @@ export default function MaturityCalendar() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBond, setSelectedBond] = useState<Bond | null>(null);
   const [smartWithdrawPending, setSmartWithdrawPending] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Calendar State
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -365,7 +371,8 @@ export default function MaturityCalendar() {
   if (!isConnected) return null;
 
   return (
-    <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
+    <>
+      <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
       {/* Calendar Header Control */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
@@ -500,9 +507,10 @@ export default function MaturityCalendar() {
         </div>
       </div>
     </div>
+    </div>
 
       {/* Detail Popover Modal */}
-      {selectedBond && (
+      {selectedBond && isMounted && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
           <div className="card-surface max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in"
             style={{ border: '1px solid var(--border)', background: 'var(--canvas)' }}>
@@ -650,8 +658,9 @@ export default function MaturityCalendar() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
