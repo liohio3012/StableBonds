@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient, useSwitchChain } from 'wagmi';
 import { parseAbi, parseUnits, encodeFunctionData, encodeAbiParameters, pad, keccak256, decodeAbiParameters } from 'viem';
 import { toast } from 'sonner';
@@ -1708,21 +1709,27 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
         </div>
       </div>
 
-      {/* Workflow Success Modal */}
-      {showSuccessWorkflowModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
-          <div className="card-surface max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in p-6 text-left"
-            style={{ border: '1px solid var(--border)', background: 'var(--canvas)' }}>
+      {/* Workflow Success Modal — rendered via Portal to escape parent stacking context */}
+      {showSuccessWorkflowModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowSuccessWorkflowModal(false); }}
+        >
+          <div className="max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in p-6 text-left rounded-2xl"
+            style={{ border: '1px solid var(--border)', background: '#ffffff' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             
             {/* Modal Header */}
             <div className="text-center pb-4 border-b" style={{ borderColor: 'var(--border)' }}>
-              <div className="w-12 h-12 rounded-full bg-[var(--success-soft)] text-[var(--success)] flex items-center justify-center mx-auto mb-3">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+                style={{ background: 'var(--success-soft)', color: 'var(--success)' }}>
                 <CheckCircle2 size={28} />
               </div>
-              <h3 className="text-lg font-bold text-[var(--foreground)]">
+              <h3 className="text-lg font-bold" style={{ color: 'var(--foreground)' }}>
                 Payment Scheduled!
               </h3>
-              <p className="text-xs text-[var(--muted-foreground)] mt-1">
+              <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
                 Your treasury position has been recorded on-chain.
               </p>
             </div>
@@ -1731,29 +1738,29 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
             <div className="my-5 p-4 rounded-xl space-y-2.5 text-xs border" style={{ background: 'var(--muted)', borderColor: 'var(--border)' }}>
               <div className="flex justify-between items-center">
                 <span style={{ color: 'var(--muted-foreground)' }}>Principal Amount:</span>
-                <span className="font-semibold text-[var(--foreground)]">{amount} {depositToken}</span>
+                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>{amount} {depositToken}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span style={{ color: 'var(--muted-foreground)' }}>Maturity APY:</span>
-                <span className="font-semibold text-[var(--success)]">{selectedTerm.apyLabel}</span>
+                <span className="font-semibold" style={{ color: 'var(--success)' }}>{selectedTerm.apyLabel}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span style={{ color: 'var(--muted-foreground)' }}>Estimated Yield:</span>
-                <span className="font-semibold text-[var(--success)]">+{projectedYield} {depositToken}</span>
+                <span className="font-semibold" style={{ color: 'var(--success)' }}>+{projectedYield} {depositToken}</span>
               </div>
               <div className="flex justify-between items-center pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
                 <span style={{ color: 'var(--muted-foreground)' }}>Due Date:</span>
-                <span className="font-semibold text-[var(--foreground)]">{releaseDate}</span>
+                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>{releaseDate}</span>
               </div>
               <div className="flex justify-between items-start pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
                 <span style={{ color: 'var(--muted-foreground)' }}>Target Vendor:</span>
-                <span className="font-mono text-[10px] block truncate max-w-[180px] text-[var(--foreground)]">{supplierAddress}</span>
+                <span className="font-mono text-[10px] block truncate max-w-[180px]" style={{ color: 'var(--foreground)' }}>{supplierAddress}</span>
               </div>
             </div>
 
             {/* Next Steps Recommendations */}
             <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)]">
+              <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--muted-foreground)' }}>
                 Recommended Actions:
               </h4>
               
@@ -1764,19 +1771,22 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
                     setShowSuccessWorkflowModal(false);
                     onNavigateToTab?.('calendar');
                   }}
-                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
-                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                  className="w-full p-3 rounded-lg border text-left transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: '#ffffff' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = '#ffffff'}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-md bg-[var(--primary-soft)] text-[var(--primary)] flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+                      style={{ background: 'var(--primary-soft)', color: 'var(--primary)' }}>
                       <Calendar size={14} />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[var(--foreground)]">View on Maturity Calendar</div>
-                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Track your cash releases and automatic settle events.</div>
+                      <div className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>View on Maturity Calendar</div>
+                      <div className="text-[10px] mt-0.5" style={{ color: 'var(--muted-foreground)' }}>Track your cash releases and automatic settle events.</div>
                     </div>
                   </div>
-                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={14} style={{ color: 'var(--muted-foreground)' }} />
                 </button>
 
                 <button
@@ -1785,19 +1795,22 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
                     setShowSuccessWorkflowModal(false);
                     onNavigateToTab?.('treasury');
                   }}
-                  className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
-                  style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                  className="w-full p-3 rounded-lg border text-left transition-all flex items-center justify-between group cursor-pointer"
+                  style={{ borderColor: 'var(--border)', background: '#ffffff' }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = '#ffffff'}
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-md bg-[var(--info-soft)] text-[var(--info)] flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+                      style={{ background: 'var(--info-soft)', color: 'var(--info)' }}>
                       <TrendingUp size={14} />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-[var(--foreground)]">Monitor Interest Accrual</div>
-                      <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Watch your balance grow in real-time in the dashboard.</div>
+                      <div className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>Monitor Interest Accrual</div>
+                      <div className="text-[10px] mt-0.5" style={{ color: 'var(--muted-foreground)' }}>Watch your balance grow in real-time in the dashboard.</div>
                     </div>
                   </div>
-                  <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight size={14} style={{ color: 'var(--muted-foreground)' }} />
                 </button>
 
                 {displayBondHash && (
@@ -1805,19 +1818,21 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
                     href={`https://testnet.arcscan.app/tx/${displayBondHash}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full p-3 rounded-lg border text-left hover:bg-[var(--card-hover)] transition-all flex items-center justify-between group cursor-pointer"
-                    style={{ borderColor: 'var(--border)', background: 'var(--card)' }}
+                    className="w-full p-3 rounded-lg border text-left transition-all flex items-center justify-between group cursor-pointer block"
+                    style={{ borderColor: 'var(--border)', background: '#ffffff', textDecoration: 'none' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = '#ffffff'}
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-md bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0">
                         <ArrowUpRight size={14} />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-[var(--foreground)]">Inspect Block Explorer</div>
-                        <div className="text-[10px] text-[var(--muted-foreground)] mt-0.5">Verify the raw transaction hash on the Arc Chain.</div>
+                        <div className="text-xs font-bold" style={{ color: 'var(--foreground)' }}>Inspect Block Explorer</div>
+                        <div className="text-[10px] mt-0.5" style={{ color: 'var(--muted-foreground)' }}>Verify the raw transaction hash on the Arc Chain.</div>
                       </div>
                     </div>
-                    <ChevronRight size={14} className="text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight size={14} style={{ color: 'var(--muted-foreground)' }} />
                   </a>
                 )}
               </div>
@@ -1834,7 +1849,8 @@ export default function IntentBuilder({ onNavigateToCompliance, onNavigateToTab 
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
