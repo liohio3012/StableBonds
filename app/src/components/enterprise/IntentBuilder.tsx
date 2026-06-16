@@ -136,7 +136,7 @@ const SwapMaturityIcon = (
 // Arc Testnet Constants
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
 const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
 
 const ERC20_ABI = parseAbi(["function approve(address spender, uint256 amount) external returns (bool)"]);
 const VAULT_ABI = parseAbi([
