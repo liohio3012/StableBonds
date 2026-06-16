@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount, useReadContract, usePublicClient, useWriteContract, useWaitForTransactionReceipt, useSimulateContract } from 'wagmi';
 import { parseAbi, formatUnits, parseUnits, encodeFunctionData } from 'viem';
 import { RefreshCw, Tag, ShieldAlert, BadgeAlert, ArrowUpRight, TrendingUp, Info, CheckCircle2, XCircle, ChevronRight, HelpCircle, Loader2, Sparkles, Receipt } from 'lucide-react';
@@ -121,6 +122,11 @@ export default function OTCDesk() {
   const [selectedBondForList, setSelectedBondForList] = useState<Bond | null>(null);
   const [listPrice, setListPrice] = useState("");
   const [isApproved, setIsApproved] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // No mock data — all data is fetched from on-chain contracts
 
@@ -554,7 +560,8 @@ export default function OTCDesk() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="space-y-6">
       {/* Overview and Info Panel */}
       <div className="card-surface p-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[var(--primary-soft)] to-transparent opacity-40 pointer-events-none rounded-md translate-x-12 -translate-y-12"></div>
@@ -785,9 +792,10 @@ export default function OTCDesk() {
           )}
         </div>
       </div>
+    </div>
 
       {/* Listing Modal */}
-      {selectedBondForList && (
+      {selectedBondForList && isMounted && createPortal(
         <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="card-surface p-6 max-w-md w-full relative space-y-4 shadow-xl border border-[var(--border)]">
             <button
@@ -901,8 +909,9 @@ export default function OTCDesk() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
