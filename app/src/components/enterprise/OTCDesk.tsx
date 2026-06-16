@@ -149,8 +149,22 @@ export default function OTCDesk() {
     setIsLoading(true);
 
     try {
-      const nextBondId = nextBondIdData ? Number(nextBondIdData) : 0;
-      const nextOrderId = nextOrderIdData ? Number(nextOrderIdData) : 0;
+      // Fetch the latest next IDs directly from on-chain to bypass hook cache/delays
+      const [onChainNextBondId, onChainNextOrderId] = await Promise.all([
+        publicClient.readContract({
+          address: VAULT_ADDRESS,
+          abi: VAULT_ABI,
+          functionName: 'nextBondId'
+        }),
+        publicClient.readContract({
+          address: OTC_ADDRESS,
+          abi: OTC_ABI,
+          functionName: 'nextOrderId'
+        })
+      ]);
+
+      const nextBondId = Number(onChainNextBondId);
+      const nextOrderId = Number(onChainNextOrderId);
 
       // Parallelize the initial multicalls for reading balances and orders list
       const balanceCalls = [];
@@ -271,6 +285,8 @@ export default function OTCDesk() {
 
       setUserBonds(userBondsTemp);
       setOrders(activeOrdersTemp);
+      refetchNextBond();
+      refetchNextOrder();
     } catch (err) {
       console.error("Error loading OTC data:", err);
       setOrders([]);
