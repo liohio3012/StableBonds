@@ -269,7 +269,8 @@ const InteractiveChecklist = ({ items }: { items: { text: string; checked: boole
 
 // A simple and safe Markdown parser to render H2, H3, lists, tables, code blocks, alerts, horizontal rules, checklists
 const renderMarkdown = (markdown: string) => {
-  const lines = markdown.split('\n');
+  const normalized = markdown.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = normalized.split('\n');
   let inList = false;
   let listItems: string[] = [];
   let inTable = false;
@@ -521,7 +522,8 @@ export default function BlogDetailClient({ post, relatedPosts }: BlogDetailClien
 
   // Extract H2 headings for Table of Contents
   const headings = React.useMemo(() => {
-    const lines = post.content.split('\n');
+    const normalized = post.content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalized.split('\n');
     return lines
       .filter(line => line.startsWith('## '))
       .map(line => {
