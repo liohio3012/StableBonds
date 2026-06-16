@@ -227,7 +227,7 @@ export default function MaturityCalendar() {
       }
 
       // Fetch the last 50 bonds to display in the calendar view
-      const startId = Math.max(1, nextId - 50);
+      const startId = Math.max(0, nextId - 50);
       const calls = [];
       
       for (let i = nextId - 1; i >= startId; i--) {

@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     
     const nextId = Number(nextIdStr);
 
-    if (nextId <= 1) {
+    if (nextId === 0) {
       return NextResponse.json({ status: "No bonds exist" });
     }
 
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     const settledBonds = [];
 
     // Scan the last 10 bonds to find ones ready for settlement
-    const startId = Math.max(1, nextId - 10);
+    const startId = Math.max(0, nextId - 10);
     for (let i = startId; i < nextId; i++) {
       const bond = await publicClient.readContract({
         address: VAULT_ADDRESS,

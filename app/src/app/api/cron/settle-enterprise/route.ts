@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     });
     
     const nextId = Number(nextIdStr);
-    if (nextId <= 1) return NextResponse.json({ status: "No bonds exist" });
+    if (nextId === 0) return NextResponse.json({ status: "No bonds exist" });
 
     const currentTimestamp = Math.floor(Date.now() / 1000);
     const settledBonds = [];
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
       entitySecret: ENTITY_SECRET_CIPHERTEXT,
     });
 
-    const startId = Math.max(1, nextId - 10);
+    const startId = Math.max(0, nextId - 10);
     for (let i = startId; i < nextId; i++) {
       const bond = await publicClient.readContract({
         address: VAULT_ADDRESS,

@@ -71,7 +71,7 @@ export default function YieldStreamer() {
     setIsLoading(true);
     try {
       const nextId = Number(nextBondIdData);
-      const startId = Math.max(1, nextId - 20);
+      const startId = Math.max(0, nextId - 20);
       const bondsCalls = [];
       const claimedCalls = [];
 

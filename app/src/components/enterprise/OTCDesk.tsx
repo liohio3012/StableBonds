@@ -147,9 +147,9 @@ export default function OTCDesk() {
       const nextBondId = nextBondIdData ? Number(nextBondIdData) : 0;
       const userBondsTemp: Bond[] = [];
 
-      if (nextBondId > 1) {
+      if (nextBondId > 0) {
         const balanceCalls = [];
-        for (let i = 1; i < nextBondId; i++) {
+        for (let i = 0; i < nextBondId; i++) {
           balanceCalls.push({
             address: VAULT_ADDRESS,
             abi: VAULT_ABI,
@@ -160,14 +160,16 @@ export default function OTCDesk() {
 
         const balances = await publicClient.multicall({ contracts: balanceCalls });
         const fetchBondDetailsCalls: any[] = [];
+        const ownedBondIds: number[] = [];
 
         balances.forEach((res, idx) => {
           if (res.status === 'success' && Number(res.result) > 0) {
+            ownedBondIds.push(idx);
             fetchBondDetailsCalls.push({
               address: VAULT_ADDRESS,
               abi: VAULT_ABI,
               functionName: 'bonds',
-              args: [BigInt(idx + 1)]
+              args: [BigInt(idx)]
             });
           }
         });
@@ -178,7 +180,7 @@ export default function OTCDesk() {
             if (res.status === 'success' && res.result) {
               const bondData = res.result as any;
               userBondsTemp.push({
-                id: idx + 1, // map index correctly
+                id: ownedBondIds[idx],
                 owner: bondData[0],
                 principal: parseFloat(formatUnits(bondData[1], 6)),
                 yieldBps: Number(bondData[2]),
@@ -200,9 +202,9 @@ export default function OTCDesk() {
       const nextOrderId = nextOrderIdData ? Number(nextOrderIdData) : 0;
       const activeOrdersTemp: Order[] = [];
 
-      if (nextOrderId > 1) {
+      if (nextOrderId > 0) {
         const orderCalls = [];
-        for (let i = 1; i < nextOrderId; i++) {
+        for (let i = 0; i < nextOrderId; i++) {
           orderCalls.push({
             address: OTC_ADDRESS,
             abi: OTC_ABI,
@@ -223,7 +225,7 @@ export default function OTCDesk() {
             const price = parseFloat(formatUnits(ord[3], 6));
             const isActive = ord[4];
 
-            if (isActive && orderId > 0) {
+            if (isActive && seller !== '0x0000000000000000000000000000000000000000') {
               activeOrdersTemp.push({
                 orderId,
                 bondId,

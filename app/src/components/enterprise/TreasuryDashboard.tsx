@@ -567,7 +567,7 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
           return;
         }
 
-        const startId = Math.max(1, nextId - 10);
+        const startId = Math.max(0, nextId - 10);
         const calls = [];
         
         for (let i = nextId - 1; i >= startId; i--) {
