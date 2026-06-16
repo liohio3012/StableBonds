@@ -374,17 +374,8 @@ export default function MaturityCalendar() {
     <>
       <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
       {/* Calendar Header Control */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-        <div>
-          <h2 className="text-lg font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
-            Maturity Calendar
-          </h2>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-            Track and manage your upcoming supplier payments visually on a calendar grid.
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-2 self-start sm:self-center">
+      <div className="flex justify-end mb-6">
+        <div className="flex items-center gap-2">
           <button onClick={handleToday} className="btn-secondary text-xs px-3 py-1.5 font-semibold">
             Today
           </button>
