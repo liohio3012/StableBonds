@@ -38,9 +38,37 @@ export const client = createPublicClient({
   transport: modularTransport,
 });
 
+// Arc Testnet bundler requires maxPriorityFeePerGas >= 1 gwei (1_000_000_000 wei).
+// Viem's auto-estimation can return lower values (~0.5 gwei) due to Arc's fee
+// smoothing model. We override estimateFeesPerGas to enforce minimum thresholds.
+const ARC_MIN_PRIORITY_FEE = BigInt(1_500_000_000); // 1.5 gwei safety margin
+const ARC_MIN_MAX_FEE = BigInt(50_000_000_000); // 50 gwei floor for maxFeePerGas
+
 export const bundlerClient = createBundlerClient({
   chain: arcTestnet,
   transport: modularTransport,
+  userOperation: {
+    async estimateFeesPerGas({ bundlerClient: bc }) {
+      // Fetch the network's current fee data
+      const fees = await bc.request({ method: 'eth_gasPrice' as any }) as any;
+      const gasPrice = typeof fees === 'string' ? BigInt(fees) : BigInt(0);
+
+      // Ensure priority fee meets bundler minimum
+      const maxPriorityFeePerGas = gasPrice > ARC_MIN_PRIORITY_FEE
+        ? gasPrice
+        : ARC_MIN_PRIORITY_FEE;
+
+      // maxFeePerGas should be at least 2x priority fee + base fee headroom
+      const maxFeePerGas = maxPriorityFeePerGas * BigInt(2) > ARC_MIN_MAX_FEE
+        ? maxPriorityFeePerGas * BigInt(2)
+        : ARC_MIN_MAX_FEE;
+
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      };
+    },
+  },
 });
 
 /**
