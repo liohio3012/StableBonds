@@ -285,8 +285,16 @@ export default function Home() {
               href="/docs"
               className="w-9 h-9 rounded-lg border flex items-center justify-center transition-all duration-200 hover:border-[var(--foreground)] hover:bg-[var(--muted)]"
               style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}
+              title="Documentation"
             >
               <BookOpen size={16} />
+            </Link>
+            <Link
+              href="/blog"
+              className="h-9 px-3 text-xs font-semibold rounded-lg border flex items-center justify-center transition-all duration-200 hover:border-[var(--foreground)] hover:bg-[var(--muted)]"
+              style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}
+            >
+              Blog
             </Link>
 
             <div className="w-px h-5 bg-[var(--border)] mx-1" />

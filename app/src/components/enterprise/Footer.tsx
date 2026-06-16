@@ -174,7 +174,8 @@ export default function Footer() {
                 { name: 'Treasury Dashboard', href: '/app' },
                 { name: 'Yield Vaults', href: '/app' },
                 { name: 'Smart Accounts', href: '/app' },
-                { name: 'Pricing Plans', href: '/pricing' }
+                { name: 'Pricing Plans', href: '/pricing' },
+                { name: 'Company Blog', href: '/blog' }
               ].map((link, idx) => (
                 <li key={idx}>
                   <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>
