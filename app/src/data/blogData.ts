@@ -35,7 +35,7 @@ export const BLOG_POSTS: BlogPost[] = [
     tags: ["Corporate Treasury", "Stablecoins", "Capital Efficiency", "Web3 Payments"],
     seoKeywords: ["corporate treasury", "stablecoin yield pools", "USDC yield", "idle cash management", "Arc blockchain treasury"],
     featured: true,
-    relatedSlugs: ["why-stablebonds-outperforms-traditional-aggregators", "getting-started-with-stablebonds-usdc-yield"],
+    relatedSlugs: ["why-stablebonds-outperforms-traditional-aggregators", "getting-started-with-stablebonds-usdc-yield", "deep-dive-how-circle-smart-accounts-secure-enterprise-treasury", "optimizing-multi-chain-treasury-circle-cctp-gateway"],
     content: `## The Idle Capital Problem in Modern Business
 
 In the traditional corporate finance landscape, managing idle capital is a persistent challenge. Most mid-market enterprises hold substantial amounts of cash in commercial bank accounts to meet upcoming obligations, such as vendor invoices, supply chain contracts, and quarterly payroll pools. 
@@ -120,7 +120,7 @@ Holding idle cash in traditional banking rails is no longer a viable strategy fo
     imageUrl: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&h=450&q=80",
     tags: ["Onboarding", "USDC", "Step-by-Step", "Web3 Tutorial"],
     seoKeywords: ["getting started with StableBonds", "earn yield on corporate USDC", "how to schedule crypto payments", "smart accounts passkey", "corporate treasury setup"],
-    relatedSlugs: ["traditional-corporate-treasury-vs-stablecoin-yield-pools", "why-stablebonds-outperforms-traditional-aggregators"],
+    relatedSlugs: ["traditional-corporate-treasury-vs-stablecoin-yield-pools", "why-stablebonds-outperforms-traditional-aggregators", "deep-dive-how-circle-smart-accounts-secure-enterprise-treasury", "evm-compatibility-advantage-arc-blockchain-gas-fees"],
     content: `## Introduction: Welcome to Gasless Corporate Treasury
 
 StableBonds combines institutional security, high-yield stablecoin vaults, and automated execution rails on the Arc network. This step-by-step guide is designed to help corporate treasury managers, CFOs, and finance operators set up their accounts, fund their balances, and schedule their first programmatic payout in less than 10 minutes.
@@ -229,35 +229,35 @@ Ready to begin? **[Launch the StableBonds App](/app?tab=treasury)** and start ea
     imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=800&h=450&q=80",
     tags: ["DeFi", "Arc Blockchain", "Comparison", "Smart Contracts"],
     seoKeywords: ["StableBonds vs aggregators", "Arc blockchain yield", "USDC yield optimization", "gasless DeFi payments", "automated treasury settlement"],
-    relatedSlugs: ["traditional-corporate-treasury-vs-stablecoin-yield-pools", "getting-started-with-stablebonds-usdc-yield"],
+    relatedSlugs: ["traditional-corporate-treasury-vs-stablecoin-yield-pools", "getting-started-with-stablebonds-usdc-yield", "optimizing-multi-chain-treasury-circle-cctp-gateway", "evm-compatibility-advantage-arc-blockchain-gas-fees"],
     content: `## The Evolution of Corporate DeFi Yield
-
+ 
 For years, corporate treasurers looking to utilize decentralized finance (DeFi) were forced to use Ethereum-based yield aggregators. While protocols like Aave, Yearn Finance, and Compound paved the way, their general-purpose layouts make them poorly suited for enterprise operations, payroll funding, and vendor invoice settlements.
-
+ 
 **StableBonds** addresses these limitations by introducing a purpose-built corporate treasury infrastructure on the **Arc blockchain**. 
-
+ 
 In this article, we compare StableBonds side-by-side with traditional yield aggregators across cost, finality, automation, and security.
-
+ 
 ---
-
+ 
 ## Key Comparison Metrics
-
+ 
 ### 1. Gas Fee Predictability and Token Requirements
 * **Traditional Aggregators (Ethereum)**: Interacting with yield contracts requires holding and spending Ethereum (ETH) as gas. During network congestion, gas costs can surge to $50 - $200 per transaction, making micro-adjustments and recurring payroll runs highly inefficient.
 * **StableBonds on Arc**: Arc uses **USDC as its native gas token**, completely removing the need to hold secondary volatile assets. Furthermore, StableBonds integrates gasless paymasters that sponsor transaction fees for corporate users, bringing a smooth, zero-gas experience.
-
+ 
 ### 2. Transaction Finality and Settlement Speed
 * **Traditional Aggregators**: Transactions on Ethereum can take minutes to confirm, and are vulnerable to slippage and MEV (Maximal Extractable Value) frontrunning.
 * **StableBonds on Arc**: Arc delivers **sub-second finality**. Payout intentions, vault allocations, and OTC market swaps settle instantly.
-
+ 
 ### 3. Native Invoice-Maturity Automation
 * **Traditional Aggregators**: Aggregators only optimize yield. Reconciling those vaults with corporate calendars requires manual withdrawal, gas management, and execution of payouts by staff.
 * **StableBonds**: Features **built-in scheduled maturity matching**. You specify the exact payment recipient and due date during deposit. The contract manages both yield generation and payout execution automatically.
-
+ 
 ---
-
+ 
 ## Feature Comparison Matrix
-
+ 
 | Operational Vector | Ethereum Yield Aggregators | StableBonds on Arc |
 | :--- | :--- | :--- |
 | **Native Gas Asset** | ETH (Requires volatile asset reserve) | **USDC (No volatile assets required)** |
@@ -266,13 +266,13 @@ In this article, we compare StableBonds side-by-side with traditional yield aggr
 | **Account Recovery** | Seed Phrases (High key-loss risk) | **Passkey / Biometric / Recovery email** |
 | **Role-based Governance** | Multisig wallet integrations required | **Built-in consensus multi-sig desk** |
 | **Compliant Access** | Permissionless (High exposure risk) | **Permissioned (Compliance whitelisting)** |
-
+ 
 ---
-
+ 
 ## Architecture: Why Arc Blockchain is Ideal for Corporate Payouts
-
+ 
 The Arc blockchain was engineered specifically to support institutional stablecoin flows. By choosing Arc, StableBonds leverages three critical chain properties:
-
+ 
 \`\`\`
 [Corporate Treasury] 
        |
@@ -284,32 +284,215 @@ The Arc blockchain was engineered specifically to support institutional stableco
   v         v
 [Yield]  [Maturity Settlement]
 \`\`\`
-
+ 
 1. **Unified USDC Balance**: Arc aggregates stablecoin liquidities natively, avoiding fragmented bridges.
 2. **Predictable Fee Structures**: Transaction costs are calculated algorithmically in stable terms, protecting treasury planning.
 3. **Circle Product Cohesion**: Circle CCTP and Web3 Services operate seamlessly on Arc, allowing instant bridging and smart account recoveries.
-
+ 
 ---
-
+ 
 ## Real-World Use Case: StableBonds in Action
-
+ 
 Consider a global software firm with **$2,000,000 USDC** in recurring monthly contractor fees.
-
+ 
 Using traditional aggregators, the treasury team must log in weekly, check gas fees, withdraw capital to an EOA wallet, swap assets if necessary, and use a payroll tool to send individual payments. This process requires significant staff hours and introduces security risks at every manual transfer step.
-
+ 
 With StableBonds:
 1. The firm uploads their invoice spreadsheet.
 2. The AI Copilot mapping translates these into a series of Maturity Scheduled Intents in the 30-day Senior Tranche.
 3. The USDC compounds at 5.0% APY.
 4. On day 30, the system automatically pays out the $2,000,000 directly to contractors.
 5. The treasury recaptures **~$8,200 USDC** in automated yield with zero manual intervention.
-
+ 
 ## Make the Shift to High-Performance Treasury Management
-
+ 
 DeFi yield aggregators are excellent tools for retail yield farmers, but enterprise corporate treasuries require structured automation, gas sponsor capabilities, and absolute finality. StableBonds delivers these requirements in a sleek, institutional-grade console.
-
+ 
 > [!TIP]
 > Ready to elevate your business payment execution? **[Launch the StableBonds Dashboard](/app?tab=treasury)** and configure your corporate yield desk today.
+`
+  },
+  {
+    slug: "deep-dive-how-circle-smart-accounts-secure-enterprise-treasury",
+    title: "Deep Dive: How Circle Smart Accounts & Passkeys Secure Enterprise Treasury",
+    description: "Learn how Circle Smart Accounts and passkey biometric authentication eliminate key-loss risks and secure multi-sig treasury operations for modern enterprises.",
+    category: "Research",
+    author: {
+      name: "Marcus Aurelius",
+      role: "Head of Treasury Strategy",
+      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80"
+    },
+    publishedAt: "June 17, 2026",
+    readTime: "7 min read",
+    imageUrl: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&h=450&q=80",
+    tags: ["Security", "Smart Accounts", "Passkeys", "Circle Web3 Services"],
+    seoKeywords: ["Circle Smart Accounts", "corporate wallet security", "biometric passkey", "corporate multi-sig", "Circle Web3 Services"],
+    relatedSlugs: ["getting-started-with-stablebonds-usdc-yield", "optimizing-multi-chain-treasury-circle-cctp-gateway", "evm-compatibility-advantage-arc-blockchain-gas-fees"],
+    content: `## The Enterprise Security Challenge: EOA Key Risks
+ 
+Traditional Web3 wallets utilize Externally Owned Accounts (EOAs). For enterprise treasuries, EOAs present significant operational vulnerabilities:
+ 
+1. **Single Point of Failure**: If a private key or seed phrase is lost or compromised, the entire corporate treasury is lost forever.
+2. **Lack of Internal Control**: No built-in way to enforce approval limits, multi-sig consensus, or corporate hierarchies on-chain.
+ 
+StableBonds solves these vulnerabilities by utilizing **Circle Smart Accounts (SCA)**, built upon ERC-4337 account abstraction and Circle Web3 Services.
+ 
+---
+ 
+## The Power of Biometric Passkeys (WebAuthn)
+Rather than writing down 12-word recovery seeds, StableBonds users connect using biometric passkeys (TouchID, FaceID, or Windows Hello). 
+ 
+* **Hardware-Level Security**: Private keys are securely generated and kept inside the device\\'s secure enclave.
+* **Phishing Protection**: Passkeys are bound to the specific domain (\`stablebonds.finance\`), preventing credential harvesting.
+* **Gas Sponsorship**: Smart Accounts enable our Paymaster to sponsor transaction gas fee, bringing a seamless web2-like login.
+ 
+For more technical details on user-controlled wallets, see the [Circle Developer Portal](https://developers.circle.com).
+ 
+---
+ 
+## Simulating Biometric Passkey Registration
+Here is the onboarding flow to set up your corporate treasury wallet:
+ 
+- [ ] Choose a distinct company handle representing your organization.
+- [ ] Trigger your device\\'s biometric request (Windows Hello, FaceID, TouchID).
+- [ ] Save your recovery email address in the Dashboard security panel.
+- [ ] Confirm your generated Circle Smart Account on-chain.
+ 
+> [!TIP]
+> Lost your biometric device? Do not panic. Our integration with Circle Web3 Services supports secure recovery options using your registered corporate email and recovery credentials.
+ 
+For details on connecting your client application, see the [Arc Connect Guide](https://docs.arc.network).
+ 
+---
+ 
+## On-Chain Multi-Sig Consensus
+For large disbursements, StableBonds enforces multi-signatory desks. You can configure rules like:
+* Transactions under $10,000 USDC require 1 signer.
+* Transactions up to $100,000 USDC require 2 signers (e.g., Treasury Manager + CFO).
+* Transactions exceeding $100,000 USDC require 3 signers including the Board Approval key.
+ 
+Learn how to configure your Smart Account securely in our onboarding tutorial: [Getting Started with StableBonds](/blog/getting-started-with-stablebonds-usdc-yield).
+`
+  },
+  {
+    slug: "optimizing-multi-chain-treasury-circle-cctp-gateway",
+    title: "Optimizing Multi-Chain Treasury: A Guide to Circle CCTP for Instant USDC Transfers",
+    description: "Discover how Cross-Chain Transfer Protocol (CCTP) enables seamless USDC movement between major chains and the Arc network with zero slippage.",
+    category: "Guides",
+    author: {
+      name: "Sophia Rodriguez",
+      role: "Director of Onboarding",
+      avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&h=100&q=80"
+    },
+    publishedAt: "June 17, 2026",
+    readTime: "6 min read",
+    imageUrl: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=800&h=450&q=80",
+    tags: ["CCTP", "Multi-Chain", "USDC Bridge", "Treasury Routing"],
+    seoKeywords: ["Circle CCTP bridge", "transfer USDC cross-chain", "Arc CCTP domain", "multi-chain treasury routing", "gasless USDC transfer"],
+    relatedSlugs: ["traditional-corporate-treasury-vs-stablecoin-yield-pools", "why-stablebonds-outperforms-traditional-aggregators", "deep-dive-how-circle-smart-accounts-secure-enterprise-treasury"],
+    content: `## Bridging Fragmented Capital: The Multi-Chain Challenge
+Enterprise liquidity is often scattered across multiple blockchain networks: Ethereum mainnet for high-value pools, Arbitrum or Base for low-cost transactions. Bridging this capital manually using third-party bridges exposes your treasury to smart contract risk, slippage, and significant delay.
+ 
+To address this, StableBonds integrates Circle\\'s **Cross-Chain Transfer Protocol (CCTP)**.
+ 
+---
+ 
+## How CCTP Works: Native Mint and Burn
+Unlike traditional lock-and-mint bridges that wrap assets (creating security holes like wrapped USDC), CCTP operates natively:
+ 
+1. **Burn on Source**: USDC is burned directly on the source chain (e.g., Ethereum, Base).
+2. **Attestation Fetch**: Circle Web3 Services verify the burn and issue a cryptographic attestation signature.
+3. **Mint on Destination**: The signature is submitted to the destination chain (such as Arc), which mints brand new, native 1:1 USDC.
+ 
+\`\`\`
+ [Source Chain (Ethereum/Base)] 
+              |
+              v (Burn USDC)
+   [Circle CCTP Attestation]
+              |
+              v (Cryptographic Mint)
+   [Destination Chain (Arc)]
+\`\`\`
+ 
+By leveraging CCTP\\'s **Forwarding Service**, StableBonds automates this entire flow. Treasurers do not need gas on the destination chain or to execute the final mint transaction manually. For a deep dive into the forwarding architecture, review the [Circle CCTP API Documentation](https://developers.circle.com/cctp/concepts/forwarding-service).
+ 
+---
+ 
+## Setup Checklist for Bridging to Arc Testnet
+To bridge testnet assets and begin evaluating StableBonds:
+ 
+- [ ] Obtain testnet USDC from the [Circle Faucet](https://faucet.circle.com) on Base Sepolia.
+- [ ] Open the StableBonds **Unified Balance** desk and select deposit.
+- [ ] Choose your source network and specify the transfer amount.
+- [ ] Sign the single authorization transaction using your passkey.
+- [ ] Track your transfer live via the [Arc Explorer](https://testnet.arcscan.app).
+ 
+> [!TIP]
+> Native transfers via CCTP fast mode settle on Arc in under 20 seconds. Standard CCTP routes take 15 minutes depending on source chain finality limits.
+ 
+To learn more about how StableBonds leverages these multi-chain routes, read our analysis: [Why StableBonds Outperforms Traditional Aggregators](/blog/why-stablebonds-outperforms-traditional-aggregators).
+`
+  },
+  {
+    slug: "evm-compatibility-advantage-arc-blockchain-gas-fees",
+    title: "The EVM-Compatibility Advantage: How Arc Blockchain Solves Volatile Gas Fees for Corporate Accounts",
+    description: "Understand how the EVM-compatible Arc blockchain utilizes USDC as native gas, providing predictable fees and sub-second transaction finality for treasury teams.",
+    category: "Research",
+    author: {
+      name: "David Chen",
+      role: "Chief Technology Officer",
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80"
+    },
+    publishedAt: "June 18, 2026",
+    readTime: "8 min read",
+    imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&h=450&q=80",
+    tags: ["Arc Blockchain", "EVM Compatibility", "USDC Gas", "Gas Price Smoothing"],
+    seoKeywords: ["Arc blockchain EVM", "USDC native gas token", "predictable transaction fees", "sub-second finality blockchain", "EIP-7708 native transfer"],
+    relatedSlugs: ["deep-dive-how-circle-smart-accounts-secure-enterprise-treasury", "getting-started-with-stablebonds-usdc-yield", "optimizing-multi-chain-treasury-circle-cctp-gateway"],
+    content: `## The Problem with Gas Tokens on Corporate Accounts
+For a corporate treasury, running on standard public chains presents a major headache: **Gas Token Volatility**. 
+ 
+To perform basic transactions (deposit, settle, swap), the organization must maintain secondary gas reserves like Ether (ETH) or Solana (SOL). This requires treasury staff to perform manual swaps, track secondary asset prices, and reconcile volatile gas accounts.
+ 
+**Arc Blockchain** resolves this by introducing **USDC-native gas**.
+ 
+---
+ 
+## The EVM-Compatibility Advantage
+Arc is fully EVM-compatible, which means standard solidity smart contracts, Foundry, and client tools operate out-of-the-box. However, Arc implements critical refinements for corporate finance:
+ 
+* **USDC as Gas**: All network transaction fees are calculated and paid directly in USDC.
+* **Osaka EVM Hardfork**: Ensures complete support for modern gas-estimation and contract standards.
+* **EIP-7708 standard**: Native USDC transfers emit standard \`Transfer\` logs, ensuring transparent accounting and integration with corporate ERPs.
+ 
+To learn more, check the [Arc EVM Compatibility Docs](https://docs.arc.network/arc/references/evm-compatibility).
+ 
+---
+ 
+## The Double Decimals Rule
+USDC on Arc exists as a single balance with two interfaces, which developers and treasury managers must handle carefully:
+ 
+| Interface Type | Precision | Typical Use Case |
+| :--- | :--- | :--- |
+| **Native Gas Interface** | 18 decimals | Gas estimation and block-level transactions |
+| **ERC-20 Interface** | 6 decimals | DeFi transactions, swap pools, balance displays |
+ 
+The canonical USDC ERC-20 contract is deployed on Arc Testnet at \`0x3600000000000000000000000000000000000000\`. For the official list of token contracts across testnets, view the [Circle Contract Addresses Directory](https://developers.circle.com/stablecoins/usdc-contract-addresses).
+ 
+---
+ 
+## Launch Setup checklist
+To connect your organization to Arc\\'s predictable fee rails:
+ 
+- [ ] Configure your Web3 wallet RPC to \`https://rpc.testnet.arc.network\`.
+- [ ] Use Chain ID \`5042002\` (hex: \`0x4CEF52\`).
+- [ ] Check your unified balance to verify automatic USDC gas deduction.
+- [ ] Deploy scheduled intents with predictable gas-smoothed fee parameters.
+ 
+> [!IMPORTANT]
+> Because Arc integrates Malachite BFT consensus, transactions finalize in sub-second timeframes and are irreversibly confirmed.
+ 
+To understand the macro shift to on-chain capital pools, read: [Traditional Corporate Treasury vs. Stablecoin Yield Pools](/blog/traditional-corporate-treasury-vs-stablecoin-yield-pools).
 `
   }
 ];
