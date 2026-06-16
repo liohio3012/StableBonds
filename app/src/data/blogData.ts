@@ -137,7 +137,7 @@ For the most secure and streamlined corporate experience, we recommend registeri
 
 1. Click **Sign In** in the top navigation bar.
 2. Choose **Register New Passkey**.
-3. Create a unique username representing your company (e.g., \\\`acme_treasury\\\`).
+3. Create a unique username representing your company (e.g., \`acme_treasury\`).
 4. Complete your device's biometric authentication (Windows Hello, FaceID, or TouchID).
 5. Your Circle Smart Account is created instantly and mapped securely on-chain.
 
@@ -170,14 +170,14 @@ If you are evaluating the platform in our sandbox environment:
 
 With your USDC balance loaded, you can now schedule your first automated payment:
 
-\\\`\\\`\\\`mermaid
+\`\`\`mermaid
 graph TD
     A[Schedule Invoice] --> B[Lock Capital in Vault]
     B --> C[Earn 5% Senior APY]
     C --> D[Maturity Date Arrives]
     D --> E[Settle Invoice to Supplier]
     E --> F[Return Accrued Yield to Treasury]
-\\\`\\\`\\\`
+\`\`\`
 
 1. Navigate to the **New Payment** tab.
 2. **Configure Payout Details**:
@@ -273,7 +273,7 @@ In this article, we compare StableBonds side-by-side with traditional yield aggr
 
 The Arc blockchain was engineered specifically to support institutional stablecoin flows. By choosing Arc, StableBonds leverages three critical chain properties:
 
-\\\`\\\`\\\`
+\`\`\`
 [Corporate Treasury] 
        |
        v (Sponsored gas in USDC)
@@ -283,7 +283,7 @@ The Arc blockchain was engineered specifically to support institutional stableco
   |         |
   v         v
 [Yield]  [Maturity Settlement]
-\\\`\\\`\\\`
+\`\`\`
 
 1. **Unified USDC Balance**: Arc aggregates stablecoin liquidities natively, avoiding fragmented bridges.
 2. **Predictable Fee Structures**: Transaction costs are calculated algorithmically in stable terms, protecting treasury planning.

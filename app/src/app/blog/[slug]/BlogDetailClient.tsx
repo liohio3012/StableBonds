@@ -13,6 +13,216 @@ interface BlogDetailClientProps {
   relatedPosts: BlogPost[];
 }
 
+// Custom interactive components for rich blog assets
+const MermaidFlowChart = () => {
+  const steps = [
+    { title: "Schedule Invoice", desc: "CFO inputs invoice amount & recipient wallet." },
+    { title: "Lock Capital", desc: "Principal is secured in the smart vault." },
+    { title: "Earn 5% APY", desc: "Capital compounds in the Senior tranche." },
+    { title: "Maturity Date", desc: "Contract automated trigger executes." },
+    { title: "Settle Invoice", desc: "Recipient receives exact USDC payment." },
+    { title: "Return Yield", desc: "CFO recaptures accrued interest." }
+  ];
+
+  return (
+    <div className="my-8 p-6 rounded-2xl border border-[var(--border)] bg-neutral-50/30 backdrop-blur-sm space-y-6">
+      <div className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse" />
+        Process Flow: Automated Settlement Vault
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {steps.map((step, idx) => (
+          <div key={idx} className="relative p-4 rounded-xl border border-[var(--border)] bg-[var(--card)] hover:border-[var(--primary)] hover:shadow-sm transition-all group">
+            <div className="absolute top-3 right-3 text-[10px] font-mono text-[var(--muted-foreground)] font-bold bg-[var(--muted)] px-1.5 py-0.5 rounded">
+              0{idx + 1}
+            </div>
+            <h5 className="text-xs font-bold text-[var(--foreground)] pr-6">{step.title}</h5>
+            <p className="text-[10px] text-[var(--muted-foreground)] mt-1.5 leading-relaxed">{step.desc}</p>
+            {idx < steps.length - 1 && (
+              <div className="hidden md:block absolute -right-3.5 top-1/2 -translate-y-1/2 z-10 text-[var(--muted-foreground)] group-hover:text-[var(--primary)] transition-colors">
+                <ChevronRight size={14} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ArcArchitectureDiagram = () => {
+  return (
+    <div className="my-8 p-6 rounded-2xl border border-[var(--border)] bg-neutral-50/30 backdrop-blur-sm space-y-6">
+      <div className="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-1.5">
+        <span className="w-2 h-2 rounded-full bg-[var(--primary)]" />
+        System Architecture: Arc Integration Layer
+      </div>
+      <div className="flex flex-col items-center gap-4 text-xs font-semibold">
+        <div className="px-6 py-2.5 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] w-48 text-center shadow-xs">
+          Corporate Treasury
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <div className="w-0.5 h-6 bg-[var(--primary)]" />
+          <span className="text-[9px] text-[var(--muted-foreground)] font-mono bg-[var(--muted)] px-2 py-0.5 rounded">
+            Sponsored Gas (USDC)
+          </span>
+          <div className="w-0.5 h-2 bg-[var(--primary)]" />
+        </div>
+        <div className="px-6 py-3 rounded-xl border border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary)] w-64 text-center font-bold shadow-xs">
+          Arc Blockchain Integration Layer
+        </div>
+        <div className="w-full flex items-center justify-center gap-12 sm:gap-20">
+          <div className="flex flex-col items-center">
+            <div className="w-0.5 h-6 bg-[var(--border)]" />
+            <span className="text-[8px] text-[var(--muted-foreground)] mb-1">Sub-second finality</span>
+            <div className="px-4 py-2.5 rounded-xl border border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)] w-32 sm:w-36 text-center font-bold">
+              Yield Generation
+            </div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-0.5 h-6 bg-[var(--border)]" />
+            <span className="text-[8px] text-[var(--muted-foreground)] mb-1">Sub-second finality</span>
+            <div className="px-4 py-2.5 rounded-xl border border-[var(--primary-border)] bg-[var(--primary-soft)] text-[var(--primary)] w-32 sm:w-36 text-center font-bold">
+              Maturity Settlement
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const EmailOtpMockup = () => {
+  const [step, setStep] = useState<'input' | 'otp' | 'success'>('input');
+  const [email, setEmail] = useState('treasury@acme.com');
+  const [otp, setOtp] = useState(['4', '8', '2', '9', '1', '0']);
+  const [timer, setTimer] = useState(54);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let interval: any;
+    if (step === 'otp' && timer > 0) {
+      interval = setInterval(() => setTimer(t => t - 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [step, timer]);
+
+  const handleRequestOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep('otp');
+    }, 800);
+  };
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setStep('success');
+    }, 1000);
+  };
+
+  return (
+    <div className="my-6 max-w-sm mx-auto p-5 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-md space-y-4 text-left">
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+        <div>
+          <h5 className="text-xs font-bold text-[var(--foreground)]">OTP Sign-In Sandbox</h5>
+          <p className="text-[9px] text-[var(--muted-foreground)]">Simulation for non-passkey devices</p>
+        </div>
+        <span className="text-[9px] font-semibold text-[var(--primary)] bg-[var(--primary-soft)] px-1.5 py-0.5 rounded">
+          Fallback Wallet
+        </span>
+      </div>
+
+      {step === 'input' && (
+        <form onSubmit={handleRequestOtp} className="space-y-3.5">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold text-[var(--muted-foreground)]">Corporate Email</label>
+            <input 
+              type="email" 
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full text-xs px-3 py-2 rounded-lg border border-[var(--border)] focus:outline-none focus:border-[var(--primary)] bg-[var(--background)] font-mono text-[var(--foreground)]"
+              placeholder="treasury@acme.com"
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="btn-primary w-full text-[11px] py-2 flex items-center justify-center gap-1.5 font-bold"
+          >
+            {loading ? (
+              <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : "Send One-Time Passcode"}
+          </button>
+        </form>
+      )}
+
+      {step === 'otp' && (
+        <form onSubmit={handleVerifyOtp} className="space-y-3.5">
+          <div className="space-y-1.5 text-center">
+            <label className="text-[10px] font-bold text-[var(--muted-foreground)] block">Enter 6-Digit Code</label>
+            <p className="text-[9px] text-[var(--muted-foreground)]">Sent to {email}</p>
+            <div className="flex justify-center gap-2 mt-2">
+              {otp.map((char, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  maxLength={1}
+                  value={char}
+                  onChange={(e) => {
+                    const newOtp = [...otp];
+                    newOtp[index] = e.target.value;
+                    setOtp(newOtp);
+                  }}
+                  className="w-8 h-9 text-center text-xs font-mono font-bold rounded-lg border border-[var(--border)] focus:outline-none focus:border-[var(--primary)] bg-[var(--background)] text-[var(--foreground)]"
+                />
+              ))}
+            </div>
+            <div className="text-[9px] text-[var(--muted-foreground)] mt-2">
+              Code expires in <span className="font-mono font-bold text-[var(--foreground)]">00:{timer < 10 ? `0${timer}` : timer}</span>
+            </div>
+          </div>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="btn-primary w-full text-[11px] py-2 flex items-center justify-center gap-1.5 font-bold"
+          >
+            {loading ? (
+              <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : "Verify & Connect Wallet"}
+          </button>
+        </form>
+      )}
+
+      {step === 'success' && (
+        <div className="text-center py-4 space-y-3">
+          <div className="w-10 h-10 rounded-full bg-[var(--success-soft)] text-[var(--success)] flex items-center justify-center mx-auto">
+            <Check size={18} />
+          </div>
+          <div>
+            <h6 className="text-xs font-bold text-[var(--foreground)]">Authentication Successful</h6>
+            <p className="text-[9px] text-[var(--muted-foreground)] mt-1 font-mono">
+              Smart Account Address: 0x8a92...718d
+            </p>
+          </div>
+          <button 
+            type="button" 
+            onClick={() => setStep('input')}
+            className="text-[10px] font-bold text-[var(--primary)] hover:underline"
+          >
+            Simulate Again
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // A simple and safe Markdown parser to render H2, H3, lists, tables, code blocks, alerts
 const renderMarkdown = (markdown: string) => {
   const lines = markdown.split('\n');
@@ -127,21 +337,29 @@ const renderMarkdown = (markdown: string) => {
     }
 
     // 4. Code Blocks (```)
-    if (line.startsWith('```')) {
+    if (line.startsWith('```') || line.startsWith('\\`\\`\\`')) {
       flushList();
       flushTable();
+      const isMermaid = line.includes('mermaid');
       let code = '';
       // Read until closing code block
-      while (i + 1 < lines.length && !lines[i + 1].trim().startsWith('```')) {
+      while (i + 1 < lines.length && !lines[i + 1].trim().startsWith('```') && !lines[i + 1].trim().startsWith('\\`\\`\\`')) {
         i++;
         code += lines[i] + '\n';
       }
-      if (i + 1 < lines.length) i++; // skip closing ```
-      renderedElements.push(
-        <pre key={`code-${elementKey++}`} className="bg-zinc-900 text-zinc-100 p-4 rounded-xl font-mono text-[11px] md:text-xs my-6 overflow-x-auto shadow-inner border border-zinc-800">
-          <code>{code.trim()}</code>
-        </pre>
-      );
+      if (i + 1 < lines.length) i++; // skip closing
+      
+      if (isMermaid || code.includes('graph TD')) {
+        renderedElements.push(<MermaidFlowChart key={`mermaid-${elementKey++}`} />);
+      } else if (code.includes('Arc Blockchain Integration Layer')) {
+        renderedElements.push(<ArcArchitectureDiagram key={`arc-arch-${elementKey++}`} />);
+      } else {
+        renderedElements.push(
+          <pre key={`code-${elementKey++}`} className="bg-zinc-900 text-zinc-100 p-4 rounded-xl font-mono text-[11px] md:text-xs my-6 overflow-x-auto shadow-inner border border-zinc-800">
+            <code>{code.trim()}</code>
+          </pre>
+        );
+      }
       continue;
     }
 
@@ -183,6 +401,9 @@ const renderMarkdown = (markdown: string) => {
         <p key={`p-${elementKey++}`} className="text-xs md:text-sm leading-relaxed text-[var(--muted-foreground)] my-4"
            dangerouslySetInnerHTML={{ __html: parseInlineMarkdown(line) }} />
       );
+      if (line.includes('Email OTP Sign-In')) {
+        renderedElements.push(<EmailOtpMockup key={`otp-mock-${elementKey++}`} />);
+      }
     }
   }
 
