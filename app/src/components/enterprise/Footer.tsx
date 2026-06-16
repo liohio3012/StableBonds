@@ -171,9 +171,9 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'Treasury Dashboard', href: '/app' },
-                { name: 'Yield Vaults', href: '/app' },
-                { name: 'Smart Accounts', href: '/app' },
+                { name: 'Treasury Dashboard', href: '/app?tab=treasury' },
+                { name: 'Yield Vaults', href: '/app?tab=ladder' },
+                { name: 'Smart Accounts', href: '/app?tab=unified' },
                 { name: 'Pricing Plans', href: '/pricing' },
                 { name: 'Company Blog', href: '/blog' }
               ].map((link, idx) => (
@@ -194,10 +194,10 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { name: 'Corporate Treasury', href: '/app' },
-                { name: 'Secondary OTC Desk', href: '/app' },
-                { name: 'Cross-Border Payroll', href: '/app' },
-                { name: 'Escrow & Yield', href: '/app' }
+                { name: 'Corporate Treasury', href: '/app?tab=treasury' },
+                { name: 'Secondary OTC Desk', href: '/app?tab=otc' },
+                { name: 'Cross-Border Payroll', href: '/app?tab=treasury' },
+                { name: 'Escrow & Yield', href: '/app?tab=ladder' }
               ].map((link, idx) => (
                 <li key={idx}>
                   <Link href={link.href} className="transition-colors hover:text-[var(--foreground)]" style={{ color: 'var(--muted-foreground)' }}>

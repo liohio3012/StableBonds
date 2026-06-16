@@ -102,7 +102,7 @@ Transitioning to on-chain corporate treasury management requires strict alignmen
 Holding idle cash in traditional banking rails is no longer a viable strategy for competitive enterprises. By transitioning to stablecoin yield pools on Arc, companies can secure their capital, automate payouts, and capture risk-managed yields.
 
 > [!TIP]
-> Ready to optimize your business capital? **[Launch the StableBonds Treasury App](/app)** to configure your first scheduled vendor payout and start earning yield immediately.
+> Ready to optimize your business capital? **[Launch the StableBonds Treasury App](/app?tab=treasury)** to configure your first scheduled vendor payout and start earning yield immediately.
 `
   },
   {
@@ -211,7 +211,7 @@ At any time, you can view your active payout positions inside the **Maturity Cal
 > [!IMPORTANT]
 > Keep your passkey device secure. If you lose access, make sure to configure a recovery email under your Smart Account settings.
 
-Ready to begin? **[Launch the StableBonds App](/app)** and start earning yield on your upcoming invoices today.
+Ready to begin? **[Launch the StableBonds App](/app?tab=treasury)** and start earning yield on your upcoming invoices today.
 `
   },
   {
@@ -309,7 +309,7 @@ With StableBonds:
 DeFi yield aggregators are excellent tools for retail yield farmers, but enterprise corporate treasuries require structured automation, gas sponsor capabilities, and absolute finality. StableBonds delivers these requirements in a sleek, institutional-grade console.
 
 > [!TIP]
-> Ready to elevate your business payment execution? **[Launch the StableBonds Dashboard](/app)** and configure your corporate yield desk today.
+> Ready to elevate your business payment execution? **[Launch the StableBonds Dashboard](/app?tab=treasury)** and configure your corporate yield desk today.
 `
   }
 ];
