@@ -149,128 +149,127 @@ export default function OTCDesk() {
     setIsLoading(true);
 
     try {
-      // 1. Fetch user owned bonds directly from the vault
       const nextBondId = nextBondIdData ? Number(nextBondIdData) : 0;
-      const userBondsTemp: Bond[] = [];
+      const nextOrderId = nextOrderIdData ? Number(nextOrderIdData) : 0;
 
-      if (nextBondId > 0) {
-        const balanceCalls = [];
-        for (let i = 0; i < nextBondId; i++) {
-          balanceCalls.push({
+      // Parallelize the initial multicalls for reading balances and orders list
+      const balanceCalls = [];
+      for (let i = 0; i < nextBondId; i++) {
+        balanceCalls.push({
+          address: VAULT_ADDRESS,
+          abi: VAULT_ABI,
+          functionName: 'balanceOf',
+          args: [address as `0x${string}`, BigInt(i)]
+        });
+      }
+
+      const orderCalls = [];
+      for (let i = 0; i < nextOrderId; i++) {
+        orderCalls.push({
+          address: OTC_ADDRESS,
+          abi: OTC_ABI,
+          functionName: 'orders',
+          args: [BigInt(i)]
+        });
+      }
+
+      // Dispatch parallel requests
+      const [balances, fetchedOrders] = await Promise.all([
+        nextBondId > 0 ? publicClient.multicall({ contracts: balanceCalls }) : Promise.resolve([]),
+        nextOrderId > 0 ? publicClient.multicall({ contracts: orderCalls }) : Promise.resolve([])
+      ]);
+
+      const userBondsTemp: Bond[] = [];
+      const fetchBondDetailsCalls: any[] = [];
+      const ownedBondIds: number[] = [];
+
+      balances.forEach((res, idx) => {
+        if (res.status === 'success' && Number(res.result) > 0) {
+          ownedBondIds.push(idx);
+          fetchBondDetailsCalls.push({
             address: VAULT_ADDRESS,
             abi: VAULT_ABI,
-            functionName: 'balanceOf',
-            args: [address as `0x${string}`, BigInt(i)]
+            functionName: 'bonds',
+            args: [BigInt(idx)]
           });
         }
+      });
 
-        const balances = await publicClient.multicall({ contracts: balanceCalls });
-        const fetchBondDetailsCalls: any[] = [];
-        const ownedBondIds: number[] = [];
+      const activeOrdersTemp: Order[] = [];
+      const bondDetailsCallsForOrders: any[] = [];
 
-        balances.forEach((res, idx) => {
-          if (res.status === 'success' && Number(res.result) > 0) {
-            ownedBondIds.push(idx);
-            fetchBondDetailsCalls.push({
+      fetchedOrders.forEach((res) => {
+        if (res.status === 'success' && res.result) {
+          const ord = res.result as any;
+          const orderId = Number(ord[0]);
+          const bondId = Number(ord[1]);
+          const seller = ord[2];
+          const price = parseFloat(formatUnits(ord[3], 6));
+          const isActive = ord[4];
+
+          if (isActive && seller !== '0x0000000000000000000000000000000000000000') {
+            activeOrdersTemp.push({
+              orderId,
+              bondId,
+              seller,
+              price,
+              isActive
+            });
+            bondDetailsCallsForOrders.push({
               address: VAULT_ADDRESS,
               abi: VAULT_ABI,
               functionName: 'bonds',
-              args: [BigInt(idx)]
+              args: [BigInt(bondId)]
             });
           }
-        });
+        }
+      });
 
-        if (fetchBondDetailsCalls.length > 0) {
-          const details = await publicClient.multicall({ contracts: fetchBondDetailsCalls });
-          details.forEach((res, idx) => {
-            if (res.status === 'success' && res.result) {
-              const bondData = res.result as any;
-              userBondsTemp.push({
-                id: ownedBondIds[idx],
-                owner: bondData[0],
-                principal: parseFloat(formatUnits(bondData[1], 6)),
-                yieldBps: Number(bondData[2]),
-                maturityDate: Number(bondData[3]),
-                isSettled: bondData[4],
-                termId: Number(bondData[5]),
-                depositToken: getTokenSymbol(bondData[6]),
-                settlementToken: getTokenSymbol(bondData[7]),
-                swapAtDeposit: bondData[8]
-              });
-            }
+      // Parallelize the second step: details fetching
+      const [details, bondsResult] = await Promise.all([
+        fetchBondDetailsCalls.length > 0 ? publicClient.multicall({ contracts: fetchBondDetailsCalls }) : Promise.resolve([]),
+        bondDetailsCallsForOrders.length > 0 ? publicClient.multicall({ contracts: bondDetailsCallsForOrders }) : Promise.resolve([])
+      ]);
+
+      // Parse user bonds details
+      details.forEach((res, idx) => {
+        if (res.status === 'success' && res.result) {
+          const bondData = res.result as any;
+          userBondsTemp.push({
+            id: ownedBondIds[idx],
+            owner: bondData[0],
+            principal: parseFloat(formatUnits(bondData[1], 6)),
+            yieldBps: Number(bondData[2]),
+            maturityDate: Number(bondData[3]),
+            isSettled: bondData[4],
+            termId: Number(bondData[5]),
+            depositToken: getTokenSymbol(bondData[6]),
+            settlementToken: getTokenSymbol(bondData[7]),
+            swapAtDeposit: bondData[8]
           });
         }
-      }
+      });
+
+      // Parse order bonds details
+      bondsResult.forEach((res, index) => {
+        if (res.status === 'success' && res.result) {
+          const bondData = res.result as any;
+          activeOrdersTemp[index].bond = {
+            id: activeOrdersTemp[index].bondId,
+            owner: bondData[0],
+            principal: parseFloat(formatUnits(bondData[1], 6)),
+            yieldBps: Number(bondData[2]),
+            maturityDate: Number(bondData[3]),
+            isSettled: bondData[4],
+            termId: Number(bondData[5]),
+            depositToken: getTokenSymbol(bondData[6]),
+            settlementToken: getTokenSymbol(bondData[7]),
+            swapAtDeposit: bondData[8]
+          };
+        }
+      });
 
       setUserBonds(userBondsTemp);
-
-      // 2. Fetch Active OTC Orders
-      const nextOrderId = nextOrderIdData ? Number(nextOrderIdData) : 0;
-      const activeOrdersTemp: Order[] = [];
-
-      if (nextOrderId > 0) {
-        const orderCalls = [];
-        for (let i = 0; i < nextOrderId; i++) {
-          orderCalls.push({
-            address: OTC_ADDRESS,
-            abi: OTC_ABI,
-            functionName: 'orders',
-            args: [BigInt(i)]
-          });
-        }
-
-        const fetchedOrders = await publicClient.multicall({ contracts: orderCalls });
-        const bondDetailsCallsForOrders: any[] = [];
-
-        fetchedOrders.forEach((res) => {
-          if (res.status === 'success' && res.result) {
-            const ord = res.result as any;
-            const orderId = Number(ord[0]);
-            const bondId = Number(ord[1]);
-            const seller = ord[2];
-            const price = parseFloat(formatUnits(ord[3], 6));
-            const isActive = ord[4];
-
-            if (isActive && seller !== '0x0000000000000000000000000000000000000000') {
-              activeOrdersTemp.push({
-                orderId,
-                bondId,
-                seller,
-                price,
-                isActive
-              });
-              bondDetailsCallsForOrders.push({
-                address: VAULT_ADDRESS,
-                abi: VAULT_ABI,
-                functionName: 'bonds',
-                args: [BigInt(bondId)]
-              });
-            }
-          }
-        });
-
-        if (bondDetailsCallsForOrders.length > 0) {
-          const bondsResult = await publicClient.multicall({ contracts: bondDetailsCallsForOrders });
-          bondsResult.forEach((res, index) => {
-            if (res.status === 'success' && res.result) {
-              const bondData = res.result as any;
-              activeOrdersTemp[index].bond = {
-                id: activeOrdersTemp[index].bondId,
-                owner: bondData[0],
-                principal: parseFloat(formatUnits(bondData[1], 6)),
-                yieldBps: Number(bondData[2]),
-                maturityDate: Number(bondData[3]),
-                isSettled: bondData[4],
-                termId: Number(bondData[5]),
-                depositToken: getTokenSymbol(bondData[6]),
-                settlementToken: getTokenSymbol(bondData[7]),
-                swapAtDeposit: bondData[8]
-              };
-            }
-          });
-        }
-      }
-
       setOrders(activeOrdersTemp);
     } catch (err) {
       console.error("Error loading OTC data:", err);
@@ -685,29 +684,31 @@ export default function OTCDesk() {
                       </div>
 
                       {/* Middle: YTM & Price calculations */}
-                      <div className="flex gap-4 items-center self-stretch sm:self-auto sm:border-l pl-0 sm:pl-6 border-[var(--border)]">
-                        <div className="text-right sm:text-left">
-                          <div className="text-xs text-[var(--muted-foreground)] flex items-center justify-end sm:justify-start">
+                      <div className="flex gap-6 sm:gap-8 items-center self-stretch sm:self-auto sm:border-l pl-0 sm:pl-6 border-[var(--border)] shrink-0 justify-between sm:justify-start">
+                        <div className="text-left min-w-[100px] shrink-0">
+                          <div className="text-[11px] text-[var(--muted-foreground)] flex items-center gap-1 whitespace-nowrap">
                             Buyer's YTM
                             <Tooltip text="Yield-to-Maturity (YTM) measures the annualized yield a buyer captures by buying this bond at the current listing price." />
                           </div>
-                          <div className="text-lg font-bold text-[var(--success)] flex items-center gap-1 mt-0.5">
-                            <TrendingUp size={16} />
+                          <div className="text-base font-bold text-[var(--success)] flex items-center gap-1 mt-1 whitespace-nowrap">
+                            <TrendingUp size={14} className="shrink-0" />
                             {ytm.toFixed(2)}%
                           </div>
                           {discount > 0 && (
-                            <span className="text-[10px] font-semibold text-[var(--success)] bg-[var(--success-soft)] px-1.5 py-0.5 rounded">
-                              {discount.toFixed(1)}% Discount
-                            </span>
+                            <div className="mt-1">
+                              <span className="text-[9px] font-semibold text-[var(--success)] bg-[var(--success-soft)] px-1.5 py-0.5 rounded whitespace-nowrap">
+                                {discount.toFixed(1)}% Discount
+                              </span>
+                            </div>
                           )}
                         </div>
 
-                        <div className="text-right ml-auto sm:ml-0">
-                          <div className="text-xs text-[var(--muted-foreground)]">Asking Price</div>
-                          <div className="text-lg font-semibold text-[var(--foreground)] mt-0.5">
-                            {order.price.toLocaleString()} USDC
+                        <div className="text-right sm:text-left min-w-[110px] shrink-0">
+                          <div className="text-[11px] text-[var(--muted-foreground)] whitespace-nowrap">Asking Price</div>
+                          <div className="text-base font-bold text-[var(--foreground)] mt-1 whitespace-nowrap">
+                            {order.price.toLocaleString()} <span className="text-xs font-semibold text-[var(--muted-foreground)]">USDC</span>
                           </div>
-                          <div className="text-[10px] text-[var(--muted-foreground)]">
+                          <div className="text-[10px] text-[var(--muted-foreground)] mt-1 whitespace-nowrap font-mono">
                             Seller: {order.seller.slice(0,6)}…{order.seller.slice(-4)}
                           </div>
                         </div>
