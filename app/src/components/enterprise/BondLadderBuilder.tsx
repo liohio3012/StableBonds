@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
 import { parseAbi, parseUnits, encodeFunctionData, isAddress } from 'viem';
 import { toast } from 'sonner';
@@ -235,6 +236,11 @@ export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateTo
   const [smartConfirming, setSmartConfirming] = useState(false);
   const [smartTxHash, setSmartTxHash] = useState<string | null>(null);
   const [showSuccessWorkflowModal, setShowSuccessWorkflowModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   React.useEffect(() => {
     if (smartTxHash) {
@@ -396,7 +402,8 @@ export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateTo
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
+    <>
+      <div className="w-full max-w-5xl mx-auto mb-12 animate-fade-in">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* Left Form Settings Panel */}
@@ -715,9 +722,10 @@ export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateTo
         </div>
 
       </div>
+    </div>
 
       {/* Workflow Success Modal */}
-      {showSuccessWorkflowModal && (
+      {showSuccessWorkflowModal && isMounted && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
           <div className="card-surface max-w-md w-full overflow-hidden shadow-2xl relative animate-scale-in p-6 text-left"
             style={{ border: '1px solid var(--border)', background: 'var(--canvas)' }}>
@@ -838,8 +846,9 @@ export default function BondLadderBuilder({ onNavigateToCompliance, onNavigateTo
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
