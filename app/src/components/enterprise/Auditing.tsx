@@ -6,7 +6,7 @@ import { parseAbi, formatUnits } from 'viem';
 import { FileText, Download, ShieldCheck, RefreshCw, BarChart3, TrendingUp, DollarSign, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
 
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
 
 const VAULT_ABI = parseAbi([
   "event BondCreated(uint256 indexed bondId, address indexed owner, uint256 maturityDate)",

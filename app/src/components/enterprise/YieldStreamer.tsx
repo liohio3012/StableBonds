@@ -8,11 +8,11 @@ import { TrendingUp, ShieldAlert, Sparkles, RefreshCw, Zap, Landmark, ArrowRight
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
 
 const VAULT_ABI = parseAbi([
   "function nextBondId() view returns (uint256)",
-  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, (address supplier, uint32 destDomain, bool isConfigured) intent, address agent, uint256 creationTimestamp, uint8 tranche)",
+  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, address supplier, uint32 destDomain, bool isConfigured, address agent, uint256 creationTimestamp, uint8 tranche)",
   "function claimedInterest(uint256) view returns (uint256)",
   "function claimAccruedYield(uint256 _bondId) external",
   "function calculateAccruedYield(uint256 _bondId) view returns (uint256)"
@@ -110,8 +110,8 @@ export default function YieldStreamer() {
               depositToken: getTokenSymbol(b[6]),
               settlementToken: getTokenSymbol(b[7]),
               swapAtDeposit: b[8],
-              creationTimestamp: Number(b[11]),
-              tranche: Number(b[12]),
+              creationTimestamp: Number(b[13]),
+              tranche: Number(b[14]),
               claimedInterest: claimed
             });
           }

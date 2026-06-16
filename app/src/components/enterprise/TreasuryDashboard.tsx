@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import KeeperAutomationPanel from './KeeperAutomationPanel';
 
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
 
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000";
 const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a";
@@ -38,7 +38,7 @@ const getTokenSymbol = (addr: string) => {
 
 const VAULT_ABI = parseAbi([
   "function nextBondId() view returns (uint256)",
-  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, (address supplier, uint32 destDomain, bool isConfigured) intent, address agent, uint256 creationTimestamp, uint8 tranche)",
+  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, address supplier, uint32 destDomain, bool isConfigured, address agent, uint256 creationTimestamp, uint8 tranche)",
   "function claimAccruedYield(uint256 _bondId) external",
   "event BondCreated(uint256 indexed bondId, address indexed owner, uint256 maturityDate)"
 ]);
@@ -598,11 +598,11 @@ export default function TreasuryDashboard({ onListOTC }: { onListOTC?: (bond: Bo
                 depositToken: getTokenSymbol(bondData[6]),
                 settlementToken: getTokenSymbol(bondData[7]),
                 swapAtDeposit: bondData[8],
-                supplier: bondData[9].supplier,
-                destDomain: bondData[9].destDomain,
-                agent: bondData[10],
-                creationTimestamp: Number(bondData[11]),
-                tranche: Number(bondData[12])
+                supplier: bondData[9],
+                destDomain: Number(bondData[10]),
+                agent: bondData[12],
+                creationTimestamp: Number(bondData[13]),
+                tranche: Number(bondData[14])
               });
             }
           }
