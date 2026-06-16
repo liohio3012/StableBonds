@@ -106,7 +106,7 @@ export default function UnifiedBalance() {
       const results = await Promise.all(balancePromises);
       setBalances(results);
       setLastRefresh(Date.now());
-      toast.success("Balances fetched from on-chain contracts");
+      toast.success("Balances updated successfully");
     } catch (err) {
       console.error("Failed to fetch balances:", err);
       toast.error("Failed to fetch on-chain balances");
