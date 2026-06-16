@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAccount, useReadContract, usePublicClient, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseAbi, formatUnits, encodeFunctionData } from 'viem';
 import { Shield, Check, Clock, UserCheck, AlertTriangle, Play, Plus, RefreshCw, X, Loader2, ArrowRight } from 'lucide-react';
@@ -70,6 +71,11 @@ export default function MultiSigDesk() {
   const [newMultiSigAddr, setNewMultiSigAddr] = useState("");
   const [showCreateGenericModal, setShowCreateGenericModal] = useState(false);
   const [showCreateBondModal, setShowCreateBondModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Form states - Generic
   const [genericTarget, setGenericTarget] = useState("");
@@ -504,7 +510,8 @@ export default function MultiSigDesk() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
       {/* Configuration Indicator */}
       <div className="flex justify-between items-center">
         <div>
@@ -747,9 +754,10 @@ export default function MultiSigDesk() {
           </div>
         </div>
       )}
+    </div>
 
       {/* Modal - Administrative Action */}
-      {showCreateGenericModal && (
+      {showCreateGenericModal && isMounted && createPortal(
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="card-surface p-6 max-w-md w-full relative space-y-4 shadow-xl border border-[var(--border)]">
             <button
@@ -810,11 +818,12 @@ export default function MultiSigDesk() {
               Propose Action
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Modal - Bond Purchase */}
-      {showCreateBondModal && (
+      {showCreateBondModal && isMounted && createPortal(
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="card-surface p-6 max-w-md w-full relative space-y-4 shadow-xl border border-[var(--border)]">
             <button
@@ -888,8 +897,9 @@ export default function MultiSigDesk() {
               Propose Bond Purchase
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }
