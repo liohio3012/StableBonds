@@ -8,15 +8,15 @@ import { toast } from 'sonner';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
-const OTC_ADDRESS = "0x9C07ab0E706fab71113b27dAFd8a51261453a46f" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
+const OTC_ADDRESS = "0x9E7cF55e889B6C9457Ce3a4E0e4fd2f73f95B091" as `0x${string}`;
 
 const USDC_ADDRESS = "0x3600000000000000000000000000000000000000" as `0x${string}`;
 const EURC_ADDRESS = "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a" as `0x${string}`;
 
 const VAULT_ABI = parseAbi([
   "function nextBondId() view returns (uint256)",
-  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, (address supplier, uint32 destDomain, bool isConfigured) intent)",
+  "function bonds(uint256) view returns (address owner, uint256 principal, uint256 yieldBps, uint256 maturityDate, bool isSettled, uint256 termId, address depositToken, address settlementToken, bool swapAtDeposit, address supplier, uint32 destDomain, bool isConfigured, address agent, uint256 creationTimestamp, uint8 tranche)",
   "function balanceOf(address account, uint256 id) view returns (uint256)",
   "function isApprovedForAll(address account, address operator) view returns (bool)",
   "function setApprovalForAll(address operator, bool approved) external"

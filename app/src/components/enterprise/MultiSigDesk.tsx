@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useCircleAuth } from '@/lib/CircleAuthContext';
 import { bundlerClient } from '@/lib/circle-auth';
 
-const VAULT_ADDRESS = "0x3522E90D3496D530F7bd2767bE818Cd2F6846b0A" as `0x${string}`;
+const VAULT_ADDRESS = "0x4610ba85Ff3b7993d9f5b2CB5DE4cf194a451942" as `0x${string}`;
 
 const VAULT_ABI = parseAbi([
   "function multiSig() view returns (address)",
